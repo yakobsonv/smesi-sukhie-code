@@ -1,6 +1,10 @@
 /** Разделы каталога — 14 страниц этапа 1 по плану страниц
  *  (vault «Сухие смеси — разведка ассортимента и план страниц (09.10.2026)», «да» Влада 11.10).
  *
+ *  Правило слияния плана применено 11.10 по ассортименту магазина клиента: «Затирка» (2 позиции)
+ *  стала секцией «Плиточного клея», «Стяжка» (4) — секцией «Наливного пола». Сайт не запущен —
+ *  переадресаций старых адресов не нужно.
+ *
  *  Позиция попадает в раздел по своему типу (поле type в positions.json — наш классификатор,
  *  присвоенный при разборе карточки производителя). Каждая позиция живёт ровно в одном разделе.
  *
@@ -82,7 +86,7 @@ export const SECTIONS: Section[] = [
     h1: 'Пескобетон и цементно-песчаные смеси',
     lead: 'Сухие цементно-песчаные смеси разных марок — универсальные, штукатурные, монтажно-кладочные и пескобетон.',
     parts: [{ id: 'cps', title: 'Пескобетон и ЦПС', types: ['masonry_universal_cps'] }],
-    next: ['styazhka-pola', 'kladochnye-smesi', 'shtukaturka-cementnaya'],
+    next: ['nalivnoj-pol', 'kladochnye-smesi', 'shtukaturka-cementnaya'],
   },
   {
     slug: 'shtukaturka-gipsovaya',
@@ -128,45 +132,33 @@ export const SECTIONS: Section[] = [
     slug: 'plitochnyj-klej',
     group: 'plitka',
     label: 'Плиточный клей',
-    title: 'Плиточный клей в Москве — Perel, Dauer CONECTOR, Основит',
-    description: 'Плиточный клей Perel, Dauer CONECTOR и Основит: для керамической плитки, керамогранита, камня — класс и назначение по данным производителей, цены, доставка по Москве и области.',
-    h1: 'Плиточный клей',
-    lead: 'Плиточные клеи трёх производителей. Фильтр «керамогранит и крупный формат» оставляет клеи, у которых это названо в назначении у производителя.',
-    parts: [{ id: 'klei', title: 'Плиточные клеи', types: ['tile_adhesive'] }],
-    next: ['zatirka', 'gidroizolyaciya', 'nalivnoj-pol'],
+    title: 'Плиточный клей и затирка в Москве — Perel, Dauer, Основит',
+    description: 'Плиточный клей Perel, Dauer CONECTOR, Основит, Стройбриг, Promix и сухие затирки для швов: назначение и характеристики по данным производителей, цены, доставка по Москве и области.',
+    h1: 'Плиточный клей и затирка',
+    lead: 'Плиточные клеи и сухие затирки для швов. Фильтр «керамогранит и крупный формат» оставляет клеи, у которых это названо в назначении у производителя.',
+    // Затирка — секцией здесь, а не своей страницей: в ассортименте 2 позиции, правило слияния плана (меньше 5 — в соседний раздел).
+    parts: [
+      { id: 'klei', title: 'Плиточные клеи', types: ['tile_adhesive'] },
+      { id: 'zatirki', title: 'Затирки для швов плитки и камня', types: ['tile_grout'] },
+    ],
+    next: ['gidroizolyaciya', 'nalivnoj-pol', 'shpaklevka'],
   },
-  {
-    slug: 'zatirka',
-    group: 'plitka',
-    label: 'Затирка',
-    title: 'Затирка для швов плитки и камня в Москве — Perel, Основит',
-    description: 'Сухие затирки для швов плитки, клинкера и камня Perel и Основит: назначение, ширина шва и характеристики по данным производителей, цены, доставка.',
-    h1: 'Затирка для швов плитки и камня',
-    lead: 'Сухие цементные затирки для швов облицовки.',
-    parts: [{ id: 'zatirki', title: 'Затирки', types: ['tile_grout'] }],
-    next: ['plitochnyj-klej', 'gidroizolyaciya'],
-  },
-  {
-    slug: 'styazhka-pola',
-    group: 'pol',
-    label: 'Стяжка',
-    title: 'Смесь для стяжки пола в Москве — Perel, Dauer, Основит',
-    description: 'Сухие смеси для стяжки пола Perel, Dauer PLATTER и Основит: толщина слоя и характеристики по данным производителей, цены, доставка по Москве и области.',
-    h1: 'Смеси для стяжки пола',
-    lead: 'Стяжки трёх производителей: толщина слоя, прочность и фасовка — в одной таблице.',
-    parts: [{ id: 'styazhki', title: 'Стяжки', types: ['floor_screed'] }],
-    next: ['nalivnoj-pol', 'peskobeton', 'plitochnyj-klej'],
-  },
+
+
   {
     slug: 'nalivnoj-pol',
     group: 'pol',
-    label: 'Наливной пол',
-    title: 'Наливной пол и ровнители в Москве — Perel, Dauer PLATTER, Основит',
-    description: 'Наливные полы и ровнители Perel, Dauer PLATTER и Основит: толщина слоя, время до хождения и характеристики по данным производителей, цены, доставка.',
-    h1: 'Наливной пол и ровнители',
-    lead: 'Наливные полы и ровнители трёх производителей.',
-    parts: [{ id: 'nalivnye', title: 'Наливные полы и ровнители', types: ['floor_self_leveling'] }],
-    next: ['styazhka-pola', 'plitochnyj-klej', 'gidroizolyaciya'],
+    label: 'Наливной пол и стяжка',
+    title: 'Наливной пол, ровнители и стяжка в Москве — Perel, Dauer, Основит',
+    description: 'Наливные полы, ровнители и смеси для стяжки пола Perel, Dauer PLATTER, Основит, Стройбриг, Promix: толщина слоя и характеристики по данным производителей, цены, доставка.',
+    h1: 'Наливной пол, ровнители и стяжка',
+    lead: 'Смеси для пола: наливные полы и ровнители, стяжки.',
+    // Стяжка — секцией здесь: в ассортименте 4 позиции, правило слияния плана (меньше 5 — в соседний раздел).
+    parts: [
+      { id: 'nalivnye', title: 'Наливные полы и ровнители', types: ['floor_self_leveling'] },
+      { id: 'styazhki', title: 'Стяжки', types: ['floor_screed'] },
+    ],
+    next: ['peskobeton', 'plitochnyj-klej', 'gidroizolyaciya'],
   },
   {
     slug: 'gidroizolyaciya',
@@ -180,7 +172,7 @@ export const SECTIONS: Section[] = [
       { id: 'gidroizolyaciya', title: 'Сухая гидроизоляция и гидропломба', types: ['waterproofing_dry', 'hydroplug'] },
       { id: 'remont', title: 'Ремонт бетона', types: ['concrete_repair', 'special_mortar'] },
     ],
-    next: ['plitochnyj-klej', 'nalivnoj-pol', 'styazhka-pola'],
+    next: ['plitochnyj-klej', 'nalivnoj-pol', 'shpaklevka'],
   },
   {
     slug: 'uteplenie-fasada',
@@ -192,7 +184,7 @@ export const SECTIONS: Section[] = [
     lead: 'Клеевые и базовые штукатурные смеси для систем утепления фасада и сухие минеральные декоративные штукатурки.',
     parts: [
       { id: 'kleevye', title: 'Клей для утеплителя и базовый слой', types: ['etics_adhesive_base'] },
-      { id: 'dekorativnye', title: 'Декоративные штукатурки (сухие)', types: ['decorative_plaster_dry'] },
+      { id: 'dekorativnye', title: 'Декоративные штукатурки и шпаклёвки (сухие)', types: ['decorative_plaster_dry'] },
     ],
     next: ['shtukaturka-cementnaya', 'shpaklevka'],
   },

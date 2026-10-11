@@ -6611,7 +6611,7 @@
  {
   "id": "perel-rl",
   "brand": "Perel",
-  "section": "zatirka",
+  "section": "plitochnyj-klej",
   "part": "zatirki",
   "type": "tile_grout",
   "title": "Perel RL",
@@ -6733,7 +6733,7 @@
  {
   "id": "osnovit-plitseyv-xc35-h",
   "brand": "Основит",
-  "section": "zatirka",
+  "section": "plitochnyj-klej",
   "part": "zatirki",
   "type": "tile_grout",
   "title": "Основит Плитсэйв XC35 H",
@@ -6863,7 +6863,7 @@
  {
   "id": "perel-express",
   "brand": "Perel",
-  "section": "styazhka-pola",
+  "section": "nalivnoj-pol",
   "part": "styazhki",
   "type": "floor_screed",
   "title": "Perel Express",
@@ -6937,7 +6937,7 @@
  {
   "id": "osnovit-startolayn-fc41-h",
   "brand": "Основит",
-  "section": "styazhka-pola",
+  "section": "nalivnoj-pol",
   "part": "styazhki",
   "type": "floor_screed",
   "title": "Основит Стартолайн FC41 H",
@@ -7023,7 +7023,7 @@
  {
   "id": "osnovit-startolayn-fc43-l",
   "brand": "Основит",
-  "section": "styazhka-pola",
+  "section": "nalivnoj-pol",
   "part": "styazhki",
   "type": "floor_screed",
   "title": "Основит Стартолайн FC43 L",
@@ -7109,7 +7109,7 @@
  {
   "id": "stroybrig-cemerin-fc-20",
   "brand": "Стройбриг",
-  "section": "styazhka-pola",
+  "section": "nalivnoj-pol",
   "part": "styazhki",
   "type": "floor_screed",
   "title": "Стройбриг Цемерин FC 20",
