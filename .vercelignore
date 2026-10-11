@@ -1,5 +1,5 @@
-data
-scripts
+/data
+/scripts
 node_modules
-dist
-.astro
+/dist
+/.astro
