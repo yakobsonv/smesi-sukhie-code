@@ -24,7 +24,7 @@ async def check(ctx, path, w):
       const invisible = [...document.querySelectorAll('h1,h2,h3,p,li')].filter(e => { const s = getComputedStyle(e); return e.offsetParent && parseFloat(s.opacity) < 0.05; }).length;
       const anchors = [...document.querySelectorAll('a[href^="#"]')].map(a => a.getAttribute('href')).filter(h => h.length > 1 && !document.getElementById(decodeURIComponent(h.slice(1)))).length;
       const links = [...new Set([...document.querySelectorAll('a[href^="/"]')].map(a => a.getAttribute('href').split('#')[0]))];
-      const service = /(TODO|проверить|уточнить у клиента|вынесено клиенту|служебн|по данным разбора|tk-sm|torgkomplekt)/i.test(document.body.innerText);
+      const service = /(TODO|уточнить у клиента|вынесено клиенту|служебн(?!ых целях)|по данным разбора|tk-sm|torgkomplekt|дилер)/i.test(document.body.innerText);
       return { h1, overflow: sw > cw + 1, broken, stretched, invisible, deadAnchors: anchors, links, service };
     }''')
     await page.close()

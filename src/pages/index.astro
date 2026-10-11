@@ -12,7 +12,7 @@ import { getSite, localPath, OFFICES } from '../lib/sites';
 const site = getSite('sukhie');
 const total = POSITIONS.length;
 const brands = brandsIn(POSITIONS);
-const byBrand = brands.map((b) => ({ brand: b, n: POSITIONS.filter((p) => p.brand === b).length }));
+const byBrand = brands.map((b) => ({ brand: b, n: POSITIONS.filter((p) => p.brand === b).length })).sort((a, b) => b.n - a.n);
 const brandLine = brands.length > 3 ? `${brands.slice(0, 3).join(', ')} и других производителей` : brands.join(', ').replace(/, ([^,]+)$/, ' и $1');
 // Упаковки на первом экране: по очереди из разных брендов и разделов, только снимки ≥ 300 px.
 const heroPool = POSITIONS.filter((p) => p.image && Math.max(p.imageW ?? 0, p.imageH ?? 0) >= 300);

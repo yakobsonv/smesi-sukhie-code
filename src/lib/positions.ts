@@ -27,8 +27,11 @@ export function minPrice(p: Position) {
 export function factsOf(p: Position) {
   const out: { label: string; value: string }[] = [];
   const clean = (s: string) => s.replace(/\s*\n\s*/g, ' ').trim();
-  if (p.layer) out.push({ label: 'Слой/шов', value: clean(p.layer) });
-  if (p.consumption) out.push({ label: 'Расход', value: clean(p.consumption) });
+  const norm = (s: string) => clean(s).toLowerCase().replace(/[.:;]$/, '');
+  // если то же значение есть в характеристиках — берём подпись производителя («Расход сухой смеси на 1 м³ раствора»)
+  const labelOf = (value: string, fallback: string) => p.specs.find((s) => norm(s.value) === norm(value))?.name ?? fallback;
+  if (p.layer) out.push({ label: labelOf(p.layer, 'Слой/шов'), value: clean(p.layer) });
+  if (p.consumption) out.push({ label: labelOf(p.consumption, 'Расход'), value: clean(p.consumption) });
   if (p.packaging) out.push({ label: 'Упаковка', value: clean(p.packaging) });
   return out.slice(0, 3);
 }
