@@ -39,14 +39,10 @@ export function mainNav(current?: string): NavItem[] {
 
 export function footerColumns() {
   return [
-    ...GROUP_ORDER.slice(0, 3).map((g) => ({
+    ...GROUP_ORDER.map((g) => ({
       title: GROUPS[g],
       links: SECTIONS.filter((s) => s.group === g).map((s) => ({ href: p(s.slug), label: s.label })),
     })),
-    {
-      title: `${GROUPS.pol} · ${GROUPS.fasad}`,
-      links: SECTIONS.filter((s) => s.group === 'pol' || s.group === 'fasad').map((s) => ({ href: p(s.slug), label: s.label })),
-    },
     { title: 'Покупателю', links: [PAGES.dostavka, PAGES.kontakty] },
   ];
 }

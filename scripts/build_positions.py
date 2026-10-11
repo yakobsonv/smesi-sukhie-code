@@ -51,6 +51,52 @@ def title_of(key):
     return key.replace('®', '').strip()
 
 
+
+COLORS = ['супербелый', 'супербелая', 'супер-белый', 'белый', 'белая', 'светло-серый', 'светло-серая', 'тёмно-серый', 'темно-серый', 'тёмно-серая', 'темно-серая',
+          'гранитно-серый', 'бежево-серый', 'серый', 'серая', 'светло-бежевый', 'бежевый', 'бежевая', 'светло-коричневый', 'светло-коричневая', 'коричневый', 'коричневая',
+          'шоколадный', 'шоколадная', 'кремово-жёлтый', 'кремово-желтый', 'кремовый', 'кремовая', 'горчичный', 'горчичная', 'медный', 'медная', 'кирпичный', 'кирпичная',
+          'чёрный', 'черный', 'чёрная', 'черная', 'графит', 'жёлтый', 'желтый', 'красный', 'оранжевый', 'ореховый', 'пепельный', 'песочный', 'светло-голубой', 'зелёный', 'зеленый']
+
+
+def offer_label(tk_name):
+    """Подпись варианта из названия позиции в магазине: цвет, фасовка, зимняя версия, жидкий компонент.
+    Строится скриптом (а не агентом), чтобы в подпись не попадали служебные пометки сопоставления."""
+    n = tk_name.lower().replace('ё', 'е')
+    parts = []
+    for c in COLORS:
+        if re.search(r'(?<![а-яa-z-])' + re.escape(c.replace('ё', 'е')) + r'(?![а-яa-z-])', n):
+            parts.append(c.replace('черн', 'чёрн').replace('желт', 'жёлт').replace('темно', 'тёмно').replace('супер-белый', 'супербелый')); break
+    m = re.search(r'(\d+(?:[.,]\d+)?)\s*(кг|л)\b', n)
+    if m:
+        parts.append(m.group(1).replace('.', ',') + ' ' + m.group(2))
+    if 'зим' in n:
+        parts.append('зимняя версия')
+    if 'компонент' in n and 'с компонент' not in n:
+        k = re.search(r'компонент\s*[«"]?([a-zа-я])', n)
+        parts.append('+ компонент «' + (k.group(1).upper() if k else '') + '»')
+    return ', '.join(parts)
+
+
+TABLEISH = lambda v: ('|' in v) or v.count('\n') >= 2
+NORMATIVE_OK = re.compile(r'ГОСТ|\bТУ\b|\bEN\b|ISO|\bСТО\b|\bDIN\b', re.I)
+
+
+def clean_field(kind, v, brand):
+    v = (v or '').strip()
+    if not v:
+        return ''
+    if kind in ('consumption', 'layer') and TABLEISH(v):
+        return ''  # таблица производителя, вытянутая в строку, — без шапки не читается; остаётся в характеристиках
+    if kind in ('consumption', 'layer') and brand in ('Promix', 'Стройбриг') and re.search(r'.+:\s', v):
+        return ''  # «название: значение», собранное из строки таблицы, — дословно его на странице нет; есть в характеристиках
+    if kind == 'normative' and (not NORMATIVE_OK.search(v) or v.lower().startswith('нанесение')):
+        return ''
+    return v
+
+
+CORE = os.path.join(os.path.dirname(ROOT), 'Николай (стройматериалы)', 'recon', 'smesi-sukhie', 'data', 'core')
+
+
 CERAMIC = re.compile(r'керамогранит|крупноформат|крупного формата|крупных форматов|крупного размера', re.I)
 
 
@@ -98,7 +144,7 @@ for m in MAPPING:
     names = [x['name_exact'] for x in ser[key]] + [m['series_key']]
     if not check_mapping(m, names):
         problems.append(('номер модели не совпал', t['name'] + ' → ' + m['series_key'])); continue
-    groups[key].append({'label': m.get('variant') or t.get('pack') or '', 'price': t.get('price') or '', 'tk': t['name']})
+    groups[key].append({'label': offer_label(t['name']) or t.get('pack') or '', 'price': t.get('price') or '', 'tk': t['name']})
 
 os.makedirs(os.path.join(ROOT, 'public', 'assets', 'p'), exist_ok=True)
 
@@ -140,13 +186,22 @@ for (site, key), offers in groups.items():
         k = (o['label'].lower(), o['price'])
         if k in seen: continue
         seen.add(k); offs.append({'label': o['label'], 'price': o['price']})
+    # одинаковые подписи у разных позиций магазина (Флайформ AC6 Lq: «…тонкослойный…» и без) — дописываем отличие
+    for i, o in enumerate(offs):
+        same = [x for x in offs if x['label'] == o['label']]
+        if len(same) > 1:
+            tk = next(x['tk'] for x in offers if x['label'] == o['label'] and x['price'] == o['price'])
+            others = set(w for x in offers if x['label'] == o['label'] and x['tk'] != tk for w in re.findall(r'[а-яё]{6,}', x['tk'].lower()))
+            extra = [w for w in re.findall(r'[а-яё]{6,}', tk.lower()) if w not in others]
+            if extra:
+                o['label'] = o['label'] + ', ' + extra[0]
     num = lambda s: float(s.replace(' ', '').replace(',', '.')) if s else 1e9
     offs.sort(key=lambda o: num(o['price']))
     pos = {
         'id': pid, 'brand': BRAND[site], 'section': sec, 'part': part, 'type': r0['type'],
         'title': title_of(key), 'name': r0['name_exact'], 'purpose': r0['purpose_quote'],
-        'packaging': pick('packaging_quote'), 'consumption': pick('consumption_quote'),
-        'layer': pick('layer_or_joint_quote'), 'normative': pick('normative_quote'),
+        'packaging': pick('packaging_quote'), 'consumption': clean_field('consumption', pick('consumption_quote'), BRAND[site]),
+        'layer': clean_field('layer', pick('layer_or_joint_quote'), BRAND[site]), 'normative': clean_field('normative', pick('normative_quote'), BRAND[site]),
         'specs': [{'name': c['name'], 'value': c['value']} for c in (r0.get('characteristics') or [])],
         'winter': winter,
         'ceramic': bool(r0['type'] == 'tile_adhesive' and CERAMIC.search(r0['purpose_quote'] + ' ' + r0['name_exact'])),
@@ -160,6 +215,12 @@ for (site, key), offers in groups.items():
     if img and img.get('file'):
         im = put_image(pid, img['file'])
         if im: pos.update(im)
+    if key.startswith('Perel RodStone Шов-'):
+        # набор из сухой смеси и жидкого компонента: упаковку даём обеими строками производителя, дословно
+        core = open(os.path.join(CORE, r0['id'] + '.txt')).read().split('\n')
+        for i, line in enumerate(core[:-1]):
+            if line.startswith('Компонент А:') and core[i + 1].startswith('Компонент'):
+                pos['packaging'] = line + '\n' + core[i + 1]; break
     positions.append(pos)
 
 # другие бренды (Стройбриг, Promix, BauMax): факты дословно с их сайтов (other_brands.json, проверено verify_other)
@@ -168,12 +229,12 @@ for o in OTHER:
         skipped['другой бренд: вне разделов или не сухая'].append(o['series_key']); continue
     sec, part = TYPE_TO[o['type']]
     pid = slug(o['brand'] + '-' + re.sub('^' + re.escape(o['brand']) + r'\s+', '', o['series_key'], flags=re.I))
-    offs = [{'label': x.get('label') or x.get('pack') or '', 'price': x.get('price') or ''} for x in o['offers']]
+    offs = [{'label': offer_label(x.get('tk', '')) or x.get('label') or '', 'price': x.get('price') or ''} for x in o['offers']]
     pos = {
         'id': pid, 'brand': o['brand'], 'section': sec, 'part': part, 'type': o['type'],
         'title': o['series_key'], 'name': o['name_exact'], 'purpose': o['purpose_quote'],
-        'packaging': o.get('packaging_quote', ''), 'consumption': o.get('consumption_quote', ''),
-        'layer': o.get('layer_or_joint_quote', ''), 'normative': o.get('normative_quote', ''),
+        'packaging': o.get('packaging_quote', ''), 'consumption': clean_field('consumption', o.get('consumption_quote', ''), o['brand']),
+        'layer': clean_field('layer', o.get('layer_or_joint_quote', ''), o['brand']), 'normative': clean_field('normative', o.get('normative_quote', ''), o['brand']),
         'specs': o.get('characteristics', []), 'winter': any('зим' in (x['label']).lower() for x in offs),
         'ceramic': bool(o['type'] == 'tile_adhesive' and CERAMIC.search(o['purpose_quote'] + ' ' + o['name_exact'])),
         'pdf': '', 'offers': offs, 'src': o['manufacturer_url'], 'checked': o.get('checked', ''),

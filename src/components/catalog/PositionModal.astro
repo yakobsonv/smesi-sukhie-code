@@ -154,12 +154,17 @@ const payload = items.map((p) => ({
       return li;
     }));
 
+    // Поля «упаковка/расход/слой/норматив» показываем, только если того же значения нет в характеристиках:
+    // там у производителя точнее подпись («Расход при слое 1 мм», а не просто «Расход»).
+    const norm = (v: string) => v.toLowerCase().replace(/\s+/g, ' ').replace(/[.:;]$/, '').trim();
+    const specVals = new Set(it.specs.map((s) => norm(s.value)));
+    const covered = (v: string) => specVals.has(norm(v)) || it.specs.some((s) => norm(v).includes(norm(s.value)) && norm(s.value).length > 6 && norm(v).length - norm(s.value).length < 12);
     const rows: { name: string; value: string }[] = [];
-    if (it.packaging) rows.push({ name: 'Упаковка', value: it.packaging });
-    if (it.consumption) rows.push({ name: 'Расход', value: it.consumption });
-    if (it.layer) rows.push({ name: 'Толщина слоя или шва', value: it.layer });
-    if (it.normative) rows.push({ name: 'Нормативный документ', value: it.normative });
-    for (const s of it.specs) if (!rows.some((r) => r.value === s.value && r.name.toLowerCase() === s.name.toLowerCase())) rows.push(s);
+    if (it.packaging && !covered(it.packaging)) rows.push({ name: 'Упаковка', value: it.packaging });
+    if (it.consumption && !covered(it.consumption)) rows.push({ name: 'Расход', value: it.consumption });
+    if (it.layer && !covered(it.layer)) rows.push({ name: 'Толщина слоя или шва', value: it.layer });
+    if (it.normative && !covered(it.normative)) rows.push({ name: 'Нормативный документ', value: it.normative });
+    for (const s of it.specs) if (!rows.some((r) => norm(r.value) === norm(s.value) && r.name.toLowerCase() === s.name.toLowerCase())) rows.push(s);
     const dl = el<HTMLElement>('specs')!;
     dl.replaceChildren(...rows.map((r) => {
       const d = document.createElement('div');

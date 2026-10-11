@@ -160,8 +160,8 @@ const { items } = Astro.props;
     border-radius: var(--radius-sm);
   }
 
-  .pos__facts dt { color: var(--color-muted); white-space: nowrap; }
-  .pos__facts dd { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 34ch; }
+  .pos__facts dt { flex: none; color: var(--color-muted); white-space: nowrap; }
+  .pos__facts dd { display: -webkit-box; margin: 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; max-width: 40ch; overflow-wrap: anywhere; }
 
   .pos__side {
     grid-column: 1 / -1;

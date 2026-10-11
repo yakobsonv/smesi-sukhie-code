@@ -25,6 +25,13 @@ const parts = s.parts.map((part) => ({ ...part, items: inPart(s.slug, part.id) }
 const next = s.next.map((slug) => SECTIONS.find((x) => x.slug === slug)!).filter(Boolean);
 const showCeramic = s.slug === 'plitochnyj-klej' && items.some((p) => p.ceramic);
 
+// Бренды в title и description — из данных раздела (раньше были вписаны руками и расходились с каталогом).
+const byCount = [...brands].sort((a, b) => items.filter((p) => p.brand === b).length - items.filter((p) => p.brand === a).length);
+let brandsPart = byCount[0] ?? '';
+for (const b of byCount.slice(1)) { if ((`${s.title} в Москве — ${brandsPart}, ${b}`).length <= 72) brandsPart += `, ${b}`; }
+const pageTitle = `${s.title} в Москве — ${brandsPart}`;
+const pageDesc = `${s.description} — ${byCount.join(', ')}. Назначение и характеристики по данным производителей, цены, доставка по Москве и области.`;
+
 const meta = [
   `${items.length} ${plural(items.length, 'позиция', 'позиции', 'позиций')}`,
   brands.join(' · '),
@@ -53,7 +60,7 @@ const itemList = {
 };
 ---
 
-<Page title={s.title} description={s.description} slug={s.slug} jsonLd={[itemList]}>
+<Page title={pageTitle} description={pageDesc} slug={s.slug} jsonLd={[itemList]}>
   <PageHead
     trail={[{ label: 'Главная', href: localPath('sukhie') }, { label: GROUPS[s.group] + ': ' + s.label }]}
     title={s.h1}
