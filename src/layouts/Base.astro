@@ -1,0 +1,179 @@
+---
+// Каркас страницы: голова (title/description/canonical/og/noindex), тема сайта, шапка, подвал, слот.
+// Тема включается атрибутом data-site на <html> — дальше всё решают токены.
+//
+// ВАЖНО: сайт закрыт от поиска (noindex по умолчанию), пока у него нет боевого домена.
+// Снятие noindex — отдельное решение Влада при запуске на домене.
+// Шрифты — самохост woff2 (fontsource): браузер скачивает только те семейства,
+// что реально используются темой сайта (font-family задаёт tokens.css per-site).
+import '@fontsource/manrope/cyrillic-700.css';
+import '@fontsource/manrope/cyrillic-800.css';
+import '@fontsource/manrope/700.css';
+import '@fontsource/manrope/800.css';
+import '@fontsource/onest/cyrillic-400.css';
+import '@fontsource/onest/cyrillic-500.css';
+import '@fontsource/onest/cyrillic-700.css';
+import '@fontsource/onest/400.css';
+import '@fontsource/onest/500.css';
+import '@fontsource/onest/700.css';
+
+import '../styles/tokens.css';
+import '../styles/base.css';
+
+import SiteHeader from '../components/layout/SiteHeader.astro';
+import SiteFooter from '../components/layout/SiteFooter.astro';
+import Reveal from '../components/content/Reveal.astro';
+import CookieBanner from '../components/ui/CookieBanner.astro';
+import { absoluteUrl, canonicalFor, getSite, graph, organizationGraph } from '../lib/seo';
+import type { NavItem, SiteKey } from '../lib/types';
+
+interface Props {
+  site: SiteKey;
+  /** meta title — переносим из разбора дословно */
+  title: string;
+  description: string;
+  /** адрес страницы на боевом сайте: '' — главная, 'kirpich-soloma' — подстраница */
+  slug?: string;
+  /** явный canonical, если по slug не собрать */
+  canonical?: string;
+  keywords?: string;
+  ogImage?: string;
+  ogType?: string;
+  /** копия закрыта от поиска; false ставить только при переезде */
+  noindex?: boolean;
+  /** меню сайта */
+  nav?: NavItem[];
+  /** дополнительные узлы микроразметки: Product, FAQPage, ItemList… */
+  jsonLd?: (Record<string, unknown> | null | undefined)[];
+  /** добавлять LocalBusiness + WebSite (на всех страницах сайта) */
+  organization?: boolean;
+  /** прочие пропсы шапки/подвала (см. SiteHeader.astro / SiteFooter.astro) */
+  header?: Record<string, unknown>;
+  footer?: Record<string, unknown>;
+  showHeader?: boolean;
+  showFooter?: boolean;
+  /** счётчик Метрики боевого сайта. По умолчанию ВЫКЛЮЧЕН: копия не должна портить статистику клиента */
+  metrika?: boolean;
+  bodyClass?: string;
+}
+
+const {
+  site,
+  title,
+  description,
+  slug = '',
+  canonical,
+  keywords,
+  ogImage,
+  ogType = 'website',
+  noindex = true,
+  nav = [],
+  jsonLd = [],
+  organization = true,
+  header = { cta: { label: 'Позвонить', href: getSite(Astro.props.site).phone.href } },
+  footer = {},
+  showHeader = true,
+  showFooter = true,
+  metrika = false,
+  bodyClass,
+} = Astro.props;
+
+const config = getSite(site);
+const canonicalHref = canonical ?? canonicalFor(site, slug);
+const ogImageUrl = ogImage ? absoluteUrl(site, ogImage) : config.ogImage ? absoluteUrl(site, config.ogImage) : undefined;
+const ldGraph = graph([...(organization ? organizationGraph(site) : []), ...jsonLd]);
+---
+
+<!doctype html>
+<html lang="ru" data-site={site}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {keywords && <meta name="keywords" content={keywords} />}
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonicalHref} />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={config.brand} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalHref} />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta property="og:locale" content="ru_RU" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {ldGraph && <script type="application/ld+json" set:html={JSON.stringify(ldGraph)} />}
+
+    <slot name="head" />
+  </head>
+
+  <body class={bodyClass}>
+    <a class="skip-link" href="#main">Перейти к содержанию</a>
+
+    {showHeader && (
+      <slot name="header">
+        <SiteHeader site={site} nav={nav} {...header} />
+      </slot>
+    )}
+
+    <main id="main">
+      <slot />
+    </main>
+
+    {showFooter && (
+      <slot name="footer">
+        <SiteFooter site={site} {...footer} />
+      </slot>
+    )}
+
+    <Reveal />
+    <CookieBanner site={site} />
+
+    {
+      metrika && (
+        <Fragment>
+          <script
+            is:inline
+            type="text/javascript"
+            set:html={`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');ym(${config.metrikaId},'init',{ssr:true,clickmap:true,trackLinks:true,accurateTrackBounce:true});`}
+          />
+          <noscript>
+            <div>
+              <img
+                src={`https://mc.yandex.ru/watch/${config.metrikaId}`}
+                style="position:absolute;left:-9999px"
+                alt=""
+              />
+            </div>
+          </noscript>
+        </Fragment>
+      )
+    }
+  </body>
+</html>
+
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  main { flex: 1; }
+
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 999;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-dark);
+    color: var(--color-on-dark);
+  }
+
+  .skip-link:focus { left: 0; }
+</style>

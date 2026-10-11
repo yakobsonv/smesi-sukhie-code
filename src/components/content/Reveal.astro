@@ -1,0 +1,252 @@
+---
+// «Живость» страницы, один компонент в Base. Всё — прогрессивное улучшение:
+// без JS и при prefers-reduced-motion контент просто виден и статичен.
+//
+// - [data-reveal]          — элемент всплывает при попадании в вьюпорт
+// - [data-reveal-stagger]  — дети контейнера всплывают каскадом
+// - [data-count="1991"]    — число досчитывает до значения при появлении
+// - [data-reveal="head"]   — то же, но крупнее и со снятием размытия (для больших заголовков)
+// - [data-parallax="0.12"] — фон/фото внутри своего контейнера движется медленнее прокрутки
+// - .card                  — лёгкий 3D-наклон за курсором (десктоп, hover-устройства)
+// - прогресс-бар чтения сверху + кнопка «наверх» после двух экранов
+---
+
+<script>
+  if (!(window as any).__ktLively) {
+    (window as any).__ktLively = true;
+    const motionOk = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ——— reveal + stagger + счётчики
+    if (motionOk && 'IntersectionObserver' in window) {
+      document.documentElement.classList.add('js-reveal');
+
+      const runCount = (el: HTMLElement) => {
+        const target = parseInt(el.dataset.count || '', 10);
+        if (!Number.isFinite(target)) return;
+        const start = Math.floor(target * 0.6);
+        const t0 = performance.now();
+        const dur = 950;
+        const tick = (t: number) => {
+          const k = Math.min(1, (t - t0) / dur);
+          const eased = 1 - Math.pow(1 - k, 3);
+          el.textContent = String(Math.round(start + (target - start) * eased));
+          if (k < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      };
+
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            const el = entry.target as HTMLElement;
+            el.classList.add('is-revealed');
+            if (el.hasAttribute('data-reveal-stagger')) {
+              [...el.children].forEach((child, i) => {
+                (child as HTMLElement).style.transitionDelay = `${Math.min(i * 65, 520)}ms`;
+              });
+            }
+            el.querySelectorAll<HTMLElement>('[data-count]').forEach(runCount);
+            if (el.hasAttribute('data-count')) runCount(el);
+            io.unobserve(el);
+          }
+        },
+        { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
+      );
+
+      document
+        .querySelectorAll('[data-reveal], [data-reveal-stagger]')
+        .forEach((el) => io.observe(el));
+
+      // Страховка. Наблюдатель может не успеть за быстрой прокруткой или прыжком
+      // по якорю — тогда блок остаётся при opacity:0 и текста просто нет на странице.
+      // Поэтому всё, что посетитель уже проскроллил, показываем принудительно.
+      const reveal = (el: HTMLElement) => {
+        el.classList.add('is-revealed');
+        el.querySelectorAll<HTMLElement>('[data-count]').forEach(runCount);
+        if (el.hasAttribute('data-count')) runCount(el);
+        io.unobserve(el);
+      };
+      const sweep = () => {
+        document
+          .querySelectorAll<HTMLElement>(
+            '[data-reveal]:not(.is-revealed), [data-reveal-stagger]:not(.is-revealed)'
+          )
+          .forEach((el) => {
+            if (el.getBoundingClientRect().top < window.innerHeight) reveal(el);
+          });
+      };
+      let sweepRaf = 0;
+      const queueSweep = () => {
+        cancelAnimationFrame(sweepRaf);
+        sweepRaf = requestAnimationFrame(sweep);
+      };
+      window.addEventListener('scroll', queueSweep, { passive: true });
+      window.addEventListener('resize', queueSweep, { passive: true });
+      window.addEventListener('load', queueSweep);
+      setTimeout(sweep, 1500);
+    }
+
+    // ——— параллакс: элемент движется медленнее своего контейнера
+    if (motionOk) {
+      const layers = [...document.querySelectorAll<HTMLElement>('[data-parallax]')];
+      if (layers.length) {
+        let praf = 0;
+        const apply = () => {
+          praf = 0;
+          const vh = window.innerHeight;
+          for (const layer of layers) {
+            const host = layer.parentElement;
+            if (!host) continue;
+            const r = host.getBoundingClientRect();
+            if (r.bottom < -vh || r.top > vh * 2) continue;
+            const speed = parseFloat(layer.dataset.parallax || '0.12');
+            // -1 — контейнер ниже экрана, +1 — выше; 0 — по центру
+            const k = Math.max(-1, Math.min(1, (r.top + r.height / 2 - vh / 2) / vh));
+            // знак минус обязателен: слой должен ОТСТАВАТЬ от прокрутки, а не обгонять её.
+            // Запас перекрытия даёт scale: сдвиг не больше speed*h, вылет за край — 1,2*speed*h.
+            const shift = -k * speed * r.height;
+            const scale = 1 + speed * 2.4;
+            layer.style.transform = `translate3d(0, ${shift.toFixed(1)}px, 0) scale(${scale.toFixed(3)})`;
+          }
+        };
+        const queue = () => {
+          if (!praf) praf = requestAnimationFrame(apply);
+        };
+        window.addEventListener('scroll', queue, { passive: true });
+        window.addEventListener('resize', queue, { passive: true });
+        window.addEventListener('load', queue);
+        apply();
+      }
+    }
+
+    // ——— 3D-наклон карточек за курсором (только устройства с hover)
+    if (motionOk && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      let raf = 0;
+      document.addEventListener('pointermove', (event) => {
+        const card = (event.target as HTMLElement).closest<HTMLElement>('.card');
+        if (!card) return;
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          const r = card.getBoundingClientRect();
+          const dx = (event.clientX - r.left) / r.width - 0.5;
+          const dy = (event.clientY - r.top) / r.height - 0.5;
+          card.style.transform = `perspective(900px) rotateX(${(-dy * 4).toFixed(2)}deg) rotateY(${(dx * 5).toFixed(2)}deg) translateY(-4px)`;
+        });
+      });
+      document.addEventListener(
+        'pointerout',
+        (event) => {
+          const card = (event.target as HTMLElement).closest<HTMLElement>('.card');
+          if (card && !card.contains(event.relatedTarget as Node)) card.style.transform = '';
+        },
+        true
+      );
+    }
+
+    // ——— прогресс-бар чтения + кнопка «наверх»
+    const bar = document.createElement('div');
+    bar.className = 'kt-progress';
+    bar.setAttribute('aria-hidden', 'true');
+    document.body.append(bar);
+
+    const top = document.createElement('button');
+    top.className = 'kt-top';
+    top.type = 'button';
+    top.setAttribute('aria-label', 'Наверх');
+    top.innerHTML = '<span aria-hidden="true">↑</span>';
+    top.addEventListener('click', () => window.scrollTo({ top: 0, behavior: motionOk ? 'smooth' : 'auto' }));
+    document.body.append(top);
+
+    // Кнопка висела постоянно и на телефоне закрывала текст в правом нижнем углу
+    // (на странице серии — значение «29–36 %» в таблице). Показываем её только
+    // когда человек листает ВВЕРХ, то есть как раз когда она ему и нужна.
+    let прошлыйY = window.scrollY;
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = `${max > 0 ? Math.min(100, (window.scrollY / max) * 100) : 0}%`;
+      const глубоко = window.scrollY > window.innerHeight * 1.5;
+      const вверх = window.scrollY < прошлыйY - 2;
+      const вниз = window.scrollY > прошлыйY + 2;
+      if (вверх || вниз) прошлыйY = window.scrollY;
+      if (!глубоко) top.classList.remove('is-visible');
+      else if (вверх) top.classList.add('is-visible');
+      else if (вниз) top.classList.remove('is-visible');
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+</script>
+
+<style is:global>
+  /* ⚠️ Сдвиг делаем ОТДЕЛЬНЫМ свойством translate, а НЕ transform.
+     Через transform это правило (специфичность выше страничных) пригвождало
+     элементу `transform: none` — и подъём карточек под курсором, и наклон .card
+     молча переставали работать: у стилей страницы не было шанса перебить. */
+  html.js-reveal [data-reveal],
+  html.js-reveal [data-reveal-stagger] > * {
+    opacity: 0;
+    translate: 0 22px;
+    transition: opacity 600ms var(--ease), translate 600ms var(--ease);
+  }
+
+  html.js-reveal [data-reveal].is-revealed,
+  html.js-reveal [data-reveal-stagger].is-revealed > * {
+    opacity: 1;
+    translate: none;
+  }
+
+  /* крупные заголовки всплывают заметнее и со снятием размытия */
+  html.js-reveal [data-reveal='head'] {
+    translate: 0 42px;
+    filter: blur(7px);
+    transition: opacity 820ms var(--ease), translate 820ms var(--ease), filter 820ms var(--ease);
+  }
+  html.js-reveal [data-reveal='head'].is-revealed { filter: none; }
+
+  [data-parallax] { will-change: transform; }
+
+  /* карточка с tilt: transform живёт в inline-style, transition берём мягкий */
+  .card { will-change: transform; }
+
+  .kt-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2000;
+    height: 3px;
+    width: 0;
+    background: var(--color-brand);
+    pointer-events: none;
+  }
+
+  .kt-top {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 900;
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+    color: var(--color-on-dark);
+    background: var(--color-dark);
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: 50%;
+    box-shadow: 0 8px 24px -6px rgb(0 0 0 / 0.4);
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease),
+      background-color var(--dur) var(--ease);
+  }
+
+  .kt-top.is-visible {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .kt-top:hover { background: var(--color-brand); }
+</style>

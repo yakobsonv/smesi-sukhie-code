@@ -1,0 +1,156 @@
+---
+// Прайс. Два режима:
+//   list   — «позиция → цена» (Оскол, ЖКЗ)
+//   matrix — форма × коллекция × толщина (Стеллард)
+// Цены печатаются ровно как в данных. Широкая матрица на телефоне прокручивается по горизонтали
+// внутри своего блока — страница вбок не едет.
+import { formatPrice } from '../../lib/format';
+import type { Price, PriceRow } from '../../lib/types';
+
+interface Props {
+  mode?: 'list' | 'matrix';
+  /** режим list */
+  rows?: PriceRow[];
+  /** режим matrix: заголовки колонок */
+  columns?: string[];
+  /** режим matrix: строки {label, cells} */
+  matrix?: { label: string; cells: (Price | string | null)[] }[];
+  title?: string;
+  /** общая подпись единицы: «₽/м²», «₽/шт» */
+  unit?: string;
+  note?: string;
+  class?: string;
+}
+
+const { mode = 'list', rows = [], columns = [], matrix = [], title, unit, note, class: className } = Astro.props;
+
+const cellText = (cell: Price | string | null): string => {
+  if (cell == null) return '—';
+  if (typeof cell === 'string') return cell;
+  return [cell.prefix, formatPrice(cell.value), cell.currency ?? ''].filter(Boolean).join(' ').trim();
+};
+---
+
+<div class:list={['prices', className]}>
+  {title && <h3 class="prices__title">{title}</h3>}
+
+  {mode === 'list' ? (
+    <ul class="prices__list">
+      {rows.map((row) => (
+        <li class="prices__row">
+          <span class="prices__label">
+            {row.title}
+            {row.note && <span class="prices__note">{row.note}</span>}
+          </span>
+          <span class="prices__value">
+            {row.price ? cellText(row.price) : '—'}
+            {row.price?.unit ?? unit ? <span class="prices__unit">{row.price?.unit ?? unit}</span> : null}
+          </span>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <div class="prices__scroll">
+      <table class="prices__table">
+        <thead>
+          <tr>
+            <th scope="col">{unit ? `Позиция, ${unit}` : 'Позиция'}</th>
+            {columns.map((column) => <th scope="col">{column}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {matrix.map((row) => (
+            <tr>
+              <th scope="row">{row.label}</th>
+              {row.cells.map((cell) => <td>{cellText(cell)}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+
+  {note && <p class="prices__footnote">{note}</p>}
+</div>
+
+<style>
+  .prices__title {
+    margin-bottom: var(--space-4);
+    font-size: var(--fs-h3);
+  }
+
+  .prices__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .prices__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    align-items: baseline;
+    justify-content: space-between;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border-soft);
+  }
+
+  .prices__label { flex: 1 1 60%; }
+
+  .prices__note {
+    display: block;
+    font-size: var(--fs-tiny);
+    color: var(--color-muted);
+  }
+
+  .prices__value {
+    font-family: var(--font-head);
+    font-size: var(--fs-h4);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .prices__unit {
+    margin-left: 4px;
+    font-family: var(--font-body);
+    font-size: var(--fs-tiny);
+    font-weight: 400;
+    color: var(--color-muted);
+  }
+
+  .prices__scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .prices__table {
+    width: 100%;
+    min-width: 520px;
+    border-collapse: collapse;
+    font-size: var(--fs-small);
+  }
+
+  .prices__table th,
+  .prices__table td {
+    padding: var(--space-3);
+    text-align: left;
+    border-bottom: 1px solid var(--color-border-soft);
+  }
+
+  .prices__table thead th {
+    background: var(--color-bg-alt);
+    font-size: var(--fs-tiny);
+    text-transform: none;
+    white-space: nowrap;
+  }
+
+  .prices__table tbody th { font-weight: 600; }
+
+  .prices__table td { font-weight: 700; white-space: nowrap; }
+
+  .prices__footnote {
+    margin-top: var(--space-3);
+    font-size: var(--fs-tiny);
+    color: var(--color-muted);
+  }
+</style>

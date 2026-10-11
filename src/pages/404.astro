@@ -1,0 +1,28 @@
+---
+import Page from '../layouts/Page.astro';
+import Container from '../components/layout/Container.astro';
+import { SECTIONS } from '../data/sections';
+import { localPath } from '../lib/sites';
+import { sectionCount } from '../lib/positions';
+---
+<Page title="Страница не найдена — сухие строительные смеси" description="Такой страницы нет. Выберите раздел каталога сухих смесей." slug="404">
+  <section class="nf">
+    <Container>
+      <p class="nf__code">404</p>
+      <h1 class="nf__title">Такой страницы нет</h1>
+      <p class="nf__text">Возможно, адрес набран с ошибкой. Выберите раздел каталога:</p>
+      <ul class="nf__list" role="list">
+        {SECTIONS.filter((s) => sectionCount(s.slug) > 0).map((s) => <li><a href={localPath('sukhie', s.slug)}>{s.label}</a></li>)}
+      </ul>
+      <a class="btn btn--primary" href={localPath('sukhie')}>На главную</a>
+    </Container>
+  </section>
+</Page>
+<style>
+  .nf { padding: var(--section-pad-lg) 0; }
+  .nf__code { margin: 0; font-family: var(--font-head); font-size: 72px; font-weight: 800; color: var(--color-brand); }
+  .nf__title { margin: 0 0 var(--space-3); font-size: var(--fs-h1); }
+  .nf__text { color: var(--color-text-soft); }
+  .nf__list { display: flex; flex-wrap: wrap; gap: 8px; margin: var(--space-4) 0 var(--space-6); padding: 0; list-style: none; }
+  .nf__list a { display: inline-block; padding: 8px 14px; background: var(--color-bg-alt); border-radius: var(--radius-pill); font-weight: 600; }
+</style>

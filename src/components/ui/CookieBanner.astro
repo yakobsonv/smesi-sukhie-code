@@ -1,0 +1,86 @@
+---
+// Куки-баннер. На боевых сайтах он есть на всех трёх (Стеллард — клиентский, Оскол и ЖКЗ
+// поставлены 05.08 по просьбе Николая с созвона ~21.07). В копии его не было — найдено обходом 04.09.
+// Текст — как на боевых. Ссылка на политику ведёт на страницу Положения ЭТОЙ копии
+// (тексты сняты 08.09.2026, src/data/legal.ts); передать явный policyHref можно пропом.
+// Согласие запоминается в localStorage; без JS баннер просто не показывается (скрыт по умолчанию).
+import { localPath } from '../../lib/sites';
+import type { SiteKey } from '../../lib/types';
+
+interface Props {
+  site: SiteKey;
+  /** явная ссылка на политику; по умолчанию — Положение этого же сайта в копии */
+  policyHref?: string;
+}
+
+const { site, policyHref } = Astro.props;
+const href = policyHref ?? localPath(site, 'regulation');
+---
+
+<div class="cookie-banner" id="cookie-banner" role="region" aria-label="Уведомление о файлах cookie" hidden>
+  <p class="cookie-banner__text">
+    Мы используем файлы cookie, чтобы сайт работал корректно и был удобнее. Продолжая пользоваться сайтом,
+    вы соглашаетесь с <a href={href}>политикой обработки персональных данных</a>.
+  </p>
+  <button type="button" class="cookie-banner__btn" id="cookie-banner-accept">Принимаю</button>
+</div>
+
+<script is:inline>
+  (function () {
+    var KEY = 'cookie-consent-v1';
+    var el = document.getElementById('cookie-banner');
+    var btn = document.getElementById('cookie-banner-accept');
+    if (!el || !btn) return;
+    var ok = false;
+    try { ok = localStorage.getItem(KEY) === '1'; } catch (e) {}
+    if (ok) return;
+    el.hidden = false;
+    btn.addEventListener('click', function () {
+      try { localStorage.setItem(KEY, '1'); } catch (e) {}
+      el.hidden = true;
+    });
+  })();
+</script>
+
+<style>
+  /* Гамма — токены темы сайта. */
+  .cookie-banner {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 12px 20px;
+    background: rgb(11 11 12 / 0.95);
+    color: rgb(255 255 255 / 0.88);
+    font-size: 13px;
+    line-height: 1.4;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
+  }
+  .cookie-banner[hidden] { display: none; }
+  .cookie-banner__text { margin: 0; max-width: 900px; }
+  .cookie-banner__text a { color: var(--color-brand-on-dark, #f0a6ac); text-decoration: underline; }
+  .cookie-banner__btn {
+    flex: none;
+    padding: 9px 22px;
+    border: 0;
+    border-radius: var(--btn-radius, 999px);
+    background: var(--color-brand, #bf1e2e);
+    color: #fff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--dur, 0.2s) var(--ease, ease);
+  }
+  .cookie-banner__btn:hover { background: var(--color-brand-hover, #98101f); }
+  .cookie-banner__btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  @media (max-width: 640px) {
+    .cookie-banner { padding: 12px 16px 14px; font-size: 12px; }
+    .cookie-banner__btn { width: 100%; padding: 10px; }
+  }
+</style>

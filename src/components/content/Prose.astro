@@ -1,0 +1,31 @@
+---
+// Текстовый блок. Либо html-строкой из данных, либо содержимым слота.
+// Ширина строки ограничена — длинные SEO-абзацы (600–800 знаков) читаемы.
+interface Props {
+  /** готовый HTML из данных */
+  html?: string;
+  size?: 'md' | 'lead';
+  width?: 'text' | 'wide';
+  align?: 'left' | 'center';
+  class?: string;
+}
+
+const { html, size = 'md', width = 'text', align = 'left', class: className } = Astro.props;
+---
+
+<div
+  class:list={[
+    'prose',
+    size === 'lead' && 'prose--lead',
+    width === 'wide' && 'prose--wide',
+    align === 'center' && 'prose--center',
+    className,
+  ]}
+>
+  {html ? <Fragment set:html={html} /> : <slot />}
+</div>
+
+<style>
+  .prose--lead { font-size: var(--fs-lead); }
+  .prose :global(p + p) { margin-top: var(--space-4); }
+</style>

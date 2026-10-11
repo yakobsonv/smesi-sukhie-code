@@ -1,0 +1,94 @@
+---
+// Плитки преимуществ. Тот же компонент — для строки цифр-счётчиков ЖКЗ (variant="stats").
+import type { Advantage } from '../../lib/types';
+
+interface Props {
+  items: Advantage[];
+  columns?: 2 | 3 | 4;
+  /** card — плитка с рамкой, plain — без рамки, stats — крупная цифра + подпись */
+  variant?: 'card' | 'plain' | 'stats';
+  /** inherit — цвет текста наследуется (для тёмных фонов) */
+  tone?: 'default' | 'inherit';
+  class?: string;
+}
+
+const { items, columns = 4, variant = 'card', tone = 'default', class: className } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <ul
+      class:list={['adv', `adv--${variant}`, tone === 'inherit' && 'adv--inherit', className]}
+      style={`--adv-cols:${columns}`}
+    >
+      {items.map((item) => (
+        <li class="adv__item">
+          {item.image && <img class="adv__icon" src={item.image} alt={item.alt ?? ''} loading="lazy" />}
+          {item.value && <p class="adv__value">{item.value}</p>}
+          {item.title && <h3 class="adv__title">{item.title}</h3>}
+          {item.text && <p class="adv__text">{item.text}</p>}
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .adv {
+    display: grid;
+    gap: var(--grid-gap);
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .adv--stats { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+
+  .adv__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .adv--card .adv__item {
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius);
+  }
+
+  .adv--stats .adv__item {
+    align-items: center;
+    text-align: center;
+  }
+
+  .adv__icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+  }
+
+  .adv__value {
+    font-family: var(--font-head);
+    font-size: clamp(30px, 4vw, 44px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--color-accent-text);
+  }
+
+  .adv--inherit .adv__value { color: inherit; }
+
+  .adv__title { font-size: var(--fs-h4); }
+
+  .adv__text {
+    font-size: var(--fs-small);
+    color: var(--color-text-soft);
+  }
+
+  .adv--inherit .adv__text { color: inherit; opacity: 0.9; }
+
+  @media (min-width: 900px) {
+    .adv { grid-template-columns: repeat(var(--adv-cols, 4), minmax(0, 1fr)); }
+  }
+</style>

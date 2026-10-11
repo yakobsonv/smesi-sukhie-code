@@ -1,0 +1,177 @@
+/* Токены оформления. База + тема сайта «Сухие смеси» (data-site="sukhie" на <html>).
+   Правило: компоненты используют только семантические токены (--color-brand, --fs-h2),
+   а не сырые hex. Механика унаследована из recke-code. */
+
+:root {
+  /* ==== СЕТКА ==== */
+  --container: 1170px;          /* родная ширина всех трёх сайтов */
+  --container-narrow: 820px;    /* для длинных текстов */
+  --gutter: 16px;               /* поля на телефоне */
+  --gutter-md: 24px;
+  --gutter-lg: 35px;            /* на боевых блоки стоят на left:33–38 */
+  --grid-gap: 20px;             /* шаг каталожной сетки (352 + 20 = 372) */
+
+  /* ==== ОТСТУПЫ ==== */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  /* Вертикальный ритм секций (на боевых его нет — высоты жёсткие в px) */
+  --section-pad-sm: clamp(20px, 3vw, 32px);
+  --section-pad-md: clamp(32px, 5vw, 64px);
+  --section-pad-lg: clamp(48px, 7vw, 96px);
+
+  /* ==== ЦВЕТ: нейтральная база ==== */
+  --color-text: #1d1d1d;        /* доминанта видимого текста на всех сайтах */
+  --color-text-soft: #454545;
+  --color-muted: #7a7a7a;
+  --color-bg: #ffffff;
+  --color-bg-alt: #f6f6f6;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f9f9f9;
+  --color-border: #d7d7d7;
+  --color-border-soft: #e6e6e6;
+  --color-border-strong: #1e1e1e; /* контур ghost-кнопки, так на боевых */
+  --color-dark: #1b1b1b;
+  --color-on-dark: #ffffff;
+  --color-success: #1abd00;
+  --color-error: #c0392b;
+
+  /* Бренд — перекрывается темой. База = нейтральный тёмный, чтобы без темы ничего не «светилось». */
+  --color-brand: #1d1d1d;
+  --color-brand-strong: #000000;
+  --color-brand-soft: #f2f2f2;    /* светлая подложка бренд-акцента */
+  --color-accent-text: #1d1d1d;   /* акцент в тексте */
+  --color-on-brand: #ffffff;      /* текст на бренд-заливке */
+  --color-brand-fill: var(--color-brand); /* заливка primary-кнопки (у Стелларда — градиент) */
+  --color-link: var(--color-accent-text);
+
+  /* ==== ТИПОГРАФИКА ==== */
+  /* TODO: шрифты пока системные. Самохост woff2 (Montserrat/Roboto/Inter) — шаг импорта ассетов,
+     файлы лежат в kirpichtrest-vercel/public/assets/*; лицензия Rounds (ЖКЗ) не подтверждена. */
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-head: var(--font-body);
+  --fw-head: 700;               /* вес заголовков; Оскол поднимает до 800 */
+  --lh-body: 1.4;               /* 140% — единый на трёх сайтах */
+  --lh-head: 1.15;              /* чуть плотнее 120% — крупные заголовки дышат лучше */
+  --tracking: 0;
+
+  /* Тайпскейл через clamp: снимает ручную подрезку заголовков (60/56/54/47px у Оскола) */
+  --fs-h1: clamp(30px, 5.2vw, 48px);
+  --fs-h2: clamp(23px, 3.2vw, 34px);
+  --fs-h3: clamp(19px, 2.1vw, 24px);
+  --fs-h4: clamp(17px, 1.8vw, 20px);
+  --fs-body: 17px;
+  --fs-lead: clamp(18px, 2vw, 21px);
+  --fs-small: 15px;
+  --fs-tiny: 13px;
+  --fs-price: clamp(30px, 4vw, 44px);     /* на боевых 50px десктоп / 30px мобайл */
+  --fs-currency: clamp(20px, 2.4vw, 28px); /* «₽» — отдельный кегль */
+
+  /* ==== РАДИУСЫ / ТЕНИ ==== */
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+  --shadow-card: 0 4px 11px 2px rgba(0, 0, 0, 0.12);
+  --shadow-lift: 0 8px 24px 2px rgba(0, 0, 0, 0.18);
+
+  /* ==== КНОПКИ ==== */
+  --btn-radius: var(--radius);
+  --btn-pad-y: 14px;
+  --btn-pad-x: 26px;
+  --btn-fs: 16px;
+  --btn-weight: 700;
+  --btn-transform: none;        /* капса в CSS нет: на боевых он набран в тексте */
+
+  /* ==== ФОРМЫ ==== */
+  --field-h: 48px;              /* на боевых 40px; 48 — минимум для пальца */
+  --field-radius: 6px;
+  --field-border: #c7c7c7;
+  --field-bg: #ffffff;
+  --field-fs: 16px;             /* <16px iOS зумит страницу при фокусе */
+  --field-pad-x: 14px;
+
+  /* ==== ПРОЧЕЕ ==== */
+  --tap: 44px;                  /* минимальная кликабельная зона */
+  --dur: 200ms;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --focus-ring: 3px;
+  --overlay: rgba(0, 0, 0, 0.55);
+  --hero-overlay: 0.35;         /* затемнение фото первого экрана */
+  --z-header: 100;
+  --z-modal: 1000;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: var(--gutter-md);
+    --fs-body: 18px;
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --gutter: var(--gutter-lg);
+  }
+}
+
+/* ─────────────────────────── СУХИЕ СМЕСИ ───────────────────────────
+   Каталог сухих строительных смесей Perel, Dauer, Основит (дилер ООО «Кирпичный трест»).
+   Подача — рабочий каталог: светлая «бетонная» база, сдержанный стальной синий акцент,
+   строительный жёлтый — только заливкой под тёмный текст (цена, метки), не текстом.
+   Контраст замерен скриптом, не на глаз:
+     #1f5a85 на белом 7,34:1 · на #f1f2ef 6,54:1 · белый на заливке #1f5a85 7,34:1;
+     приглушённый #5f656b — 5,90 / 5,25 (на #f1f2ef) / 5,53 (на #f7f8f5);
+     акцент на тёмном #8cc2ea на #15191c — 9,28:1; тёмный текст на жёлтом #f2b705 — 9,73:1. */
+:root[data-site="sukhie"] {
+  --color-brand: #1f5a85;
+  --color-brand-strong: #174668;
+  --color-brand-soft: #e8f0f6;
+  --color-accent-text: #1f5a85;
+  --color-on-brand: #ffffff;
+  --color-brand-fill: #1f5a85;
+  --color-brand-hover: #174668;
+  --color-brand-on-dark: #8cc2ea;
+  --color-highlight: #f2b705;
+  --color-on-highlight: #15191c;
+  --color-bg: #ffffff;
+  --color-bg-alt: #f1f2ef;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f7f8f5;
+  --color-dark: #15191c;
+  --color-text: #15191c;
+  --color-text-soft: #3f454a;
+  --color-muted: #5f656b;
+  --color-border: #dadcd6;
+  --color-border-soft: #e9eae6;
+  --color-on-dark: #ffffff;
+
+  --font-head: "Manrope", "Onest", system-ui, Arial, sans-serif;
+  --font-body: "Onest", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --fw-head: 800;
+
+  --fs-h1: clamp(30px, 4.6vw, 54px);
+  --fs-h2: clamp(24px, 3.2vw, 38px);
+  --fs-h3: clamp(19px, 1.9vw, 24px);
+  --fs-h4: clamp(17px, 1.4vw, 19px);
+  --fs-body: 17px;
+  --fs-lead: clamp(17px, 1.5vw, 20px);
+  --fs-small: 15px;
+  --fs-tiny: 13px;
+
+  --radius-sm: 6px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --btn-radius: 10px;
+  --shadow-card: 0 10px 30px -18px rgba(21, 25, 28, 0.45);
+  --shadow-lift: 0 18px 40px -20px rgba(21, 25, 28, 0.5);
+
+  --hero-grad: linear-gradient(100deg, rgb(21 25 28 / 0.92) 0%, rgb(21 25 28 / 0.78) 50%, rgb(21 25 28 / 0.55) 100%);
+}

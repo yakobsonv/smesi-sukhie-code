@@ -1,0 +1,259 @@
+---
+// Сетка карточек: 3 в ряд на десктопе, 2 на планшете, 1 на телефоне (как на боевых мобильных).
+// showMore прячет «хвост» и раскрывает его кнопкой — замена секций с left:-100% на mottor.
+// filters — интерактивные чипы-фильтры (например, по цвету): фильтрация мгновенная, без перезагрузки;
+// при активном фильтре показываются и позиции из спрятанного «хвоста».
+import ProductCard from './ProductCard.astro';
+import type { Product } from '../../lib/types';
+
+interface Props {
+  items: (Product & { colorSlug?: string })[];
+  columns?: 2 | 3 | 4;
+  /** после какого числа карточек прятать остальные; mobileAfter — то же для телефона */
+  showMore?: { after: number; mobileAfter?: number; label?: string };
+  /** чипы-фильтры: value сопоставляется с colorSlug позиции */
+  filters?: { label: string; value: string }[];
+  filtersLabel?: string;
+  /** текст кнопки, если у позиции свой не задан */
+  ctaLabel?: string;
+  /** уровень заголовка карточек */
+  level?: 2 | 3 | 4;
+  class?: string;
+}
+
+const { items, columns = 3, showMore, filters = [], filtersLabel, ctaLabel, level = 3, class: className } = Astro.props;
+const cut = showMore?.after ?? items.length;
+// На телефоне карточка высокая, и даже 12 позиций дают 3–4 экрана витрины: показываем
+// шесть, остальное — под той же кнопкой. Десктоп не трогаем.
+// Порог 8: сетки на 8 и меньше и так помещаются, прятать в них нечего.
+const mobileCut = Math.min(showMore?.mobileAfter ?? (items.length > 8 ? 6 : items.length), cut);
+const hiddenCount = Math.max(0, items.length - cut);
+const hiddenMobile = Math.max(0, items.length - mobileCut);
+const gridId = `catalog-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div class:list={['catalog', className]}>
+  {filters.length > 0 && (
+    <div class="catalog__filters" role="group" aria-label={filtersLabel ?? 'Фильтр каталога'}>
+      {filtersLabel && <span class="catalog__filters-label">{filtersLabel}</span>}
+      <button class="catalog__filter is-active" type="button" data-filter={gridId} data-value="" aria-pressed="true">
+        Все
+      </button>
+      {filters.map((filter) => (
+        <button class="catalog__filter" type="button" data-filter={gridId} data-value={filter.value} aria-pressed="false">
+          {filter.label}
+        </button>
+      ))}
+    </div>
+  )}
+
+  <ul class="catalog__grid" id={gridId} data-reveal-stagger style={`--catalog-cols:${columns}`}>
+    {items.map((item, index) => (
+      <li
+        class="catalog__cell"
+        hidden={index >= cut}
+        data-extra={index >= cut ? '' : undefined}
+        data-mob-extra={index >= mobileCut && index < cut ? '' : undefined}
+        data-color={item.colorSlug}
+      >
+        <ProductCard {...item} ctaLabel={item.ctaLabel ?? ctaLabel} level={level} />
+      </li>
+    ))}
+  </ul>
+
+  {hiddenMobile > 0 && (
+    <p class:list={['catalog__more', hiddenCount === 0 && 'catalog__more--mob']}>
+      <button class="btn btn--ghost" type="button" data-show-more={gridId} aria-expanded="false">
+        {showMore?.label ?? 'Показать ещё'}
+        {hiddenCount > 0 && <span class="catalog__n catalog__n--all"> ({hiddenCount})</span>}
+        {hiddenMobile !== hiddenCount && <span class="catalog__n catalog__n--mob"> ({hiddenMobile})</span>}
+      </button>
+    </p>
+  )}
+</div>
+
+<style>
+  .catalog__filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-5);
+  }
+
+  .catalog__filters-label {
+    margin-right: var(--space-2);
+    font-size: var(--fs-tiny);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .catalog__filter {
+    padding: 9px 18px;
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease),
+      border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+
+  .catalog__filter:hover {
+    border-color: var(--color-brand);
+    color: var(--color-accent-text);
+    transform: translateY(-1px);
+  }
+
+  .catalog__filter.is-active {
+    color: var(--color-on-brand);
+    background: var(--color-brand);
+    border-color: var(--color-brand);
+  }
+
+  /* На телефоне карточки идут в ДВА столбца. Одна колонка давала карточку ~600 px,
+     и каталог занимал четверть всей страницы (замер 07.09: Оскол 7608 px из 29 135,
+     ЖКЗ 6939 из 30 517, Стеллард 6823 из 29 496) — до остальных секций посетитель
+     доскроллить не мог. Два столбца режут высоту витрины вдвое, фото и цена остаются
+     читаемыми: карточка 175 px в ширину при экране 390. */
+  .catalog__grid {
+    display: grid;
+    gap: var(--grid-gap);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* очень узкие экраны (320–359 px) — одна колонка, иначе цена не помещается в строку */
+  @media (max-width: 359px) {
+    .catalog__grid { grid-template-columns: 1fr; }
+  }
+
+  .catalog__cell { display: flex; }
+  /* display у класса перебивает браузерное [hidden] { display: none } — без этой строки
+     кнопка «Показать ещё» и фильтр по цвету ничего не прячут, и видны все позиции сразу */
+  .catalog__cell[hidden] { display: none; }
+  .catalog__cell > :global(*) { width: 100%; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .catalog__cell.is-appearing { animation: catalog-in 320ms var(--ease) both; }
+
+    @keyframes catalog-in {
+      from { opacity: 0; transform: translateY(14px) scale(0.98); }
+      to { opacity: 1; transform: none; }
+    }
+  }
+
+  .catalog__more {
+    margin-top: var(--space-6);
+    text-align: center;
+  }
+
+  /* кнопка нужна только телефону, если на десктопе видны все позиции */
+  .catalog__more--mob { display: none; }
+  .catalog__n--mob { display: none; }
+
+  @media (max-width: 619px) {
+    .catalog__cell[data-mob-extra] { display: none; }
+    .catalog__grid.is-expanded .catalog__cell[data-mob-extra]:not([hidden]) { display: flex; }
+    .catalog__more--mob { display: block; }
+    .catalog__n--mob { display: inline; }
+    .catalog__n--all { display: none; }
+  }
+
+  @media (min-width: 620px) {
+    .catalog__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (min-width: 980px) {
+    .catalog__grid { grid-template-columns: repeat(var(--catalog-cols, 3), minmax(0, 1fr)); }
+  }
+</style>
+
+<script>
+  // «Показать ещё» + чипы-фильтры. Делегирование, одна привязка на страницу.
+  if (!(window as any).__ktCatalogInit) {
+    (window as any).__ktCatalogInit = true;
+
+    const applyAppear = (cell: HTMLElement, index: number) => {
+      cell.classList.remove('is-appearing');
+      // перезапуск анимации: рефлоу между снятием и постановкой класса
+      void cell.offsetWidth;
+      cell.style.animationDelay = `${Math.min(index * 45, 400)}ms`;
+      cell.classList.add('is-appearing');
+    };
+
+    document.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+
+      // чип цвета в hero: если на странице есть такой фильтр — фильтруем и скроллим к каталогу
+      const colorChip = target.closest<HTMLElement>('[data-color-chip]');
+      if (colorChip) {
+        const chipFilter = document.querySelector<HTMLElement>(
+          `[data-filter][data-value="${colorChip.dataset.colorChip}"]`
+        );
+        if (chipFilter) {
+          event.preventDefault();
+          chipFilter.click();
+          document.getElementById(chipFilter.dataset.filter || '')?.closest('section')
+            ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        return;
+      }
+
+      const more = target.closest<HTMLElement>('[data-show-more]');
+      if (more) {
+        const grid = document.getElementById(more.dataset.showMore || '');
+        if (!grid) return;
+        let i = 0;
+        // на телефоне часть карточек спрятана классом, а не атрибутом — снимаем и это
+        grid.classList.add('is-expanded');
+        grid.querySelectorAll<HTMLElement>('[hidden]').forEach((cell) => {
+          cell.removeAttribute('hidden');
+          applyAppear(cell, i++);
+        });
+        grid.querySelectorAll<HTMLElement>('[data-mob-extra]').forEach((cell) => applyAppear(cell, i++));
+        more.setAttribute('aria-expanded', 'true');
+        more.parentElement?.setAttribute('hidden', '');
+        return;
+      }
+
+      const filter = target.closest<HTMLElement>('[data-filter]');
+      if (filter) {
+        const grid = document.getElementById(filter.dataset.filter || '');
+        if (!grid) return;
+        const value = filter.dataset.value || '';
+
+        filter.parentElement?.querySelectorAll('[data-filter]').forEach((chip) => {
+          const active = chip === filter;
+          chip.classList.toggle('is-active', active);
+          chip.setAttribute('aria-pressed', String(active));
+        });
+
+        const moreBtn = document.querySelector<HTMLElement>(`[data-show-more="${grid.id}"]`);
+        // при активном фильтре показываем и то, что спрятано «телефонной» обрезкой
+        if (value) grid.classList.add('is-expanded');
+        else if (moreBtn?.getAttribute('aria-expanded') !== 'true') grid.classList.remove('is-expanded');
+        let i = 0;
+        grid.querySelectorAll<HTMLElement>('.catalog__cell').forEach((cell) => {
+          const isExtra = cell.dataset.extra !== undefined;
+          const matches = !value || cell.dataset.color === value;
+          // без фильтра «хвост» возвращается под кнопку, если она ещё не раскрыта
+          const collapsed = !value && isExtra && moreBtn?.getAttribute('aria-expanded') !== 'true';
+          const show = matches && !collapsed;
+          if (show && cell.hidden) applyAppear(cell, i++);
+          else if (show) i++;
+          cell.hidden = !show;
+        });
+
+        if (moreBtn && moreBtn.getAttribute('aria-expanded') !== 'true') {
+          moreBtn.parentElement?.toggleAttribute('hidden', Boolean(value));
+        }
+      }
+    });
+  }
+</script>

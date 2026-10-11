@@ -1,0 +1,194 @@
+---
+// Секция страницы: фон, вертикальные отступы, необязательная шапка (надзаголовок/H2/подзаголовок).
+// Никаких фиксированных высот — высоту задаёт содержимое.
+import Container from './Container.astro';
+import Collapse from '../ui/Collapse.astro';
+
+interface Props {
+  id?: string;
+  /** фон секции */
+  bg?: 'base' | 'alt' | 'surface' | 'brand' | 'soft' | 'dark' | 'image';
+  /** фото-фон при bg="image" */
+  image?: string;
+  /** затемнение фото, 0–1 */
+  overlay?: number;
+  pad?: 'none' | 'sm' | 'md' | 'lg';
+  kicker?: string;
+  title?: string;
+  subtitle?: string;
+  /** уровень заголовка секции: 2 по умолчанию */
+  level?: 2 | 3;
+  align?: 'left' | 'center';
+  /** full — без контейнера, содержимое во всю ширину */
+  width?: 'default' | 'narrow' | 'wide' | 'full';
+  /** обрезать содержимое НА ТЕЛЕФОНЕ до N px с кнопкой «Показать полностью» */
+  clamp?: number;
+  clampLabel?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  id,
+  bg = 'base',
+  image,
+  overlay = 0.35,
+  pad = 'md',
+  kicker,
+  title,
+  subtitle,
+  level = 2,
+  align = 'left',
+  width = 'default',
+  clamp,
+  clampLabel,
+  class: className,
+  ...rest
+} = Astro.props;
+
+// фон секции задаёт цвет затухания у обрезки; на тёмных и фото-фонах не обрезаем
+const clampFade = bg === 'alt' || bg === 'surface' || bg === 'soft' ? bg : 'base';
+const clampOn = Boolean(clamp) && bg !== 'dark' && bg !== 'image' && bg !== 'brand';
+
+const Heading = `h${level}` as any;
+const hasHeader = Boolean(kicker || title || subtitle);
+const cls = [
+  'section',
+  `section--bg-${bg}`,
+  `section--pad-${pad}`,
+  align === 'center' ? 'section--center' : null,
+  className,
+]
+  .filter(Boolean)
+  .join(' ');
+
+const style = bg === 'image' && image
+  ? `--section-image:url('${image}');--section-overlay:${overlay};`
+  : undefined;
+---
+
+<section class={cls} id={id} style={style} {...rest}>
+  {
+    width === 'full' ? (
+      <Fragment>
+        {hasHeader && (
+          <Container>
+            <header class="section__head" data-reveal>
+              {kicker && <p class="section__kicker">{kicker}</p>}
+              {title && <Heading class="section__title">{title}</Heading>}
+              {subtitle && <p class="section__subtitle">{subtitle}</p>}
+            </header>
+          </Container>
+        )}
+        {clampOn ? (
+          <Collapse max={clamp} fade={clampFade} label={clampLabel}>
+            <slot />
+          </Collapse>
+        ) : (
+          <slot />
+        )}
+      </Fragment>
+    ) : (
+      <Container width={width as 'default' | 'narrow' | 'wide'}>
+        {hasHeader && (
+          <header class="section__head" data-reveal>
+            {kicker && <p class="section__kicker">{kicker}</p>}
+            {title && <Heading class="section__title">{title}</Heading>}
+            {subtitle && <p class="section__subtitle">{subtitle}</p>}
+          </header>
+        )}
+        {clampOn ? (
+          <Collapse max={clamp} fade={clampFade} label={clampLabel}>
+            <slot />
+          </Collapse>
+        ) : (
+          <slot />
+        )}
+      </Container>
+    )
+  }
+</section>
+
+<style>
+  .section {
+    position: relative;
+    padding-block: var(--section-pad-md);
+  }
+
+  .section--pad-none { padding-block: 0; }
+  .section--pad-sm { padding-block: var(--section-pad-sm); }
+  .section--pad-lg { padding-block: var(--section-pad-lg); }
+
+  .section--bg-base { background: var(--color-bg); }
+  .section--bg-alt { background: var(--color-bg-alt); }
+  .section--bg-surface { background: var(--color-surface); }
+  .section--bg-soft { background: var(--color-brand-soft); }
+
+  .section--bg-brand {
+    background: var(--color-brand-fill);
+    color: var(--color-on-brand);
+  }
+
+  .section--bg-dark {
+    background: var(--color-dark);
+    color: var(--color-on-dark);
+  }
+
+  .section--bg-image {
+    color: var(--color-on-dark);
+    background-image: linear-gradient(
+        rgb(0 0 0 / var(--section-overlay, 0.35)),
+        rgb(0 0 0 / var(--section-overlay, 0.35))
+      ),
+      var(--section-image);
+    background-size: cover;
+    background-position: center;
+  }
+
+  .section--center { text-align: center; }
+
+  .section__head { margin-bottom: var(--space-6); }
+  .section--center .section__head { margin-inline: auto; max-width: 44rem; }
+
+  .section__kicker {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-accent-text);
+  }
+
+  .section__kicker::before {
+    content: '';
+    width: 28px;
+    height: 3px;
+    flex: none;
+    background: var(--color-brand);
+    border-radius: 2px;
+  }
+
+  .section--center .section__kicker { justify-content: center; }
+
+  .section--bg-dark .section__kicker,
+  .section--bg-image .section__kicker,
+  .section--bg-brand .section__kicker { color: inherit; opacity: 0.85; }
+
+  .section__title { margin: 0; }
+
+  .section__subtitle {
+    margin-top: var(--space-3);
+    max-width: 60ch;
+    font-size: var(--fs-lead);
+    color: var(--color-text-soft);
+  }
+
+  .section--center .section__subtitle { margin-inline: auto; }
+
+  .section--bg-dark .section__subtitle,
+  .section--bg-image .section__subtitle,
+  .section--bg-brand .section__subtitle { color: inherit; opacity: 0.9; }
+</style>

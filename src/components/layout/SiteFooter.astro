@@ -1,0 +1,179 @@
+---
+// Подвал: лого, телефон, колонки ссылок, реквизиты, правовые ссылки.
+// Правовые страницы (/regulation.html, /consent.html) на боевых есть, снимков нет —
+// поэтому ссылки не подставляются по умолчанию: передавайте policy/consent явно, когда тексты получим.
+import Container from './Container.astro';
+import { getSite, localPath } from '../../lib/sites';
+import type { NavItem, SiteKey } from '../../lib/types';
+
+interface Props {
+  site: SiteKey;
+  /** колонки ссылок подвала */
+  columns?: { title: string; links: NavItem[] }[];
+  phone?: { display: string; href: string };
+  hours?: string;
+  /** текст под лого */
+  tagline?: string;
+  /** адрес шоу-рума одной строкой */
+  address?: string;
+  /** ссылки на правовые страницы; пока их нет — не выводим */
+  policy?: NavItem[];
+  /** строка реквизитов; по умолчанию из реестра сайтов */
+  legal?: string;
+  note?: string;
+}
+
+const { site, columns = [], phone, hours, tagline, address, policy = [], legal, note } = Astro.props;
+
+const config = getSite(site);
+const tel = phone ?? config.phone;
+const workHours = hours ?? config.hours;
+const year = new Date().getFullYear();
+// Своя строка прав у сайта важнее собранной по кусочкам: на RECKE подвал не должен
+// читаться как сайт производителя (см. legalLine в реестре).
+const ownLine = config.legalLine?.replace('{year}', String(year));
+const legalLine = legal ?? `${config.legal.name}, ИНН ${config.legal.inn}`;
+---
+
+<footer class="site-footer">
+  <Container>
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        <a class="site-footer__logo" href={localPath(site)}>
+          {config.logo?.srcOnDark
+            ? <img src={config.logo.srcOnDark} alt={config.logo.alt ?? config.brand} width="176" height="41" />
+            : (config.logo?.text ?? config.brand)}
+        </a>
+        {tagline && <p class="site-footer__tagline">{tagline}</p>}
+        <a class="site-footer__phone" href={tel.href}>{tel.display}</a>
+        {workHours && <p class="site-footer__hours">{workHours}</p>}
+        {address && <p class="site-footer__address">{address}</p>}
+      </div>
+
+      {columns.length > 0 && (
+        <div class="site-footer__columns">
+          {columns.map((column) => (
+            <nav class="site-footer__column" aria-label={column.title}>
+              <p class="site-footer__column-title">{column.title}</p>
+              <ul class="site-footer__links">
+                {column.links.map((link) => (
+                  <li><a href={link.href}>{link.label}</a></li>
+                ))}
+              </ul>
+            </nav>
+          ))}
+        </div>
+      )}
+    </div>
+
+    <div class="site-footer__bottom">
+      <p class="site-footer__legal">{ownLine ?? `© ${year} ${config.brand}. ${legalLine}`}</p>
+      {policy.length > 0 && (
+        <ul class="site-footer__policy">
+          {policy.map((link) => (
+            <li><a href={link.href}>{link.label}</a></li>
+          ))}
+        </ul>
+      )}
+      {note && <p class="site-footer__note">{note}</p>}
+    </div>
+  </Container>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: auto;
+    padding-block: var(--space-7) var(--space-5);
+    background: var(--color-dark);
+    color: var(--color-on-dark);
+    border-top: 3px solid var(--color-brand);
+  }
+
+  .site-footer a { color: inherit; text-decoration: none; }
+  .site-footer a:hover { text-decoration: underline; }
+
+  .site-footer__top {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .site-footer__logo :global(img) { display: block; width: auto; height: 38px; }
+
+  .site-footer__logo {
+    font-family: var(--font-head);
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .site-footer__tagline {
+    margin-top: var(--space-2);
+    max-width: 40ch;
+    font-size: var(--fs-small);
+    opacity: 0.8;
+  }
+
+  .site-footer__phone {
+    display: inline-block;
+    margin-top: var(--space-4);
+    font-family: var(--font-head);
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .site-footer__hours,
+  .site-footer__address {
+    margin-top: var(--space-2);
+    font-size: var(--fs-small);
+    opacity: 0.8;
+  }
+
+  .site-footer__columns {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .site-footer__column-title {
+    margin-bottom: var(--space-3);
+    font-size: var(--fs-small);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    opacity: 0.7;
+  }
+
+  .site-footer__links {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--fs-small);
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-5);
+    align-items: center;
+    margin-top: var(--space-7);
+    padding-top: var(--space-4);
+    border-top: 1px solid rgb(255 255 255 / 0.15);
+    font-size: var(--fs-tiny);
+    opacity: 0.75;
+  }
+
+  .site-footer__policy {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-footer__note { flex-basis: 100%; }
+
+  @media (min-width: 768px) {
+    .site-footer__top { grid-template-columns: minmax(220px, 1fr) 2fr; }
+    .site-footer__columns { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+  }
+</style>

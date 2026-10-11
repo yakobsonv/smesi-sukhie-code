@@ -1,0 +1,79 @@
+---
+// Фильтр позиций страницы по бренду (и, на плиточном клее, по «керамограниту и крупному формату»).
+// Работает без перезагрузки: прячет строки [data-pos-item] и пустые секции [data-part].
+// Без JS фильтр не нужен — все позиции видны.
+interface Props {
+  brands: string[];
+  ceramic?: boolean;
+}
+const { brands, ceramic = false } = Astro.props;
+---
+
+{(brands.length > 1 || ceramic) && (
+  <div class="bf" data-bf role="group" aria-label="Фильтр позиций">
+    {brands.length > 1 && (
+      <div class="bf__row">
+        <button type="button" class="bf__chip is-on" data-bf-brand="">Все бренды</button>
+        {brands.map((b) => <button type="button" class="bf__chip" data-bf-brand={b}>{b}</button>)}
+      </div>
+    )}
+    {ceramic && (
+      <label class="bf__check"><input type="checkbox" data-bf-ceramic /> Керамогранит и крупный формат — по назначению у производителя</label>
+    )}
+    <p class="bf__count" data-bf-count aria-live="polite"></p>
+  </div>
+)}
+
+<style>
+  .bf { display: grid; gap: var(--space-3); margin: 0 0 var(--space-5); }
+  .bf__row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .bf__chip {
+    min-height: 40px;
+    padding: 8px 16px;
+    font: inherit;
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+  }
+  .bf__chip.is-on { color: var(--color-on-brand); background: var(--color-brand); border-color: var(--color-brand); }
+  .bf__check { display: flex; align-items: center; gap: 10px; font-size: var(--fs-small); cursor: pointer; }
+  .bf__check input { width: 20px; height: 20px; accent-color: var(--color-brand); }
+  .bf__count { margin: 0; font-size: var(--fs-tiny); color: var(--color-muted); }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-bf]');
+  if (root) {
+    let brand = '';
+    let ceramic = false;
+    const count = root.querySelector<HTMLElement>('[data-bf-count]');
+    const word = (n: number) => { const a = n % 10, b = n % 100; return a === 1 && b !== 11 ? 'позиция' : a >= 2 && a <= 4 && (b < 12 || b > 14) ? 'позиции' : 'позиций'; };
+    const apply = () => {
+      let shown = 0;
+      document.querySelectorAll<HTMLElement>('[data-pos-item]').forEach((li) => {
+        const ok = (!brand || li.dataset.brand === brand) && (!ceramic || li.dataset.ceramic === '1');
+        li.hidden = !ok;
+        if (ok) shown++;
+      });
+      document.querySelectorAll<HTMLElement>('[data-part]').forEach((part) => {
+        part.hidden = !part.querySelector('[data-pos-item]:not([hidden])');
+      });
+      if (count) count.textContent = brand || ceramic ? `Показано: ${shown} ${word(shown)}` : '';
+    };
+    root.addEventListener('click', (e) => {
+      const chip = (e.target as HTMLElement).closest<HTMLElement>('[data-bf-brand]');
+      if (!chip) return;
+      brand = chip.dataset.bfBrand || '';
+      root.querySelectorAll('[data-bf-brand]').forEach((c) => c.classList.toggle('is-on', c === chip));
+      apply();
+    });
+    root.querySelector<HTMLInputElement>('[data-bf-ceramic]')?.addEventListener('change', (e) => {
+      ceramic = (e.target as HTMLInputElement).checked;
+      apply();
+    });
+  }
+</script>

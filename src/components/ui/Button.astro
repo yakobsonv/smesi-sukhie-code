@@ -1,0 +1,47 @@
+---
+// Кнопка/ссылка одного вида на трёх сайтах. Стили — глобальный класс .btn из base.css,
+// вид задаёт тема. Если передан modal — клик открывает модальное окно с таким id.
+interface Props {
+  variant?: 'primary' | 'secondary' | 'ghost' | 'ghost-inv' | 'link';
+  size?: 'sm' | 'md' | 'lg';
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  full?: boolean;
+  modal?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  variant = 'primary',
+  size = 'md',
+  href,
+  type = 'button',
+  full = false,
+  modal,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const cls = [
+  'btn',
+  `btn--${variant}`,
+  size !== 'md' ? `btn--${size}` : null,
+  full ? 'btn--full' : null,
+  className,
+]
+  .filter(Boolean)
+  .join(' ');
+---
+
+{
+  href ? (
+    <a class={cls} href={href} data-modal-open={modal} {...rest}>
+      <slot />
+    </a>
+  ) : (
+    <button class={cls} type={type} data-modal-open={modal} {...rest}>
+      <slot />
+    </button>
+  )
+}

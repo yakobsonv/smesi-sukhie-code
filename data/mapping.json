@@ -1,0 +1,1882 @@
+[
+ {
+  "tk_id": "2565",
+  "decision": "same_product",
+  "series_key": "Основит Акваскрин HC63",
+  "variant": "4,5 кг",
+  "evidence": "Совпал код HC63: «Гидроизоляция жесткая Основит Акваскрин HC63». Т-63 в названии магазина — старое имя, его же содержит адрес карточки (akvaskrin-ns63). Сухая смесь (dry=yes). На сайте производителя указана фасовка 20 кг, в магазине 4,5 кг, это вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2564",
+  "decision": "same_product",
+  "series_key": "Основит Акваскрин HC62 E1K",
+  "variant": "20 кг",
+  "evidence": "«НС62 Е1к» в магазине написано кириллицей, это тот же код HC62 E1K: «Гидроизоляция эластичная однокомпонентная Основит Акваскрин HC62 E1K 20 кг». Сухая смесь (dry=yes).",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "1308",
+  "decision": "same_product",
+  "series_key": "Основит Акваскрин HC61",
+  "variant": "0,5 кг",
+  "evidence": "Совпал код HC61: «Гидропломба Основит Акваскрин HC61 500 г». Сухая смесь (dry=yes).",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2566",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "4,5 кг",
+  "evidence": "Совпал код HA64 с карточкой «Основит Акваскрин HA64», но это готовая гидроизоляция (waterproofing_liquid, dry=no). В магазине тоже стоит «готовая». Не сухая смесь.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2529",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "бежевый 030, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2091",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "белый 010, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2526",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "гранитно-серый 026, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2525",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "графит 023, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2540",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "желто-зеленый 073, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2538",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "желтый 070, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2533",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "коричневый 040, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2531",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "кремовый 035, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2541",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "медный 083, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2528",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "мокрый асфальт 028, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2536",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "оранжевый 046, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2532",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "ореховый 036, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2527",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "пепельный 027, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2539",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "песочный 071, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2530",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "светло-бежевый 034, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2537",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "светло-голубой 061, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2534",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "светло-коричневый 041, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2523",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "светло-серый 021, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2522",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "серый 020, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2521",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "супербелый 011, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2524",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "темно-серый 022, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2535",
+  "decision": "same_product",
+  "series_key": "Основит Бриксэйв XC30",
+  "variant": "шоколадный 045, 20 кг",
+  "evidence": "Совпал код XC30: «Раствор цветной для расшивки швов Основит Бриксэйв XC30 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2571",
+  "decision": "same_product",
+  "series_key": "Основит Плитсэйв XC35 H",
+  "variant": "бежевый 030, 20 кг",
+  "evidence": "Совпал код XC35 H: «Затирка Основит Плитсэйв XC35 H для широких швов 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "1293",
+  "decision": "same_product",
+  "series_key": "Основит Плитсэйв XC35 H",
+  "variant": "белая 010, 20 кг",
+  "evidence": "Совпал код XC35 H: «Затирка Основит Плитсэйв XC35 H для широких швов 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2570",
+  "decision": "same_product",
+  "series_key": "Основит Плитсэйв XC35 H",
+  "variant": "графит 023, 20 кг",
+  "evidence": "Совпал код XC35 H: «Затирка Основит Плитсэйв XC35 H для широких швов 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2576",
+  "decision": "same_product",
+  "series_key": "Основит Плитсэйв XC35 H",
+  "variant": "желтый 070, 20 кг",
+  "evidence": "Совпал код XC35 H: «Затирка Основит Плитсэйв XC35 H для широких швов 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2574",
+  "decision": "same_product",
+  "series_key": "Основит Плитсэйв XC35 H",
+  "variant": "кирпичный 044, 20 кг",
+  "evidence": "Совпал код XC35 H: «Затирка Основит Плитсэйв XC35 H для широких швов 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2572",
+  "decision": "same_product",
+  "series_key": "Основит Плитсэйв XC35 H",
+  "variant": "коричневый 040, 20 кг",
+  "evidence": "Совпал код XC35 H: «Затирка Основит Плитсэйв XC35 H для широких швов 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2577",
+  "decision": "same_product",
+  "series_key": "Основит Плитсэйв XC35 H",
+  "variant": "медный 083, 20 кг",
+  "evidence": "Совпал код XC35 H: «Затирка Основит Плитсэйв XC35 H для широких швов 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2573",
+  "decision": "same_product",
+  "series_key": "Основит Плитсэйв XC35 H",
+  "variant": "светло-коричневый 041, 20 кг",
+  "evidence": "Совпал код XC35 H: «Затирка Основит Плитсэйв XC35 H для широких швов 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2568",
+  "decision": "same_product",
+  "series_key": "Основит Плитсэйв XC35 H",
+  "variant": "светло-серая 021, 20 кг",
+  "evidence": "Совпал код XC35 H: «Затирка Основит Плитсэйв XC35 H для широких швов 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2567",
+  "decision": "same_product",
+  "series_key": "Основит Плитсэйв XC35 H",
+  "variant": "серая 020, 20 кг",
+  "evidence": "Совпал код XC35 H: «Затирка Основит Плитсэйв XC35 H для широких швов 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2569",
+  "decision": "same_product",
+  "series_key": "Основит Плитсэйв XC35 H",
+  "variant": "темно-серая 022, 20 кг",
+  "evidence": "Совпал код XC35 H: «Затирка Основит Плитсэйв XC35 H для широких швов 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2575",
+  "decision": "same_product",
+  "series_key": "Основит Плитсэйв XC35 H",
+  "variant": "шоколадный 045, 20 кг",
+  "evidence": "Совпал код XC35 H: «Затирка Основит Плитсэйв XC35 H для широких швов 20 кг». Цвет — вариант.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "1004",
+  "decision": "same_product",
+  "series_key": "Основит Путформ MC114",
+  "variant": "20 кг",
+  "evidence": "«МС114» в магазине написано кириллицей, это код MC114: «Раствор кладочный теплоизоляционный Основит Путформ MC114 20 кг». Это не MC114 L: буквы L в названии магазина нет.",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "1927",
+  "decision": "same_product",
+  "series_key": "Основит Рокформ MC110",
+  "variant": "25 кг",
+  "evidence": "«МС110» в магазине написано кириллицей, это код MC110: «Раствор кладочный для рядового кирпича Основит Рокформ MC110 25 кг».",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2185",
+  "decision": "same_product",
+  "series_key": "Perel RodStone Шов-фильтр",
+  "variant": "серый, 25 кг",
+  "evidence": "RodStone Шов-фильтр серый есть среди названий карточки («Perel RodStone Шов-фильтр серый»); 25 кг — сухой компонент двухкомпонентного раствора",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2140",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "Компонент «C», 1 л",
+  "evidence": "Жидкий компонент «C» в литрах; в каталоге отдельно «Perel RodStone Шов-литой Компонент C», dry=no",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2141",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "Компонент «B», 1.8 л",
+  "evidence": "Жидкий компонент «B» в литрах; в каталоге отдельно «Perel RodStone Шов-фильтр Компонент B», dry=no",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2056",
+  "decision": "same_product",
+  "series_key": "Perel Faster",
+  "variant": "финишный, 24 кг",
+  "evidence": "Faster 0732: название и код совпадают, адрес карточки perel-faster-0732, «24 кг, финишный наливной пол»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2057",
+  "decision": "same_product",
+  "series_key": "Perel Express",
+  "variant": "25 кг",
+  "evidence": "Express 0720: название и код совпадают, адрес карточки perel-express-0720, «25 кг, быстротвердеющая цементная стяжка»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2381",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "Prima, 10 кг",
+  "evidence": "Гидрофобизатор — жидкость. В каталоге есть только «Perel Impregno» (dry=no), варианта Prima нет",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2382",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "10 кг",
+  "evidence": "Гидрофобизатор — жидкость; в каталоге «Perel Impregno», тип hydrophobizer, dry=no",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2186",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "10 л",
+  "evidence": "Противоморозная добавка в литрах; в каталоге «Perel No Frost», тип additive, dry=no",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2385",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "концентрат, 10 кг",
+  "evidence": "Раствор для очистки фасадов; в каталоге «Perel Spazzino Prima», тип efflorescence_remover, dry=no",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2384",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "10 кг",
+  "evidence": "Состав для очистки фасадов; в каталоге «Perel Spazzino», тип efflorescence_remover, dry=no",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2388",
+  "decision": "same_product",
+  "series_key": "Perel М-300 Пескобетон",
+  "variant": "50 кг",
+  "evidence": "Пескобетон М-300 50 кг = карточка «М-300, 50 кг», где в назначении «Пескобетон М 300»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2387",
+  "decision": "unclear",
+  "series_key": "",
+  "variant": "50 кг",
+  "evidence": "У производителя М-150 — два отдельных товара: «М-150 Базовый, 50 кг» (кладка) и «М-150 Универсальный, 40 кг» (штукатурка и кладка). Магазин называет позицию «Универсальная», а фасовка 50 кг совпадает с Базовым: по названию это один товар, по фасовке другой",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2386",
+  "decision": "same_product",
+  "series_key": "Perel М-150 Универсальный",
+  "variant": "40 кг",
+  "evidence": "Совпадают и название «Универсальная М-150», и фасовка: карточка «М-150 Универсальный, 40 кг»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2593",
+  "decision": "same_product",
+  "series_key": "Perel Plaster Wall",
+  "variant": "белая, 25 кг",
+  "evidence": "Plaster wall 0668 белая 25 кг = «Perel Plaster Wall, белая, 25 кг, шпаклевка гипсовая»; кода 0668 в названии карточки нет",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2064",
+  "decision": "same_product",
+  "series_key": "Perel FACADE-B",
+  "variant": "белая, 20 кг",
+  "evidence": "FACADE-B 0652 белая 20 кг = «Perel FACADE-B, белая, 20 кг, шпатлевка цементная»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2065",
+  "decision": "same_product",
+  "series_key": "Perel FACADE-C",
+  "variant": "серая, 20 кг",
+  "evidence": "FACADE-С (кириллическая С = C) 0650 серая = «Perel FACADE-C, серая»; в каталоге фасовка 25 кг, в магазине 20 кг (это вариант фасовки)",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2377",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "супер-белая, 16 кг",
+  "evidence": "Готовая шпатлёвка (паста); в каталоге «Perel Rinzaffo», тип putty_ready_paste, dry=no",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2063",
+  "decision": "same_product",
+  "series_key": "Perel FINISH",
+  "variant": "супербелая, 20 кг",
+  "evidence": "FINISH 0655 супербелая 20 кг = «Perel FINISH, супербелая, 20 кг, шпатлевка полимерная финишная»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2045",
+  "decision": "same_product",
+  "series_key": "Perel Plast",
+  "variant": "код 0522 (цвет в названии не указан), 30 кг",
+  "evidence": "Модель Plast совпадает. У Perel код означает цвет внутри серии (как NFS PRO 0505/0510). Но в каталоге только белая Plast (у магазина это 0527) — варианта 0522 в карточке нет",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2592",
+  "decision": "same_product",
+  "series_key": "Perel Plast",
+  "variant": "белая, 30 кг",
+  "evidence": "Plast 0527 белая 30 кг = «Perel Plast, 30 кг, белая, пластичная гипсовая штукатурка»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2043",
+  "decision": "same_product",
+  "series_key": "Perel TeploPlast",
+  "variant": "код 0528 (цвет в названии не указан), 30 кг",
+  "evidence": "Модель TeploPlast совпадает (облегчённая). В каталоге только белая TeploPlast (у магазина это 0529) — варианта 0528 в карточке нет",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2374",
+  "decision": "same_product",
+  "series_key": "Perel TeploPlast",
+  "variant": "белая, 30 кг",
+  "evidence": "TeploPlast 0529 облегчённая белая 30 кг = «Perel TeploPlast, 30 кг, белая, облегченная гипсовая штукатурка с перлитом»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "991",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "короед, 18 кг",
+  "evidence": "Готовая акриловая паста; в каталоге «Perel Acrilico короед», тип decorative_plaster_paste, dry=no",
+  "site": "perel"
+ },
+ {
+  "tk_id": "906",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "шуба, 18 кг",
+  "evidence": "Готовая акриловая паста; в каталоге «Perel Acrilico шуба», тип decorative_plaster_paste, dry=no",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2594",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "короед, 18 кг",
+  "evidence": "Готовая силиконовая паста; в каталоге «Perel Silicio короед», тип decorative_plaster_paste, dry=no",
+  "site": "perel"
+ },
+ {
+  "tk_id": "907",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "шуба, 18 кг",
+  "evidence": "Готовая силиконовая паста; в каталоге «Perel Silicio шуба», тип decorative_plaster_paste, dry=no",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2596",
+  "decision": "same_product",
+  "series_key": "Perel Cemento",
+  "variant": "короед, 25 кг",
+  "evidence": "Цементная Cemento «Короед» = «Perel Cemento, короед 2 мм», тип decorative_plaster_dry",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2595",
+  "decision": "same_product",
+  "series_key": "Perel Cemento",
+  "variant": "шуба, 25 кг",
+  "evidence": "Цементная Cemento «Шуба» = «Perel Cemento, шуба 2 мм», тип decorative_plaster_dry",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2042",
+  "decision": "same_product",
+  "series_key": "Perel TeploRob",
+  "variant": "20 кг",
+  "evidence": "TeploRob 0518 лёгкая 20 кг = «Perel TeploRob, 20 кг, легкая цементная штукатурка с перлитом» (не TeploRob TR, у того 35 кг)",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2040",
+  "decision": "same_product",
+  "series_key": "Perel Robust",
+  "variant": "25 кг",
+  "evidence": "Robust (0515) 25 кг = «Perel Robust, 25 кг, цементная штукатурка для ручного нанесения»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2041",
+  "decision": "same_product",
+  "series_key": "Perel Robust-M",
+  "variant": "25 кг",
+  "evidence": "Robust-М (кириллическая М = M) (0514) = «Perel Robust-M, 25 кг, цементная штукатурка для машинного нанесения»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2356",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "20кг",
+  "evidence": "THERMOFIX в каталоге нет; ближайший по смыслу Dauer TEFIX SM (теплоизоляционный раствор), но имя модели другое — THERMOFIX не равно TEFIX",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2357",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "20кг, зимняя до -10",
+  "evidence": "THERMOFIX в каталоге нет; ближе всего Dauer TEFIX SM только по смыслу, код модели не совпадает",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2314",
+  "decision": "same_product",
+  "series_key": "Dauer М-200 Монтажно-кладочная",
+  "variant": "50кг",
+  "evidence": "М-200 монтажно-кладочная = Dauer М-200 Монтажно-кладочная",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2351",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "30кг",
+  "evidence": "QUADER SLOT Gips (гипсовый монтажный клей) в каталоге нет; из QUADER есть только D600",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2355",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer QUADER D600",
+  "variant": "40кг, зимняя до -10",
+  "evidence": "код D600 совпадает: QUADER BLOCK D600 -> Dauer QUADER D600 (адрес карточки block-d600-kley-montazhnyy)",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2354",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer QUADER D600",
+  "variant": "40кг",
+  "evidence": "код D600: QUADER BLOCK D600 -> Dauer QUADER D600 (адрес block-d600)",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2352",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer QUADER D600",
+  "variant": "25кг",
+  "evidence": "код D600: QUADER BLOCK D600 -> Dauer QUADER D600 (адрес block-d600)",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2353",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer QUADER D600",
+  "variant": "25кг, зимняя до -10",
+  "evidence": "код D600: QUADER BLOCK D600 -> Dauer QUADER D600 (адрес block-d600)",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2334",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "25кг",
+  "evidence": "CONECTOR HOME 04 — номера 04 в каталоге нет (есть 02, 14, 22, 22 Макс, Плюс)",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2330",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer CONECTOR 02",
+  "variant": "25кг",
+  "evidence": "номера нет, но «HOME Оптимум» = линия Оптимум; у производителя Оптимум = Dauer CONECTOR 02 «Клей Оптимум C0 T», в магазине же 2333 «HOME 02 … Оптимум»",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2336",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "25кг",
+  "evidence": "CONECTOR HOME 06 Улучшенный — номера 06 в каталоге нет",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2337",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer CONECTOR Плюс",
+  "variant": "25кг",
+  "evidence": "HOME PLUS -> Dauer CONECTOR Плюс (адрес карточки conector-home-plus-kley-universalnyy); у производителя подпись «Универсальный», в магазине «усиленный»",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2333",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer CONECTOR 02",
+  "variant": "25кг, зимняя до -10",
+  "evidence": "код 02 + «Оптимум»: CONECTOR HOME 02 Оптимум -> Dauer CONECTOR 02 Клей Оптимум",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2335",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "25кг, зимняя до -10",
+  "evidence": "CONECTOR HOME 04 Стандарт — номера 04 в каталоге нет",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2339",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "25кг, зимняя",
+  "evidence": "CONECTOR HOME 06 Улучшенный — номера 06 в каталоге нет",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2338",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer CONECTOR Плюс",
+  "variant": "25кг, зимняя до -10",
+  "evidence": "HOME PLUS Универсальный -> Dauer CONECTOR Плюс Клей Универсальный (адрес conector-home-plus)",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2349",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer PLATTER 55",
+  "variant": "20кг",
+  "evidence": "код 55: PLATTER SELF 55 Eco -> Dauer PLATTER 55 (адрес platter-self-55-eco)",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2310",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "25кг",
+  "evidence": "GROSSER в каталоге нет; по смыслу близка Dauer PLATTER 50 (стяжка высокопрочная), но имя/код модели не совпадает",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2359",
+  "decision": "same_product",
+  "series_key": "Dauer М-300 Пескобетон",
+  "variant": "30кг",
+  "evidence": "М-300 пескобетон = Dauer М-300 Пескобетон",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2358",
+  "decision": "same_product",
+  "series_key": "Dauer М-300 Пескобетон",
+  "variant": "40кг",
+  "evidence": "М-300 пескобетон = Dauer М-300 Пескобетон",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2313",
+  "decision": "same_product",
+  "series_key": "Dauer М-300 Пескобетон",
+  "variant": "50кг",
+  "evidence": "М-300 пескобетон = Dauer М-300 Пескобетон",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "848",
+  "decision": "unclear",
+  "series_key": "",
+  "variant": "фасовка не указана",
+  "evidence": "в названии нет марки производителя («Пескобетон М300»); если это Dauer — совпадёт с Dauer М-300 Пескобетон, но по названию не подтвердить",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2361",
+  "decision": "same_product",
+  "series_key": "Dauer М-150 Универсальная",
+  "variant": "30кг",
+  "evidence": "М-150 универсальная = Dauer М-150 Универсальная",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2360",
+  "decision": "same_product",
+  "series_key": "Dauer М-150 Универсальная",
+  "variant": "40кг",
+  "evidence": "М-150 универсальная = Dauer М-150 Универсальная",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2315",
+  "decision": "same_product",
+  "series_key": "Dauer М-150 Универсальная",
+  "variant": "50кг",
+  "evidence": "М-150 универсальная = Dauer М-150 Универсальная",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "1256",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer FINNER 40",
+  "variant": "40G серая, 25 кг, зимняя",
+  "evidence": "код 40 G: FINNER EXTER 40 G -> Dauer FINNER 40G серая",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "1257",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer FINNER 40",
+  "variant": "40W белая, 25 кг, зимняя",
+  "evidence": "код 40 W: FINNER EXTER 40 W -> Dauer FINNER 40W белая",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "1100",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer FINNER 41",
+  "variant": "41G серая, 20 кг",
+  "evidence": "код 41 G: FINNER EXTER 41 G -> Dauer FINNER 41G (адрес finner-exter-41g)",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2342",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "белая, 30кг",
+  "evidence": "GIPSART в каталоге нет; по смыслу близка Dauer SLIDER 37 (гипсовая тёплая), код модели не совпадает",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2341",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "серая, 30кг",
+  "evidence": "GIPSART в каталоге нет; по смыслу близка Dauer SLIDER 37, код модели не совпадает",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2344",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "белая, 30кг, машинного нанесения",
+  "evidence": "GIPSART-М в каталоге нет; по смыслу близка Dauer SLIDER 38 (лёгкая), код модели не совпадает",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2340",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer SLIDER 36",
+  "variant": "серая, 30 кг",
+  "evidence": "код 36: SLIDER INTERIER 36 -> Dauer SLIDER 36 серая",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2364",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer SLIDER 36",
+  "variant": "36W белая, 30кг",
+  "evidence": "код 36W: SLIDER INTERIER 36W -> Dauer SLIDER 36W белая",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2343",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer SLIDER 38",
+  "variant": "серая, 30кг",
+  "evidence": "код 38: SLIDER INTERIER 38 лёгкая -> Dauer SLIDER 38 лёгкая",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2316",
+  "decision": "same_product",
+  "series_key": "Dauer М-150 Штукатурная",
+  "variant": "50кг",
+  "evidence": "штукатурная М-150 = Dauer М-150 Штукатурная",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2345",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer SLIDER 31 Фибра",
+  "variant": "25кг",
+  "evidence": "код 31 + Fibro=Фибра: SLIDER FASAD 31 Fibro -> Dauer SLIDER 31 Фибра (адрес slider-fasad-31-fibro)",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2346",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer SLIDER 31 Фибра",
+  "variant": "40кг",
+  "evidence": "SLIDER FASAD 31 Fibro -> Dauer SLIDER 31 Фибра",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2347",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer SLIDER 31 Slim",
+  "variant": "25кг",
+  "evidence": "код 31 Slim: SLIDER FASAD 31 Slim -> Dauer SLIDER 31 Slim",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2348",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer SLIDER 31 Slim",
+  "variant": "40кг",
+  "evidence": "SLIDER FASAD 31 Slim -> Dauer SLIDER 31 Slim",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "995",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer SLIDER 31 Фибра",
+  "variant": "25 кг, зимняя",
+  "evidence": "SLIDER FASAD 31 Fibro ЗИМА -> Dauer SLIDER 31 Фибра",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "996",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer SLIDER 31 Фибра",
+  "variant": "40 кг, зимняя",
+  "evidence": "SLIDER FASAD 31 Fibro ЗИМА -> Dauer SLIDER 31 Фибра",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "997",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer SLIDER 31 Slim",
+  "variant": "25 кг, зимняя",
+  "evidence": "SLIDER FASAD 31 Slim ЗИМА -> Dauer SLIDER 31 Slim",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "998",
+  "decision": "renamed_same_product",
+  "series_key": "Dauer SLIDER 31 Slim",
+  "variant": "40 кг, зимняя",
+  "evidence": "SLIDER FASAD 31 Slim ЗИМА -> Dauer SLIDER 31 Slim",
+  "site": "dauer"
+ },
+ {
+  "tk_id": "2378",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "10 кг",
+  "evidence": "Perel Isolante в каталоге — готовая полиакриловая мастика (waterproofing_liquid, dry=no), фасовка у производителя 14 кг",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2055",
+  "decision": "same_product",
+  "series_key": "Perel Aquastop",
+  "variant": "5 кг",
+  "evidence": "Aquastop + код 0810 совпадает с адресом карточки perel-aquastop-0810; у производителя указана фасовка 25 кг",
+  "site": "perel"
+ },
+ {
+  "tk_id": "1725",
+  "decision": "same_product",
+  "series_key": "Perel RL",
+  "variant": "тёмно-серая, 25 кг",
+  "evidence": "Perel RL — затирочная смесь для швов, 25 кг; цвета нет среди 6 показанных названий, но список в каталоге обрезан по алфавиту на «Кремовой»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "1726",
+  "decision": "same_product",
+  "series_key": "Perel RL",
+  "variant": "бежевая, 25 кг",
+  "evidence": "Perel RL, есть название «Бежевая затирочная смесь Perel RL 25 кг»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "1724",
+  "decision": "same_product",
+  "series_key": "Perel RL",
+  "variant": "белая, 25 кг",
+  "evidence": "Perel RL, есть название «Белая затирочная смесь Perel RL 25 кг»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "1727",
+  "decision": "same_product",
+  "series_key": "Perel RL",
+  "variant": "горчичная, 25 кг",
+  "evidence": "Perel RL, есть название «Горчичная затирочная смесь Perel RL 25 кг»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "1729",
+  "decision": "same_product",
+  "series_key": "Perel RL",
+  "variant": "кирпичная, 25 кг",
+  "evidence": "Perel RL, есть название «Кирпичная затирочная смесь Perel RL 25 кг»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "1732",
+  "decision": "same_product",
+  "series_key": "Perel RL",
+  "variant": "коричневая, 25 кг",
+  "evidence": "Perel RL, есть название «Коричневая затирочная смесь Perel RL 25 кг»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "1730",
+  "decision": "same_product",
+  "series_key": "Perel RL",
+  "variant": "кремовая, 25 кг",
+  "evidence": "Perel RL, есть название «Кремовая затирочная смесь Perel RL 25 кг»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "1728",
+  "decision": "same_product",
+  "series_key": "Perel RL",
+  "variant": "медная, 25 кг",
+  "evidence": "Perel RL совпадает; цвета нет среди 6 показанных названий (список обрезан по алфавиту), цвет надо сверить",
+  "site": "perel"
+ },
+ {
+  "tk_id": "1731",
+  "decision": "same_product",
+  "series_key": "Perel RL",
+  "variant": "светло-коричневая, 25 кг",
+  "evidence": "Perel RL совпадает; цвета нет среди 6 показанных названий (список обрезан по алфавиту), цвет надо сверить",
+  "site": "perel"
+ },
+ {
+  "tk_id": "1723",
+  "decision": "same_product",
+  "series_key": "Perel RL",
+  "variant": "серая, 25 кг",
+  "evidence": "Perel RL совпадает; цвета нет среди 6 показанных названий (список обрезан по алфавиту), цвет надо сверить",
+  "site": "perel"
+ },
+ {
+  "tk_id": "1734",
+  "decision": "same_product",
+  "series_key": "Perel RL",
+  "variant": "чёрная, 25 кг",
+  "evidence": "Perel RL совпадает; цвета нет среди 6 показанных названий (список обрезан по алфавиту), цвет надо сверить",
+  "site": "perel"
+ },
+ {
+  "tk_id": "1733",
+  "decision": "same_product",
+  "series_key": "Perel RL",
+  "variant": "шоколадная, 25 кг",
+  "evidence": "Perel RL совпадает; цвета нет среди 6 показанных названий (список обрезан по алфавиту), цвет надо сверить",
+  "site": "perel"
+ },
+ {
+  "tk_id": "1735",
+  "decision": "same_product",
+  "series_key": "Perel TKS 8020",
+  "variant": "17,5 кг",
+  "evidence": "код TKS 8020 совпадает, фасовка 17.5 кг та же",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2028",
+  "decision": "same_product",
+  "series_key": "Perel TKS 6020",
+  "variant": "20 кг",
+  "evidence": "код TKS 6020 совпадает, фасовка 20 кг та же",
+  "site": "perel"
+ },
+ {
+  "tk_id": "1584",
+  "decision": "same_product",
+  "series_key": "Perel TKS 2020",
+  "variant": "25 кг",
+  "evidence": "код TKS 2020 совпадает, фасовка 25 кг та же",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2035",
+  "decision": "same_product",
+  "series_key": "Perel Blokus",
+  "variant": "серый, 25 кг (код 0318)",
+  "evidence": "модель Blokus совпадает; в серии есть серый/белый по 25 и 40 кг. Кодов 0318/0332/0334/0340 в названиях каталога нет: это коды позиций внутри серии, как NL 0105/0150",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2590",
+  "decision": "same_product",
+  "series_key": "Perel Blokus",
+  "variant": "белый, 25 кг (код 0332)",
+  "evidence": "модель Blokus совпадает; в каталоге есть «Белый клей для блоков Perel Blokus 25 кг»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2591",
+  "decision": "same_product",
+  "series_key": "Perel Blokus",
+  "variant": "белый, 40 кг (код 0334)",
+  "evidence": "модель Blokus совпадает; в каталоге есть «Белый клей для блоков Perel Blokus 40 кг»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2037",
+  "decision": "same_product",
+  "series_key": "Perel Gipsel",
+  "variant": "код 0330; цвет и фасовка в названии магазина не указаны",
+  "evidence": "модель Gipsel совпадает: гипсовый монтажный клей, в каталоге 30 кг белый/серый; кода 0330 в каталоге нет",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2036",
+  "decision": "same_product",
+  "series_key": "Perel Blokus",
+  "variant": "40 кг (код 0340; цвет не указан)",
+  "evidence": "модель Blokus совпадает; в каталоге есть «Perel Blokus 40 кг, серый»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2029",
+  "decision": "same_product",
+  "series_key": "Perel BASIS C0",
+  "variant": "25 кг (код 0311)",
+  "evidence": "модель Basis совпадает; в каталоге к названию добавлен класс C0, кода 0311 нет; фасовка 25 кг",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2030",
+  "decision": "same_product",
+  "series_key": "Perel Keramogranit C1T",
+  "variant": "25 кг (код 0322)",
+  "evidence": "модель Keramogranit совпадает; в каталоге добавлен класс C1T, кода 0322 нет; 25 кг",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2031",
+  "decision": "same_product",
+  "series_key": "Perel Premium C1TE",
+  "variant": "25 кг (код 0314)",
+  "evidence": "модель Premium совпадает (не Supremium — это другой товар С2ТЕ S1); класс C1TE; назначение — тяжёлая крупная плитка; 25 кг",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2032",
+  "decision": "same_product",
+  "series_key": "Perel White C1TE",
+  "variant": "25 кг (код 0317)",
+  "evidence": "модель White совпадает; в каталоге добавлен класс C1TE, кода 0317 нет; 25 кг",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2033",
+  "decision": "same_product",
+  "series_key": "Perel Termix",
+  "variant": "25 кг (код 0319)",
+  "evidence": "модель Termix (без -M) совпадает, штукатурно-клеевая смесь 25 кг",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2034",
+  "decision": "same_product",
+  "series_key": "Perel Termix-M",
+  "variant": "25 кг (код 0320)",
+  "evidence": "модель Termix-M совпадает, штукатурно-клеевая смесь 25 кг",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2131",
+  "decision": "same_product",
+  "series_key": "Perel RodStone Шов-литой",
+  "variant": "коричневый, 25 кг + компонент C",
+  "evidence": "сухая часть комплекта — RodStone Шов-литой, в каталоге есть «коричневый»; компонент C — отдельная жидкая позиция (не сухая)",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2133",
+  "decision": "same_product",
+  "series_key": "Perel RodStone Шов-литой",
+  "variant": "красный, 25 кг + компонент C",
+  "evidence": "сухая часть комплекта — RodStone Шов-литой, в каталоге есть «красный»; компонент C — отдельная жидкая позиция",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2134",
+  "decision": "same_product",
+  "series_key": "Perel RodStone Шов-литой",
+  "variant": "чёрный, 25 кг + компонент C",
+  "evidence": "RodStone Шов-литой совпадает; «чёрного» нет среди 6 показанных названий (список обрезан по алфавиту после «темно-серый»), цвет надо сверить",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2132",
+  "decision": "same_product",
+  "series_key": "Perel RodStone Шов-литой",
+  "variant": "шоколадный, 25 кг + компонент C",
+  "evidence": "RodStone Шов-литой совпадает; «шоколадного» нет среди 6 показанных названий (список обрезан по алфавиту), цвет надо сверить",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2135",
+  "decision": "same_product",
+  "series_key": "Perel RodStone Шов-фильтр",
+  "variant": "белый, 25 кг",
+  "evidence": "в каталоге есть «Perel RodStone Шов-фильтр белый» — сухая часть; компонент B продаётся отдельно",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2179",
+  "decision": "same_product",
+  "series_key": "Perel RodStone Основа",
+  "variant": "25 кг",
+  "evidence": "RodStone Основа — дренажный раствор, совпадает; у производителя фасовка 40 кг, у магазина 25 кг",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2183",
+  "decision": "same_product",
+  "series_key": "Perel RodStone Шов-литой",
+  "variant": "серый, 25 кг",
+  "evidence": "в каталоге есть «Perel RodStone Шов-литой серый»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2181",
+  "decision": "same_product",
+  "series_key": "Perel RodStone Адгезив",
+  "variant": "белый, 25 кг",
+  "evidence": "в каталоге есть «Perel RodStone Адгезив, 25 кг, белый»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2180",
+  "decision": "same_product",
+  "series_key": "Perel RodStone Адгезив",
+  "variant": "серый, 25 кг",
+  "evidence": "в каталоге есть «Perel RodStone Адгезив, 25 кг, серый»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2182",
+  "decision": "same_product",
+  "series_key": "Perel RodStone Шов-литой",
+  "variant": "белый, 25 кг",
+  "evidence": "в каталоге есть «Perel RodStone Шов-литой белый»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2184",
+  "decision": "same_product",
+  "series_key": "Perel RodStone Шов-литой",
+  "variant": "кремово-жёлтый, 25 кг",
+  "evidence": "RodStone Шов-литой совпадает; «кремово-жёлтого» нет среди показанных названий, а по алфавиту он попал бы в первые 6 — возможно, у производителя он называется иначе (например «бежевая»), цвет сверить",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2379",
+  "decision": "same_product",
+  "series_key": "Perel RodStone Шов-литой",
+  "variant": "тёмно-серый, 25 кг",
+  "evidence": "в каталоге есть «Perel RodStone Шов-литой темно-серый»",
+  "site": "perel"
+ },
+ {
+  "tk_id": "2579",
+  "decision": "same_product",
+  "series_key": "Основит Печформ MF800",
+  "variant": "25 кг",
+  "evidence": "Код MF800 совпадает: «Смесь печная Основит Печформ MF800 25 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2583",
+  "decision": "same_product",
+  "series_key": "Основит Печформ AC150",
+  "variant": "Ld (беспылевой), 25 кг",
+  "evidence": "Код AC150 совпадает: «Клей термостойкий Основит Печформ AC150». Суффикса Ld в названии карточки нет, но в назначении сказано «термостойкий беспылевой клей», Ld = low dust; другой модели AC150 в каталоге нет",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2585",
+  "decision": "same_product",
+  "series_key": "Основит Печформ PC400 W",
+  "variant": "белая, 20 кг",
+  "evidence": "Код PC400 W совпадает: «Штукатурка термостойкая белая Основит Печформ PC400 W 20 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "336",
+  "decision": "same_product",
+  "series_key": "Основит Стартолайн FC41 H",
+  "variant": "25 кг",
+  "evidence": "Код FC41 H совпадает: «Стяжка высокопрочная Основит Стартолайн FC41 H 25 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2549",
+  "decision": "same_product",
+  "series_key": "Основит Ниплайн FC47",
+  "variant": "25 кг",
+  "evidence": "Код FC47 совпадает: «Ровнитель цементный высокопрочный Основит Ниплайн FC47 25 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2548",
+  "decision": "same_product",
+  "series_key": "Основит Стартолайн FC43 L",
+  "variant": "25 кг",
+  "evidence": "Код FC43 L совпадает: «Стяжка легкая Основит Стартолайн FC43 L 25 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "735",
+  "decision": "same_product",
+  "series_key": "Основит Ровилайн FK46",
+  "variant": "20 кг",
+  "evidence": "Код FK46 совпадает: «Пол наливной тонкослойный Основит Ровилайн FK46 20 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2552",
+  "decision": "same_product",
+  "series_key": "Основит Ровилайн FC49",
+  "variant": "20 кг",
+  "evidence": "Код FС49 (кириллическая С) = FC49: «Пол наливной суперфинишный Основит Ровилайн FC49 20 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "337",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "25 кг",
+  "evidence": "В каталоге есть только «Основит Ниплайн FC42 H» (высокопрочный); FC42 без H — другая модель, на сайте производителя нет",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "734",
+  "decision": "same_product",
+  "series_key": "Основит Скорлайн FK45 R",
+  "variant": "20 кг",
+  "evidence": "Код FK45 R совпадает: «Пол наливной быстротвердеющий Основит Скорлайн FK45 R 20 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2551",
+  "decision": "same_product",
+  "series_key": "Основит Скорлайн FK48 R",
+  "variant": "20 кг",
+  "evidence": "Код FK48 R совпадает: «Пол наливной быстротвердеющий универсальный Основит Скорлайн FK48 R 20 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2550",
+  "decision": "same_product",
+  "series_key": "Основит Ниплайн FK47",
+  "variant": "25 кг",
+  "evidence": "Код FK47 совпадает: «Ровнитель универсальный Основит Ниплайн FK47 25 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2587",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "5 л",
+  "evidence": "Гидрофобизатор, жидкость в литрах; в каталоге «Основит Сэйфскрин SSL15» с dry=no",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2586",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "5 л",
+  "evidence": "Средство для удаления высолов, жидкость; в каталоге «Основит Сэйфскрин SAD1» с dry=no",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2589",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "10 л",
+  "evidence": "Противоморозная добавка, жидкость; в каталоге «Основит Сэйфскрин SN1» с dry=no",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2553",
+  "decision": "same_product",
+  "series_key": "Основит Хардскрин RC20",
+  "variant": "",
+  "evidence": "Код RC20 совпадает: «Состав ремонтный Основит Хардскрин RC20», dry=yes; фасовка в магазине не указана",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2588",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "1 л",
+  "evidence": "Противогрибковый концентрат, жидкость; в каталоге «Основит Сэйфскрин SBD1» с dry=no",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "349",
+  "decision": "same_product",
+  "series_key": "Основит Элисилк PG36 W",
+  "variant": "белая, 20 кг",
+  "evidence": "«ТPG36 W» — опечатка в коде (лишняя Т от старой маркировки «Т-36», адрес карточки elisilk-t-36-belaya); серия Элисилк, гипсовая финишная, белая W совпадают: «Шпаклевка гипсовая суперфинишная белая Основит Элисилк PG36 W»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "348",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "G (серая), 20 кг",
+  "evidence": "Эконсилк PG34 G в каталоге нет; близкие — «Основит Версилк PG34 W» (другая серия, белая) и «Основит Эконсилк PG35 W» (другой номер)",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "1979",
+  "decision": "same_product",
+  "series_key": "Основит Эконсилк PG35 W",
+  "variant": "белая, 20 кг",
+  "evidence": "Код PG35 W совпадает: «Шпаклевка гипсовая финишная белая Основит Эконсилк PG35 W»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2547",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "MW белая, механизированное нанесение, 25 кг",
+  "evidence": "Готовая шпаклёвка (паста); в каталоге PA39 и PA391 MW — dry=no",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2546",
+  "decision": "not_dry_mix",
+  "series_key": "",
+  "variant": "W белая, 28 кг",
+  "evidence": "Готовая шпаклёвка (паста); в каталоге «Основит Элисилк PA39 W» с dry=no",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2545",
+  "decision": "same_product",
+  "series_key": "Основит Эконсилк PP38 W",
+  "variant": "белая, 20 кг",
+  "evidence": "Код PP38 W совпадает: «Шпаклевка полимерная финишная супербелая Основит Эконсилк PP38 W»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2544",
+  "decision": "same_product",
+  "series_key": "Основит Элисилк PP37 W",
+  "variant": "белая, 20 кг",
+  "evidence": "Код PP37 W совпадает: «Шпаклевка полимерная суперфинишная супербелая Основит Элисилк PP37 W 20 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "347",
+  "decision": "same_product",
+  "series_key": "Основит Белсилк PC32 W",
+  "variant": "белая, 20 кг",
+  "evidence": "Код PC32 W совпадает: «Шпаклевка цементная финишная белая Основит Белсилк PC32 W»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2543",
+  "decision": "same_product",
+  "series_key": "Основит Базсилк PC30",
+  "variant": "MG серая, 20 кг",
+  "evidence": "Код PC30 MG совпадает с карточкой серии: «Шпаклевка цементная фасадная универсальная серая Основит Базсилк PC30 MG 20 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "1101",
+  "decision": "same_product",
+  "series_key": "Основит Базсилк PC30",
+  "variant": "MW белая, 20 кг",
+  "evidence": "Код PC30 MW совпадает с карточкой серии: «Шпаклевка цементная фасадная универсальная белая Основит Базсилк PC30 MW 20 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "346",
+  "decision": "same_product",
+  "series_key": "Основит Грейсилк PC31 G",
+  "variant": "20 кг",
+  "evidence": "Код PC31 G совпадает: «Шпаклевка цементная финишная серая Основит Грейсилк PC31 G 20 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "1099",
+  "decision": "same_product",
+  "series_key": "Основит Шовсилк PG33 H",
+  "variant": "20 кг",
+  "evidence": "Код PG33 H совпадает: «Шпаклевка гипсовая высокопрочная для швов и стыков белая Основит Шовсилк PG33 H 20 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "344",
+  "decision": "same_product",
+  "series_key": "Основит Гипсвэлл PG25",
+  "variant": "серая, 30 кг",
+  "evidence": "Код PG25 совпадает с карточкой серии: «Штукатурка гипсовая универсальная серая Основит Гипсвэлл PG25 30 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "728",
+  "decision": "same_product",
+  "series_key": "Основит Гипсвэлл PG25",
+  "variant": "W белая, 30 кг",
+  "evidence": "Код PG25 W совпадает с карточкой серии: «Штукатурка гипсовая универсальная белая Основит Гипсвэлл PG25 W 30 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "729",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "M (машинного и ручного нанесения), 30 кг",
+  "evidence": "Гипсвэлл PG26 M в каталоге нет; близкое — «Основит Техно PG26/1 M» (номер PG26/1, другой)",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "1977",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "MW белая, машинного и ручного нанесения, 30 кг",
+  "evidence": "Гипсвэлл PG26 MW в каталоге нет; близкое — «Основит Техно PG26/1 M» с вариантом PG26/1 MW (номер PG26/1, другой)",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2602",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "М, 30 кг",
+  "evidence": "Техно PG26 М в каталоге нет; есть только «Основит Техно PG26/1 M» (PG26 против PG26/1 — другая модель)",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2601",
+  "decision": "same_product",
+  "series_key": "Основит Техно PG26/1 M",
+  "variant": "М, 30 кг",
+  "evidence": "Код PG26/1 M совпадает (кириллическая М = M): «Штукатурка гипсовая Основит Техно PG26/1 M 30 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "1978",
+  "decision": "same_product",
+  "series_key": "Основит Техно PC20 M",
+  "variant": "25 кг",
+  "evidence": "Код PC20 M совпадает: «Обрызг штукатурный Основит Техно PC20 M 25 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "343",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "финишная, 25 кг",
+  "evidence": "Слимвэлл PC23 в каталоге нет; близкое — «Основит Техно PC23 M» (штукатурка-шпаклевка цементная): другая серия и суффикс M, совпадение не доказано",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2542",
+  "decision": "same_product",
+  "series_key": "Основит Стартвэлл PC22 H",
+  "variant": "25 кг",
+  "evidence": "«СТАТРВЭЛЛ» — опечатка Стартвэлл; код PC22 H совпадает: «Штукатурка цементная высокопрочная Основит Стартвэлл PC22 H 25 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "727",
+  "decision": "same_product",
+  "series_key": "Основит Флайвэлл PC24/1 ML",
+  "variant": "лёгкая, 25 кг",
+  "evidence": "Код РС24/1 ML (кириллическая РС = PC) и серия Флайвэлл совпадают: «Штукатурка легкая ОСНОВИТ ФЛАЙВЭЛЛ РС24/1 ML (25 кг)». В каталоге есть и «Основит Техно PC24/1 ML», но в названии магазина — Флайвэлл",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "340",
+  "decision": "same_product",
+  "series_key": "Основит Техно PC21 M",
+  "variant": "25 кг",
+  "evidence": "Серия Техно и код PC21 M совпадают: «Штукатурка цементная фасадная Основит Техно PC21 M 30 кг»; у производителя фасовка 30 кг, в магазине 25 кг. Отдельно в каталоге есть «Основит Стартвэлл PC21 M» 25 кг",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "342",
+  "decision": "same_product",
+  "series_key": "Основит Стартвэлл PC21",
+  "variant": "25 кг",
+  "evidence": "«СТАТРВЭЛЛ» — опечатка Стартвэлл; код PC21 без M совпадает: «Штукатурка фасадная ОСНОВИТ СТАРТВЭЛЛ PC21 (25 кг) Н»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "1937",
+  "decision": "same_product",
+  "series_key": "Основит Путформ MC114 L",
+  "variant": "20 кг",
+  "evidence": "Код MC114 L и «высокоэффективный» совпадают с карточкой «Раствор кладочный теплоизоляционный высокоэффективный Основит Путформ MC114 L 20 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "1922",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "20 кг",
+  "evidence": "Ни «Гипсформ», ни кода MG115 в каталоге нет. Ближе всего по назначению (клей для ПГП) «Основит PRO клей гипсовый монтажный», но у него нет кода MG115",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "1935",
+  "decision": "same_product",
+  "series_key": "Основит Техно MC112",
+  "variant": "40 кг",
+  "evidence": "Совпадают линейка «Техно» и код MC112; в каталоге «Клей монтажный Основит Техно MC112 40 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "306",
+  "decision": "same_product",
+  "series_key": "Основит Селформ MC112",
+  "variant": "20 кг",
+  "evidence": "Селформ МС112 (кириллица) = Селформ MC112; в каталоге «Клей монтажный Основит Селформ MC112 20 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2172",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "белый, 25 кг",
+  "evidence": "Мастпликса AC12 W (белого) в каталоге нет. Есть только AC12 H (усиленный), AC121 T и AC13, суффикс у всех другой",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "724",
+  "decision": "same_product",
+  "series_key": "Основит Базпликс AC10",
+  "variant": "25 кг",
+  "evidence": "Базпликс АС10 = Базпликс AC10 [C0T] 25 кг",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "725",
+  "decision": "same_product",
+  "series_key": "Основит Гранипликс AC14",
+  "variant": "25 кг",
+  "evidence": "Гранипликс AC14 «Гранит» = «Клей плиточный гранит Основит Гранипликс AC14 [C2TE]»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "1956",
+  "decision": "renamed_same_product",
+  "series_key": "Основит Мастпликс AC121 T",
+  "variant": "25 кг",
+  "evidence": "адрес карточки AC121 T у производителя — /mastpliks-ac12-t/: та же карточка после переименования (решение при сборке 11.10)",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "329",
+  "decision": "same_product",
+  "series_key": "Основит Старпликс AC11",
+  "variant": "25 кг",
+  "evidence": "Старпликс AC11 = «Клей плиточный универсальный Основит Старпликс AC11 [C1]»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2561",
+  "decision": "same_product",
+  "series_key": "Основит Максипликс AC17 W",
+  "variant": "белый, 25 кг",
+  "evidence": "Максипликс АС17 W (белый) = «Клей плиточный белый Основит Максипликс AC17 W [C2TE] 25 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "331",
+  "decision": "same_product",
+  "series_key": "Основит Мастпликс AC12 H",
+  "variant": "25 кг",
+  "evidence": "Мастпликс АС12 H «усиленный» = «Клей плиточный усиленный Основит Мастпликс AC12 H [C1T]»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "330",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "25 кг",
+  "evidence": "Мастпликса «Эко AC12» без суффикса в каталоге нет. Близкие: AC12 H (усиленный, но не беспылевой) и AC13 (беспылевой); код ни с одним не совпадает",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2559",
+  "decision": "same_product",
+  "series_key": "Основит Гранипликс AC15 R",
+  "variant": "25 кг",
+  "evidence": "Гранипликс АС15 R «Экспресс» = «Клей плиточный быстротвердеющий Основит Гранипликс AC15 R [C1TF]»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2562",
+  "decision": "renamed_same_product",
+  "series_key": "Основит Максипликс AC17 WE S1",
+  "variant": "белый, 25 кг",
+  "evidence": "совпадают номер 17, белый, класс S1 и «высокоэластичный» в названии карточки производителя (решение при сборке 11.10)",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2563",
+  "decision": "renamed_same_product",
+  "series_key": "Основит Максипликс AC172 LEW S2",
+  "variant": "белый, 25 кг",
+  "evidence": "адрес карточки AC172 LEW S2 — /maksipliks-ac17-lew-s2-…/: та же карточка после переименования (решение при сборке 11.10)",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2560",
+  "decision": "renamed_same_product",
+  "series_key": "Основит Максипликс AC161 E",
+  "variant": "25 кг",
+  "evidence": "адрес карточки AC161 E — /maksipliks-as16-e/: та же карточка после переименования (решение при сборке 11.10)",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2171",
+  "decision": "not_on_manufacturer_site",
+  "series_key": "",
+  "variant": "25 кг",
+  "evidence": "Код AC16 E S2, а в каталоге сверхэластичный клей называется AC162 LE S2 (12,5 кг): другой номер и суффикс. Адрес карточки — /maksipliks-as16-le-s2-.../. Близкий ключ: Основит Максипликс AC162 LE S2",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2281",
+  "decision": "same_product",
+  "series_key": "Основит Каверпликс TC117 H",
+  "variant": "25 кг",
+  "evidence": "Каверпликс TC117 H «высокопрочная» = «Смесь штукатурно-клеевая высокопрочная Основит Каверпликс TC117 H 25 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2169",
+  "decision": "same_product",
+  "series_key": "Основит Каверпликс AC117",
+  "variant": "25 кг",
+  "evidence": "Каверпликс AC117 = «Смесь клеевая Основит Каверпликс AC117 25 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2170",
+  "decision": "same_product",
+  "series_key": "Основит Каверпликс PC117 W",
+  "variant": "белая, 25 кг",
+  "evidence": "PС117 W (С кириллицей) = PC117 W, «Смесь штукатурная белая армированная Основит Каверпликс PC117 W 25 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "1096",
+  "decision": "same_product",
+  "series_key": "Основит Каверпликс TC117",
+  "variant": "25 кг",
+  "evidence": "Каверпликс TC117 без суффикса H = «Смесь штукатурно-клеевая Основит Каверпликс TC117 25 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "332",
+  "decision": "same_product",
+  "series_key": "Основит Максипликс AC16",
+  "variant": "25 кг",
+  "evidence": "Максипликс АС16 «Профи» = «Клей плиточный профессиональный Основит Максипликс AC16 [C2TE] 25 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2463",
+  "decision": "same_product",
+  "series_key": "Основит Флайформ DC100",
+  "variant": "25 кг",
+  "evidence": "Флайформ DC100 «дренажный» = «Раствор дренажный Основит Флайформ DC100»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2466",
+  "decision": "same_product",
+  "series_key": "Основит Флайформ AC6 Lq",
+  "variant": "25 кг",
+  "evidence": "Код AC6 Lq = «Клей тонкослойный Основит Флайформ AC6 Lq 25 кг». Внимание: в магазине две карточки с AC6 Lq (2465 и 2466) с разной ценой",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2465",
+  "decision": "same_product",
+  "series_key": "Основит Флайформ AC6 Lq",
+  "variant": "25 кг",
+  "evidence": "AC6 Lq «тонкослойный» = «Клей тонкослойный Основит Флайформ AC6 Lq 25 кг». Дубль карточки 2466",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2464",
+  "decision": "same_product",
+  "series_key": "Основит Флайформ MC80 WP",
+  "variant": "25 кг",
+  "evidence": "Флайформ MC80 Wp «монтажный подстилающий» = «Раствор монтажный подстилающий водонепроницаемый Основит Флайформ MC80 WP 25 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2469",
+  "decision": "same_product",
+  "series_key": "Основит Флайформ XC50 WP",
+  "variant": "бежево-серый 025, 25 кг",
+  "evidence": "Флайформ XC50 Wp = «Раствор для заполнения швов водонепроницаемый Основит Флайформ XC50 WP»; цвет — это вариант",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2468",
+  "decision": "same_product",
+  "series_key": "Основит Флайформ XC50 WP",
+  "variant": "графит 023, 25 кг",
+  "evidence": "Флайформ XC50 Wp = XC50 WP; цвет — это вариант",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2471",
+  "decision": "same_product",
+  "series_key": "Основит Флайформ XC50 WP",
+  "variant": "коричневый 040, 25 кг",
+  "evidence": "Флайформ XC50 Wp = XC50 WP; цвет — это вариант",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2470",
+  "decision": "same_product",
+  "series_key": "Основит Флайформ XC50 WP",
+  "variant": "медный 083, 25 кг",
+  "evidence": "Флайформ XC50 Wp = XC50 WP; цвет — это вариант",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2467",
+  "decision": "same_product",
+  "series_key": "Основит Флайформ XC50 WP",
+  "variant": "серый 020, 25 кг",
+  "evidence": "Флайформ XC50 Wp = XC50 WP; цвет — это вариант",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2473",
+  "decision": "same_product",
+  "series_key": "Основит Флайформ MC30",
+  "variant": "G серый 020, 25 кг",
+  "evidence": "Флайформ MC30 = «Раствор для укладки камня с расшивкой шва Основит Флайформ MC30 25 кг». Буква G стоит при цвете (серый) — это вариант цвета, не другая модель",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2472",
+  "decision": "same_product",
+  "series_key": "Основит Флайформ MC30",
+  "variant": "W белый 010, 25 кг",
+  "evidence": "Флайформ MC30; буква W стоит при цвете (белый) — это вариант цвета",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2476",
+  "decision": "same_product",
+  "series_key": "Основит Флайформ MC30",
+  "variant": "бежевый 030, 25 кг",
+  "evidence": "Флайформ MC30; цвет — это вариант",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2475",
+  "decision": "same_product",
+  "series_key": "Основит Флайформ MC30",
+  "variant": "графит 023, 25 кг",
+  "evidence": "Флайформ MC30; цвет — это вариант",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2477",
+  "decision": "same_product",
+  "series_key": "Основит Флайформ MC30",
+  "variant": "коричневый 040, 25 кг",
+  "evidence": "Флайформ MC30; цвет — это вариант",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2474",
+  "decision": "same_product",
+  "series_key": "Основит Флайформ MC30",
+  "variant": "темно-серый 022, 25 кг",
+  "evidence": "Флайформ MC30; цвет — это вариант",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2584",
+  "decision": "same_product",
+  "series_key": "Основит Печформ AC400R",
+  "variant": "5 кг",
+  "evidence": "Печформ AC400 R «Экспресс» = «Клей термостойкий экспресс Основит Печформ AC400R 5 кг» (в описании производителя тоже «AC400 R»)",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2580",
+  "decision": "same_product",
+  "series_key": "Основит Печформ MF1300",
+  "variant": "20 кг",
+  "evidence": "Печформ MF1300 «керамическая» = «Смесь огнеупорная керамическая Основит Печформ MF1300 20 кг»",
+  "site": "osnovit"
+ },
+ {
+  "tk_id": "2581",
+  "decision": "same_product",
+  "series_key": "Основит Печформ MSi1300",
+  "variant": "20 кг",
+  "evidence": "Печформ MSi1300 «силикатная» = «Смесь огнеупорная силикатная Основит Печформ MSi1300 20 кг»",
+  "site": "osnovit"
+ }
+]

@@ -1,0 +1,119 @@
+---
+// Модальное окно на нативном <dialog>. Открывается любым элементом с data-modal-open="<id>"
+// (например <Button modal="callback">). Скрипт один на страницу — вешается делегированием.
+interface Props {
+  id: string;
+  title?: string;
+  size?: 'sm' | 'md';
+}
+
+const { id, title, size = 'sm' } = Astro.props;
+const titleId = `${id}-title`;
+---
+
+<dialog class={`modal modal--${size}`} id={id} data-modal aria-labelledby={title ? titleId : undefined}>
+  <div class="modal__box">
+    <button class="modal__close" type="button" data-modal-close aria-label="Закрыть окно">
+      <span aria-hidden="true">×</span>
+    </button>
+    {/* Заголовок окна — НЕ <h2>: диалог не секция документа, а его заголовок попадал
+        в структуру страницы. На подстранице ЖКЗ так набиралось до 13 лишних h2
+        («Заказать звонок», названия чужих позиций) — раньше первого h1 в коде.
+        Для доступности достаточно aria-labelledby: он работает на любом элементе. */}
+    {title && <p class="modal__title" id={titleId}>{title}</p>}
+    <slot />
+  </div>
+</dialog>
+
+<style>
+  .modal {
+    width: min(440px, calc(100vw - 24px));
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .modal--md { width: min(680px, calc(100vw - 24px)); }
+
+  .modal::backdrop { background: var(--overlay); }
+
+  .modal__box {
+    position: relative;
+    padding: var(--space-6) var(--space-5) var(--space-5);
+  }
+
+  .modal__close {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: var(--tap);
+    height: var(--tap);
+    display: grid;
+    place-items: center;
+    font-size: 28px;
+    line-height: 1;
+    color: var(--color-muted);
+    background: none;
+    border: 0;
+    border-radius: var(--radius-sm);
+  }
+
+  .modal__close:hover { color: var(--color-text); }
+
+  .modal__title {
+    /* был h2 — вес и верхний отступ задаём явно, чтобы вид окна не изменился */
+    margin: 0 0 var(--space-4);
+    padding-right: var(--space-6);
+    font-family: var(--font-display, inherit);
+    font-size: var(--fs-h3);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+</style>
+
+<script>
+  // Одна делегированная привязка на всю страницу: открыть, закрыть, клик по подложке.
+  if (!(window as any).__ktModalInit) {
+    (window as any).__ktModalInit = true;
+
+    document.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+
+      const opener = target.closest<HTMLElement>('[data-modal-open]');
+      if (opener) {
+        const dialog = document.getElementById(opener.dataset.modalOpen || '') as HTMLDialogElement | null;
+        if (dialog && typeof dialog.showModal === 'function') {
+          event.preventDefault();
+          // Окно открывается повторно тем же элементом, поэтому внутри оставались прежние
+          // введённые данные и прошлое сообщение («заявка отправлена» / «заполните поле»).
+          // Человек видел чужой ответ на своё новое нажатие — чистим перед показом.
+          dialog.querySelectorAll<HTMLFormElement>('form[data-lead-form]').forEach((form) => {
+            if (form.dataset.sent === 'true') return; // отправленную не сбрасываем — там итог
+            form.reset();
+            form.querySelectorAll<HTMLElement>('[data-error]').forEach((e) => { e.hidden = true; });
+            form.querySelectorAll('[aria-invalid]').forEach((e) => e.removeAttribute('aria-invalid'));
+            const status = form.querySelector<HTMLElement>('[data-status]');
+            if (status) status.hidden = true;
+          });
+          dialog.showModal();
+          const focusable = dialog.querySelector<HTMLElement>('input, select, textarea, button:not([data-modal-close])');
+          focusable?.focus();
+          return;
+        }
+      }
+
+      if (target.closest('[data-modal-close]')) {
+        target.closest('dialog')?.close();
+        return;
+      }
+
+      // клик мимо окна (по самому dialog = по подложке)
+      if (target instanceof HTMLElement && target.matches('dialog[data-modal]')) {
+        (target as HTMLDialogElement).close();
+      }
+    });
+  }
+</script>

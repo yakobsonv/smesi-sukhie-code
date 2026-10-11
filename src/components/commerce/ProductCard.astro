@@ -1,0 +1,217 @@
+---
+// Карточка товара: фото, название, завод, цена, кнопка.
+// Геометрия карточки у Оскола и Стелларда на боевых совпадает — компонент один на оба сайта.
+// Цена приходит из данных как есть («32,40») и не пересчитывается.
+import Button from '../ui/Button.astro';
+import { formatPrice, softWrap } from '../../lib/format';
+import type { Product } from '../../lib/types';
+
+interface Props extends Product {
+  /** уровень заголовка карточки в структуре страницы */
+  level?: 2 | 3 | 4;
+  class?: string;
+}
+
+const {
+  title,
+  subtitle,
+  image,
+  alt,
+  price,
+  badge,
+  ctaLabel = 'Узнать цену',
+  href,
+  modalId,
+  note,
+  level = 3,
+  class: className,
+} = Astro.props;
+
+const Heading = `h${level}` as any;
+// мягкие переносы в длинных словах: на телефоне строка карточки 135 px, и «старооскольский»
+// рвался посреди слога («старооскол / ьский»). Текст названия не меняется — добавляются
+// только невидимые точки переноса.
+const titleText = softWrap(title);
+---
+
+<article class:list={['card', className]}>
+  {badge && <span class={`card__badge card__badge--${badge.tone ?? 'hit'}`}>{badge.text}</span>}
+
+  {image && (
+    <div class="card__media">
+      {href ? (
+        <a href={href} tabindex="-1" aria-hidden="true">
+          <img class="card__image" src={image} alt={alt ?? ''} loading="lazy" decoding="async" />
+        </a>
+      ) : (
+        <img class="card__image" src={image} alt={alt ?? ''} loading="lazy" decoding="async" />
+      )}
+    </div>
+  )}
+
+  <div class="card__body">
+    <Heading class="card__title">
+      {href ? <a href={href}>{titleText}</a> : titleText}
+    </Heading>
+
+    {subtitle && <p class="card__subtitle">{subtitle}</p>}
+
+    {price && (
+      <p class="card__price">
+        {price.prefix && <span class="card__price-prefix">{price.prefix}</span>}
+        <span class="card__price-value">{formatPrice(price.value)}</span>
+        <span class="card__price-currency">{price.currency ?? '₽'}</span>
+        {price.unit && <span class="card__price-unit">{price.unit}</span>}
+      </p>
+    )}
+
+    {price?.note && <p class="card__note">{price.note}</p>}
+    {note && <p class="card__note">{note}</p>}
+
+    <div class="card__cta">
+      <Button href={modalId ? undefined : href} modal={modalId} full size="sm">{ctaLabel}</Button>
+    </div>
+  </div>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease),
+      border-color var(--dur) var(--ease);
+  }
+
+  .card:hover {
+    box-shadow: var(--shadow-lift);
+    border-color: var(--color-border);
+    transform: translateY(-4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card:hover { transform: none; }
+  }
+
+  .card__badge {
+    position: absolute;
+    top: var(--space-3);
+    left: var(--space-3);
+    z-index: 2;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-on-brand);
+    background: var(--color-brand);
+    border-radius: var(--radius-pill);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.18);
+  }
+
+  .card__badge--new { background: var(--color-success); color: #fff; }
+  .card__badge--top { background: var(--color-dark); color: var(--color-on-dark); }
+
+  /* подложка фото: не bg-alt — иначе на сером фоне секции карточка «растворяется» */
+  .card__media { background: var(--color-surface-alt); overflow: hidden; }
+
+  .card__image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    transition: transform 340ms var(--ease);
+  }
+
+  .card:hover .card__image { transform: scale(1.045); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card:hover .card__image { transform: none; }
+  }
+
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    flex: 1;
+    padding: var(--space-4);
+  }
+
+  .card__title {
+    font-size: var(--fs-h4);
+    line-height: 1.25;
+    /* Названия позиций длинные («старооскольский», «облицовочный»). В узкой карточке
+       (169 px при двух столбцах на телефоне) такое слово не помещалось в строку и
+       обрезалось краем: «облицовочны», «старооскольс». Разрешаем разрыв внутри слова.
+       Без hyphens: auto — словарь рвал «старооско-льский» и «облицовоч-ный» почти
+       на каждой строке, читать было тяжелее, чем с обычным переносом целых слов. */
+    overflow-wrap: anywhere;
+  }
+
+
+  .card__title a { color: inherit; text-decoration: none; }
+  .card__title a:hover { color: var(--color-accent-text); }
+
+  .card__subtitle {
+    font-size: var(--fs-tiny);
+    color: var(--color-muted);
+  }
+
+  .card__price {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border-soft);
+    font-family: var(--font-head);
+  }
+
+  .card__price-prefix {
+    font-size: var(--fs-small);
+    color: var(--color-muted);
+  }
+
+  .card__price-value {
+    font-size: var(--fs-price);
+    font-weight: var(--fw-head, 700);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .card__price-currency {
+    font-size: var(--fs-currency);
+    font-weight: 700;
+    color: var(--color-accent-text);
+  }
+
+  .card__price-unit {
+    flex-basis: 100%;
+    font-family: var(--font-body);
+    font-size: var(--fs-tiny);
+    color: var(--color-muted);
+  }
+
+  .card__note {
+    font-size: var(--fs-tiny);
+    color: var(--color-muted);
+  }
+
+  .card__cta { margin-top: var(--space-4); }
+
+  /* Телефон: карточки идут в два столбца по 169 px. Кегли, подобранные для одной
+     колонки, туда не влезают — «₽» уезжал под цену, подпись завода лезла в три строки.
+     Блок стоит В КОНЦЕ: правила выше по файлу имеют ту же силу и перебили бы его. */
+  @media (max-width: 619px) {
+    .card__title { font-size: var(--fs-body); }
+    .card__subtitle { font-size: 12px; }
+    .card__price { gap: 4px; }
+    .card__price-value { font-size: 26px; }
+    .card__price-currency { font-size: 18px; }
+  }
+</style>

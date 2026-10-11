@@ -1,0 +1,33 @@
+---
+// Обёртка страницы сайта: Base + одно меню и один подвал на все страницы.
+import Base from './Base.astro';
+import { mainNav, footerColumns, POLICY_LINKS } from '../data/nav';
+
+interface Props {
+  title: string;
+  description: string;
+  /** адрес страницы без слэшей: '' — главная */
+  slug?: string;
+  jsonLd?: (Record<string, unknown> | null | undefined)[];
+}
+
+const { title, description, slug = '', jsonLd = [] } = Astro.props;
+---
+
+<Base
+  site="sukhie"
+  title={title}
+  description={description}
+  slug={slug}
+  jsonLd={jsonLd}
+  nav={mainNav(slug)}
+  header={{ sticky: true, cta: { label: 'Позвонить' } }}
+  footer={{
+    columns: footerColumns(),
+    policy: POLICY_LINKS,
+    tagline: 'Сухие строительные смеси Perel, Dauer, Основит и других производителей — Москва и Московская область.',
+    address: 'Москва, Научный проезд, 10 · ул. Большая Почтовая, 55/59',
+  }}
+>
+  <slot />
+</Base>

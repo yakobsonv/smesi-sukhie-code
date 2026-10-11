@@ -1,0 +1,32 @@
+---
+// Шапка внутренней страницы: крошки, H1, вводная фраза, строка фактов.
+import Container from '../layout/Container.astro';
+import Breadcrumbs from '../layout/Breadcrumbs.astro';
+import type { BreadcrumbItem } from '../../lib/types';
+
+interface Props {
+  trail: BreadcrumbItem[];
+  title: string;
+  lead?: string;
+  meta?: string[];
+}
+const { trail, title, lead, meta = [] } = Astro.props;
+---
+
+<section class="ph">
+  <Container>
+    <Breadcrumbs site="sukhie" trail={trail} />
+    <h1 class="ph__title">{title}</h1>
+    {lead && <p class="ph__lead">{lead}</p>}
+    {meta.length > 0 && <ul class="ph__meta">{meta.map((m) => <li>{m}</li>)}</ul>}
+  </Container>
+</section>
+
+<style>
+  .ph { padding: var(--space-5) 0 var(--space-6); background: var(--color-bg-alt); border-bottom: 1px solid var(--color-border-soft); }
+  .ph__title { margin: var(--space-3) 0 var(--space-3); font-size: var(--fs-h1); line-height: 1.1; overflow-wrap: anywhere; hyphens: auto; }
+  .ph__lead { max-width: 62ch; margin: 0; font-size: var(--fs-lead); color: var(--color-text-soft); }
+  .ph__meta { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: var(--space-4) 0 0; padding: 0; list-style: none; font-size: var(--fs-small); color: var(--color-text-soft); }
+  .ph__meta li { position: relative; padding-left: 16px; }
+  .ph__meta li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 8px; height: 8px; border-radius: 2px; background: var(--color-highlight, var(--color-brand)); }
+</style>

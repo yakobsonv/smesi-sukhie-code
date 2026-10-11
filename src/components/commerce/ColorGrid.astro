@@ -1,0 +1,211 @@
+---
+// Образцы цвета крупно, по 4 в ряд — прямая просьба клиента.
+// На боевом Стелларде это 8 колонок по 132 px и 6 пустых ячеек у «Премиум Эко»;
+// здесь группа из двух образцов рисуется как две карточки, а не как «2 из 8».
+// Свотчи Оскола кликабельны — если у цвета есть href, карточка становится ссылкой.
+import type { ColorGroup, ColorItem } from '../../lib/types';
+
+interface Props {
+  /** либо группы (Колормикс / Моноцвет / Премиум Эко), либо плоский список */
+  groups?: ColorGroup[];
+  colors?: ColorItem[];
+  columns?: 2 | 3 | 4 | 5;
+  size?: 'md' | 'lg';
+  /** overlay — имя цвета лежит НА фото с градиентной подложкой (редизайн Оскола) */
+  overlay?: boolean;
+  /** предупреждение о цветопередаче — на боевых оно есть на каждой странице */
+  notice?: string;
+  class?: string;
+}
+
+const { groups, colors, columns = 4, size = 'lg', overlay = false, notice, class: className } = Astro.props;
+const blocks: ColorGroup[] = groups ?? (colors ? [{ title: '', colors }] : []);
+---
+
+{
+  blocks.length > 0 && (
+    <div class:list={['colors', `colors--${size}`, overlay && 'colors--overlay', className]} style={`--colors-cols:${columns}`}>
+      {blocks.map((group) => (
+        <section class="colors__group">
+          {group.title && <h3 class="colors__group-title">{group.title}</h3>}
+          {group.subtitle && <p class="colors__group-subtitle">{group.subtitle}</p>}
+          {group.restriction && <p class="colors__restriction">{group.restriction}</p>}
+
+          <ul class="colors__list" data-reveal-stagger>
+            {group.colors.map((color) => (
+              <li class="colors__item">
+                {color.href ? (
+                  <a class="colors__card" href={color.href}>
+                    <span class="colors__media">
+                      <img class="colors__image" src={color.image} alt={color.alt ?? color.name} loading="lazy" decoding="async" />
+                    </span>
+                    <span class="colors__name">{color.name}<span class="colors__arrow" aria-hidden="true">→</span></span>
+                    {color.note && <span class="colors__note">{color.note}</span>}
+                  </a>
+                ) : (
+                  <figure class="colors__card">
+                    <span class="colors__media">
+                      <img class="colors__image" src={color.image} alt={color.alt ?? color.name} loading="lazy" decoding="async" />
+                    </span>
+                    <figcaption class="colors__name">{color.name}</figcaption>
+                    {color.note && <span class="colors__note">{color.note}</span>}
+                  </figure>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+
+      {notice && <p class="colors__notice">{notice}</p>}
+    </div>
+  )
+}
+
+<style>
+  .colors__group + .colors__group { margin-top: var(--space-7); }
+
+  .colors__group-title {
+    margin-bottom: var(--space-3);
+    font-size: var(--fs-h3);
+  }
+
+  .colors__group-subtitle {
+    margin-bottom: var(--space-4);
+    max-width: 60ch;
+    color: var(--color-text-soft);
+  }
+
+  .colors__restriction {
+    margin-bottom: var(--space-4);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--color-accent-text);
+  }
+
+  .colors__list {
+    display: grid;
+    gap: var(--grid-gap);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .colors__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    height: 100%;
+    margin: 0;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .colors__media {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border-soft);
+    transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+
+  .colors__image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    transition: transform 340ms var(--ease);
+  }
+
+  .colors--md .colors__image { aspect-ratio: 4 / 3; }
+
+  a.colors__card:hover .colors__media {
+    border-color: var(--color-brand);
+    box-shadow: var(--shadow-card);
+  }
+
+  a.colors__card:hover .colors__image { transform: scale(1.05); }
+
+  @media (prefers-reduced-motion: reduce) {
+    a.colors__card:hover .colors__image { transform: none; }
+  }
+
+  .colors__name {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-head);
+    font-weight: 600;
+  }
+
+  .colors__arrow {
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+    color: var(--color-accent-text);
+  }
+
+  a.colors__card:hover .colors__name { color: var(--color-accent-text); }
+  a.colors__card:hover .colors__arrow { opacity: 1; transform: none; }
+
+  /* режим overlay: имя лежит на фото, снизу градиентная подложка */
+  .colors--overlay .colors__card { position: relative; }
+
+  .colors--overlay .colors__media {
+    border: 0;
+    border-radius: var(--radius-lg);
+  }
+
+  .colors--overlay .colors__image { aspect-ratio: 5 / 4; }
+
+  .colors--overlay .colors__name {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: 1;
+    padding: 44px var(--space-4) var(--space-4);
+    color: #fff;
+    font-size: 18px;
+    font-weight: var(--fw-head, 700);
+    background: linear-gradient(transparent, rgb(16 10 7 / 0.72));
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    pointer-events: none;
+  }
+
+  .colors--overlay a.colors__card:hover .colors__name { color: #fff; }
+  .colors--overlay .colors__arrow { color: #fff; }
+
+  .colors--overlay .colors__note {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    z-index: 1;
+    padding: 4px 10px;
+    color: #fff;
+    background: rgb(16 10 7 / 0.55);
+    border-radius: var(--radius-pill);
+    backdrop-filter: blur(4px);
+  }
+
+  .colors__note {
+    font-size: var(--fs-tiny);
+    color: var(--color-muted);
+  }
+
+  .colors__notice {
+    margin-top: var(--space-6);
+    padding: var(--space-4);
+    font-size: var(--fs-small);
+    color: var(--color-text-soft);
+    background: var(--color-brand-soft);
+    border-left: 3px solid var(--color-brand);
+    border-radius: var(--radius-sm);
+  }
+
+  @media (min-width: 700px) {
+    .colors__list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+
+  @media (min-width: 980px) {
+    .colors__list { grid-template-columns: repeat(var(--colors-cols, 4), minmax(0, 1fr)); }
+  }
+</style>

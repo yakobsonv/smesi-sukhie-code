@@ -1,0 +1,156 @@
+---
+// Сворачивание длинного блока НА ТЕЛЕФОНЕ.
+//
+// Зачем: главные трёх сайтов на телефоне были по ~30 000 px (замер 02.09) — до половины секций
+// живой человек не доскроллит. Резать содержимое нельзя: тексты и характеристики — контент клиента.
+// Поэтому длинный блок остаётся в разметке целиком (и для поиска, и для тех, кто раскроет),
+// но визуально обрезан до нескольких экранов, с честной кнопкой «Показать полностью».
+//
+// Как устроено:
+// - обрезка живёт ТОЛЬКО в @media (max-width: 619px): на планшете и десктопе блок всегда открыт;
+// - без JS блок открыт (см. <noscript>) — обрезка не должна прятать контент от того, у кого скрипты
+//   не отработали;
+// - при раскрытии принудительно снимаем opacity:0 с [data-reveal] внутри: наблюдатель их не видел,
+//   пока они были за границей overflow: hidden (та же природа, что и дефект Reveal от 26.08).
+interface Props {
+  /** до какой высоты обрезать на телефоне, px */
+  max?: number;
+  label?: string;
+  labelLess?: string;
+  /** фон секции — чтобы градиент затухания совпал с подложкой */
+  fade?: 'base' | 'alt' | 'surface' | 'soft';
+  class?: string;
+}
+
+const { max = 620, label = 'Показать полностью', labelLess = 'Свернуть', fade = 'base', class: className } = Astro.props;
+
+const FADE: Record<string, string> = {
+  base: 'var(--color-bg)',
+  alt: 'var(--color-bg-alt)',
+  surface: 'var(--color-surface)',
+  soft: 'var(--color-brand-soft)',
+};
+const uid = `clp-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div class:list={['clp', className]} data-clp style={`--clp-max:${max}px;--clp-fade:${FADE[fade] ?? FADE.base}`}>
+  <div class="clp__body" id={uid}>
+    <slot />
+  </div>
+
+  <p class="clp__foot">
+    <button class="clp__btn" type="button" data-clp-toggle aria-expanded="false" aria-controls={uid}>
+      <span class="clp__more">{label}</span>
+      <span class="clp__less">{labelLess}</span>
+      <span class="clp__chev" aria-hidden="true">▾</span>
+    </button>
+  </p>
+</div>
+
+<noscript>
+  <style>
+    .clp__body { max-height: none !important; }
+    .clp__body::after { display: none !important; }
+    .clp__foot { display: none !important; }
+  </style>
+</noscript>
+
+<style>
+  /* десктоп и планшет — блок как был, кнопки нет */
+  .clp__foot { display: none; }
+
+  @media (max-width: 619px) {
+    .clp__body {
+      position: relative;
+      max-height: var(--clp-max);
+      overflow: hidden;
+    }
+
+    .clp__body::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 110px;
+      background: linear-gradient(to bottom, transparent, var(--clp-fade));
+      pointer-events: none;
+    }
+
+    .clp.is-open .clp__body,
+    .clp.is-idle .clp__body { max-height: none; overflow: visible; }
+    .clp.is-idle .clp__body::after { display: none; }
+    .clp.is-idle .clp__foot { display: none; }
+    .clp.is-open .clp__body::after { display: none; }
+
+    .clp__foot {
+      display: block;
+      margin-top: var(--space-4);
+      text-align: center;
+    }
+
+    .clp__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      font-size: var(--fs-small);
+      font-weight: 600;
+      color: var(--color-text);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-pill);
+    }
+
+    .clp__less { display: none; }
+    .clp.is-open .clp__more { display: none; }
+    .clp.is-open .clp__less { display: inline; }
+    .clp.is-open .clp__chev { transform: rotate(180deg); }
+    .clp__chev { transition: transform var(--dur) var(--ease); }
+  }
+</style>
+
+<script>
+  if (!(window as any).__ktCollapse) {
+    (window as any).__ktCollapse = true;
+
+    // Кнопка нужна, только если под обрезкой действительно что-то есть. На главной Стелларда
+    // блок «как выбрать» короче своей обрезки (500 px против 700) — кнопка «Показать полностью»
+    // висела и не делала ничего. Прячем такие кнопки и снимаем с блока обрезку.
+    const hideIdleToggles = () => {
+      const mobile = window.matchMedia('(max-width: 619px)').matches;
+      document.querySelectorAll<HTMLElement>('[data-clp]').forEach((box) => {
+        const body = box.querySelector<HTMLElement>('.clp__body');
+        if (!body) return;
+        // Считаем от заданной обрезки (--clp-max), а НЕ от computed max-height: как только
+        // блок получает is-idle, max-height становится none, и проверка по нему начинает
+        // отменять сама себя на следующем проходе.
+        const max = parseFloat(getComputedStyle(box).getPropertyValue('--clp-max'));
+        if (!Number.isFinite(max) || max <= 0) return;
+        box.classList.toggle('is-idle', mobile && body.scrollHeight <= max + 8);
+      });
+    };
+    hideIdleToggles();
+    window.addEventListener('resize', hideIdleToggles, { passive: true });
+    window.addEventListener('load', hideIdleToggles);
+
+    document.addEventListener('click', (event) => {
+      const btn = (event.target as HTMLElement).closest<HTMLElement>('[data-clp-toggle]');
+      if (!btn) return;
+      const box = btn.closest<HTMLElement>('[data-clp]');
+      if (!box) return;
+
+      const open = box.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', String(open));
+
+      if (open) {
+        // содержимое было за границей обрезки — наблюдатель «оживления» его не видел
+        box
+          .querySelectorAll<HTMLElement>('[data-reveal]:not(.is-revealed), [data-reveal-stagger]:not(.is-revealed)')
+          .forEach((el) => el.classList.add('is-revealed'));
+      } else {
+        // при сворачивании возвращаем взгляд к началу блока, иначе экран «улетает» вниз
+        const top = box.getBoundingClientRect().top + window.scrollY - 120;
+        if (window.scrollY > top) window.scrollTo({ top, behavior: 'auto' });
+      }
+    });
+  }
+</script>

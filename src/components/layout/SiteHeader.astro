@@ -1,0 +1,481 @@
+---
+// Шапка: лого, меню (с выпадающими списками), телефон с режимом работы, кнопка звонка.
+// На узком экране меню уезжает в панель под бургер — отдельной мобильной шапки нет.
+import Container from './Container.astro';
+import { getSite, localPath } from '../../lib/sites';
+import type { FieldDef, NavItem, SiteKey } from '../../lib/types';
+
+interface Props {
+  site: SiteKey;
+  nav?: NavItem[];
+  phone?: { display: string; href: string };
+  hours?: string;
+  /** src — знак на светлой шапке; srcOnDark — он же для прозрачной шапки поверх
+   *  первого экрана. Оба показываем разом и переключаем стилем: подменять src скриптом
+   *  значит мигать пустым местом на каждой прокрутке. */
+  logo?: { src?: string; srcOnDark?: string; text?: string; sub?: string; alt?: string; href?: string };
+  /** кнопка звонка; null — не показывать.
+   *  fields — состав формы в попапе (у ЖКЗ на боевом третье поле «Время звонка»). */
+  cta?: { label: string; modalId?: string; href?: string; fields?: FieldDef[] } | null;
+  sticky?: boolean;
+  /** brand — шапка залита фирменным цветом (так у ЖКЗ) */
+  /** brand — шапка залита фирменным цветом (так у ЖКЗ);
+   *  over — прозрачная поверх первого экрана (язык дизайна RECKE, 15.09) */
+  variant?: 'light' | 'brand' | 'over';
+}
+
+const {
+  site,
+  nav = [],
+  phone,
+  hours,
+  logo,
+  cta = { label: 'Позвонить' },
+  sticky = false,
+  variant = 'light',
+} = Astro.props;
+
+const config = getSite(site);
+const tel = phone ?? config.phone;
+const workHours = hours ?? config.hours;
+const brand = { ...config.logo, ...logo };
+const homeHref = brand.href ?? localPath(site);
+---
+
+<header class:list={['site-header', `site-header--${variant}`, sticky && 'site-header--sticky']}>
+  <Container>
+    <div class="site-header__inner">
+      <a class="site-header__logo" href={homeHref}>
+        {brand.src
+          ? <Fragment>
+              <img class="site-header__logo-img" src={brand.src} alt={brand.alt ?? config.brand} width="150" height="44" />
+              {brand.srcOnDark && (
+                <img class="site-header__logo-img site-header__logo-img--on-dark" src={brand.srcOnDark} alt="" aria-hidden="true" width="150" height="44" />
+              )}
+            </Fragment>
+          : <span class="site-header__logo-text">
+              <span class="site-header__mark" aria-hidden="true"></span>
+              <span class="site-header__words">{brand.text ?? config.brand}{brand.sub && <small>{brand.sub}</small>}</span>
+            </span>}
+      </a>
+
+      <button
+        class="site-header__burger"
+        type="button"
+        data-nav-toggle
+        aria-expanded="false"
+        aria-controls={`nav-${site}`}
+      >
+        <span class="vh">Меню</span>
+        <span class="site-header__burger-icon" aria-hidden="true"></span>
+      </button>
+
+      <div class="site-header__panel" id={`nav-${site}`} data-nav-panel>
+        {nav.length > 0 && (
+          <nav class="site-nav" aria-label="Основное меню">
+            <ul class="site-nav__list">
+              {nav.map((item) => (
+                <li class:list={['site-nav__item', item.children?.length && 'site-nav__item--has-children']}>
+                  {item.children?.length ? (
+                    <Fragment>
+                      <button class="site-nav__link" type="button" data-nav-sub aria-expanded="false">
+                        {item.label}
+                        <span class="site-nav__chevron" aria-hidden="true"></span>
+                      </button>
+                      <ul class="site-nav__sub">
+                        {item.children.map((child) => (
+                          <li>
+                            <a
+                              class="site-nav__sub-link"
+                              href={child.href}
+                              aria-current={child.current ? 'page' : undefined}
+                            >
+                              {child.label}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </Fragment>
+                  ) : (
+                    <a class="site-nav__link" href={item.href} aria-current={item.current ? 'page' : undefined}>
+                      {item.label}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+
+        <div class="site-header__contact">
+          <a class="site-header__phone" href={tel.href}>{tel.display}</a>
+          {workHours && <span class="site-header__hours">{workHours}</span>}
+        </div>
+
+        {cta && (
+          <div class="site-header__cta">
+            <a class="btn btn--primary btn--sm" href={cta.href ?? tel.href}>{cta.label}</a>
+          </div>
+        )}
+      </div>
+    </div>
+  </Container>
+</header>
+
+<style>
+  .site-header {
+    position: relative;
+    z-index: var(--z-header);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border-soft);
+  }
+
+  .site-header--brand {
+    background: var(--color-brand);
+    color: var(--color-on-brand);
+    border-bottom-color: transparent;
+  }
+
+  /* прозрачная шапка поверх фотографии первого экрана: пока не прокрутили — без фона,
+     как только страница поехала, is-scrolled возвращает обычный светлый фон */
+  .site-header--over {
+    position: absolute;
+    inset: 0 0 auto 0;
+    z-index: 60;
+    background: transparent;
+    border-bottom-color: transparent;
+    color: var(--color-on-dark);
+  }
+
+  /* Кнопки исключены намеренно: у правила специфичность (0,3,1), а у .btn--primary
+     в base.css — (0,1,0), поэтому шапка перекрашивала текст кнопки. На прокрученной
+     белой шапке «Запросить» становилась чёрной по кирпичному — контраст 3,50:1. */
+  .site-header--over :global(a:not(.btn)),
+  .site-header--over :global(.site-header__phone),
+  .site-header--over :global(.site-header__hours) { color: var(--color-on-dark); }
+
+  /* Раскрытое меню поверх первого экрана получает плотный фон. Без этого у верха / и
+     /bloki/ панель была прозрачной и пункты ложились прямо на заголовок первого экрана
+     (аудит 04.10, R-14): читалось с трудом. Цвета — как у прокрученной шапки. */
+  .site-header--over.is-menu-open:not(.is-scrolled) {
+    background: var(--color-dark);
+    border-bottom-color: rgb(255 255 255 / 0.12);
+  }
+
+  .site-header--over.is-scrolled {
+    position: fixed;
+    background: var(--color-bg);
+    color: var(--color-text);
+    border-bottom-color: var(--color-border);
+  }
+
+  .site-header--over.is-scrolled :global(a:not(.btn)),
+  .site-header--over.is-scrolled :global(.site-header__phone),
+  .site-header--over.is-scrolled :global(.site-header__hours) { color: var(--color-text); }
+
+  .site-header--sticky {
+    position: sticky;
+    top: 0;
+    transition: box-shadow var(--dur) var(--ease);
+  }
+
+  .site-header--sticky.is-scrolled { box-shadow: 0 6px 20px -8px rgb(0 0 0 / 0.22); }
+
+  .site-header__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    min-height: 64px;
+    padding-block: var(--space-2);
+  }
+
+  .site-header__logo {
+    display: inline-flex;
+    align-items: center;
+    margin-right: auto;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .site-header__logo :global(img) {
+    max-height: 40px;
+    width: auto;
+  }
+
+  /* Знак на прозрачной шапке поверх фотографии — светлый; как только шапка
+     стала плотной (is-scrolled), возвращается обычный. Оба лежат в разметке,
+     видимость решает CSS — без подмены src и без мигания. */
+  .site-header__logo-img--on-dark { display: none; }
+  .site-header--over:not(.is-scrolled) .site-header__logo-img { display: none; }
+  .site-header--over:not(.is-scrolled) .site-header__logo-img--on-dark { display: block; }
+
+  .site-header__logo-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-head);
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.05;
+  }
+  .site-header__words { display: flex; flex-direction: column; }
+  .site-header__words small { font-family: var(--font-body); font-size: 12px; font-weight: 500; color: var(--color-muted); letter-spacing: 0.02em; }
+  /* Знак: мешок со смесью — тёмный силуэт и полоса акцента. Рисуется CSS, без файла. */
+  .site-header__mark {
+    flex: none;
+    width: 26px;
+    height: 32px;
+    border-radius: 6px 6px 9px 9px;
+    background:
+      linear-gradient(var(--color-highlight, var(--color-brand)) 0 0) 0 13px / 100% 6px no-repeat,
+      linear-gradient(var(--color-bg) 0 0) 9px 3px / 8px 3px no-repeat,
+      var(--color-brand);
+  }
+
+  .site-header__burger {
+    width: var(--tap);
+    height: var(--tap);
+    display: grid;
+    place-items: center;
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: inherit;
+  }
+
+  .site-header__burger-icon,
+  .site-header__burger-icon::before,
+  .site-header__burger-icon::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: currentColor;
+    content: '';
+  }
+
+  .site-header__burger-icon::before { transform: translateY(-6px); }
+  .site-header__burger-icon::after { transform: translateY(4px); }
+
+  .site-header__panel {
+    display: none;
+    width: 100%;
+    padding-bottom: var(--space-4);
+  }
+
+  .site-header__panel[data-open] { display: block; }
+
+  .site-nav__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-nav__link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    min-height: var(--tap);
+    padding: var(--space-2) 0;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    color: inherit;
+    text-align: left;
+    text-decoration: none;
+    background: none;
+    border: 0;
+  }
+
+  .site-nav__link { position: relative; }
+
+  .site-nav__link[aria-current='page'] { color: var(--color-accent-text); }
+
+  @media (min-width: 1180px) {
+    .site-nav__item > .site-nav__link::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 100%;
+      bottom: 2px;
+      height: 2px;
+      background: var(--color-brand);
+      transition: right var(--dur) var(--ease);
+    }
+
+    .site-nav__item > .site-nav__link:hover::after,
+    .site-nav__item > .site-nav__link[aria-current='page']::after { right: 0; }
+  }
+
+  .site-nav__chevron {
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg) translateY(-2px);
+  }
+
+  .site-nav__sub {
+    display: none;
+    margin: 0 0 var(--space-2);
+    padding: 0 0 0 var(--space-4);
+    list-style: none;
+  }
+
+  .site-nav__item[data-open] > .site-nav__sub { display: block; }
+
+  .site-nav__sub-link {
+    display: block;
+    padding: var(--space-2) 0;
+    font-size: var(--fs-small);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .site-header__contact {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: var(--space-4);
+  }
+
+  .site-header__phone {
+    font-family: var(--font-body);
+    font-size: 20px;
+    font-weight: 700;
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .site-header__hours {
+    font-size: var(--fs-tiny);
+    color: var(--color-muted);
+  }
+
+  .site-header--brand .site-header__hours { color: inherit; opacity: 0.8; }
+
+  .site-header__cta { margin-top: var(--space-3); }
+
+  @media (min-width: 1180px) {
+    .site-header__burger { display: none; }
+
+    /* одна строка: лого слева, меню и контакты справа — без переноса вторым этажом */
+    .site-header__inner { flex-wrap: nowrap; }
+
+    .site-header__panel {
+      min-width: 0;
+      display: flex !important;
+      align-items: center;
+      gap: var(--space-5);
+      width: auto;
+      padding-bottom: 0;
+    }
+
+    .site-nav__list { flex-direction: row; flex-wrap: nowrap; gap: 14px; min-width: 0; }
+
+    .site-nav__link { font-size: 14px; }
+
+    .site-header__phone { font-size: 17px; }
+
+    .site-header__hours { display: none; }
+  }
+
+  @media (min-width: 1400px) {
+    .site-nav__list { gap: 18px; }
+    .site-nav__link { font-size: 15px; }
+    .site-header__phone { font-size: 19px; }
+    .site-header__hours { display: block; }
+
+    .site-nav__item { position: relative; }
+
+    .site-nav__link { min-height: 0; padding: var(--space-2) 0; white-space: nowrap; }
+
+    .site-nav__sub {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      z-index: 5;
+      min-width: 220px;
+      padding: var(--space-3);
+      background: var(--color-surface);
+      color: var(--color-text);
+      border: 1px solid var(--color-border-soft);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+    }
+
+    .site-nav__item:hover > .site-nav__sub,
+    .site-nav__item:focus-within > .site-nav__sub { display: block; }
+
+    .site-header__contact { margin-top: 0; text-align: right; }
+    .site-header__cta { margin-top: 0; }
+  }
+</style>
+
+<script>
+  // Бургер и выпадающие пункты. Делегирование, одна привязка на страницу.
+  function closePanel(panel: HTMLElement) {
+    panel.removeAttribute('data-open');
+    document
+      .querySelector(`[data-nav-toggle][aria-controls="${panel.id}"]`)
+      ?.setAttribute('aria-expanded', 'false');
+    panel.closest('.site-header')?.classList.remove('is-menu-open');
+  }
+
+  if (!(window as any).__ktNavInit) {
+    (window as any).__ktNavInit = true;
+
+    document.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+
+      const toggle = target.closest<HTMLElement>('[data-nav-toggle]');
+      if (toggle) {
+        const panel = document.getElementById(toggle.getAttribute('aria-controls') || '');
+        if (panel) {
+          const open = panel.hasAttribute('data-open');
+          panel.toggleAttribute('data-open', !open);
+          toggle.setAttribute('aria-expanded', String(!open));
+          panel.closest('.site-header')?.classList.toggle('is-menu-open', !open);
+        }
+        return;
+      }
+
+      // Тап по ссылке в раскрытом меню закрывает панель. Раньше она закрывалась только
+      // бургером и Escape: после тапа «Доставка» страница уезжала к разделу, а панель
+      // оставалась открытой и закрывала его заголовок и первую карточку (аудит 04.10, R-15).
+      const link = target.closest<HTMLAnchorElement>('[data-nav-panel] a[href]');
+      if (link) {
+        const panel = link.closest<HTMLElement>('[data-nav-panel]');
+        if (panel?.hasAttribute('data-open')) closePanel(panel);
+      }
+
+      const sub = target.closest<HTMLElement>('[data-nav-sub]');
+      if (sub) {
+        const item = sub.closest<HTMLElement>('.site-nav__item');
+        if (item) {
+          const open = item.hasAttribute('data-open');
+          item.toggleAttribute('data-open', !open);
+          sub.setAttribute('aria-expanded', String(!open));
+        }
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      document.querySelectorAll<HTMLElement>('[data-nav-panel][data-open]').forEach(closePanel);
+    });
+
+    // Тень липкой шапки после начала прокрутки
+    const stickyHeader = document.querySelector('.site-header--sticky, .site-header--over');
+    if (stickyHeader) {
+      const onScroll = () => stickyHeader.classList.toggle('is-scrolled', window.scrollY > 4);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+    }
+  }
+</script>

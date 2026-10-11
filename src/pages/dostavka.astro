@@ -1,0 +1,96 @@
+---
+// Доставка. Условия — те же, что у кирпича клиента (Влад 11.10: «Доставка смесей на тех же
+// условиях, что кирпич? — Да»). Источник формулировок — страница доставки кирпичных сайтов
+// в коде (kirpichtrest-code, src/data/oskol/services.ts, блок «Условия доставки»).
+import Page from '../layouts/Page.astro';
+import Container from '../components/layout/Container.astro';
+import PageHead from '../components/site/PageHead.astro';
+import CtaBand from '../components/site/CtaBand.astro';
+import { localPath, OFFICES } from '../lib/sites';
+
+const ROWS = [
+  { label: 'Куда возим', value: 'Москва и Московская область' },
+  { label: 'Минимальный заказ', value: 'от 1 поддона' },
+  { label: 'Срок', value: '1–2 дня' },
+  { label: 'График поставки', value: 'одной партией или частями' },
+  { label: 'Выгрузка', value: 'силами наших водителей, по согласованию' },
+  { label: 'Стоимость', value: 'считается индивидуально: объём и удалённость' },
+  { label: 'Скидка на доставку', value: 'при заказе от 25 поддонов' },
+];
+const STEPS = [
+  { title: 'Заявка и расчёт', text: 'Вы называете адрес и список смесей с объёмом. В ответ даём стоимость доставки и ближайшую дату.' },
+  { title: 'Согласование даты', text: 'Подбираем удобное время привоза. Если стройка идёт по графику, разбиваем поставку на части.' },
+  { title: 'Привоз и выгрузка', text: 'Машина приходит на объект в согласованное время. Выгрузку по договорённости выполняют наши водители.' },
+];
+const PREPARE = [
+  'Адрес объекта — от него зависит удалённость и стоимость.',
+  'Список смесей и количество упаковок.',
+  'Желаемая дата привоза или график поставки по частям.',
+  'Сможет ли подъехать грузовой автомобиль и есть ли где развернуться и разгрузиться.',
+  'Нужна ли выгрузка силами водителя.',
+  'Кто принимает материал на объекте и по какому телефону с ним связаться.',
+];
+---
+
+<Page
+  title="Доставка сухих смесей по Москве и Московской области"
+  description="Доставка сухих строительных смесей по Москве и Московской области: от 1 поддона, срок 1–2 дня, поставка одной партией или частями, выгрузка по согласованию."
+  slug="dostavka"
+>
+  <PageHead
+    trail={[{ label: 'Главная', href: localPath('sukhie') }, { label: 'Доставка' }]}
+    title="Доставка сухих смесей"
+    lead="Возим сухие смеси по Москве и Московской области — одной партией или частями по графику стройки."
+  />
+
+  <section class="dv">
+    <Container>
+      <div class="dv__grid">
+        <div>
+          <h2 class="dv__h2">Условия доставки</h2>
+          <dl class="dv__rows">
+            {ROWS.map((r) => <div><dt>{r.label}</dt><dd>{r.value}</dd></div>)}
+          </dl>
+          <p class="dv__note">Стоимость доставки не входит в цену смеси — в каталоге цена за упаковку со склада. Точную сумму назовём после расчёта объёма и адреса.</p>
+        </div>
+        <div>
+          <h2 class="dv__h2">Как проходит доставка</h2>
+          <ol class="dv__steps">
+            {STEPS.map((s) => <li><b>{s.title}</b><span>{s.text}</span></li>)}
+          </ol>
+        </div>
+      </div>
+
+      <h2 class="dv__h2">Что подготовить, чтобы посчитать точно</h2>
+      <ul class="dv__list">{PREPARE.map((t) => <li>{t}</li>)}</ul>
+
+      <h2 class="dv__h2">Офисы продаж</h2>
+      <ul class="dv__offices" role="list">
+        {OFFICES.map((o) => <li><b>{o.name}</b><span>{o.address}, {o.metro}</span><a href={o.phone.href}>{o.phone.display}</a></li>)}
+      </ul>
+    </Container>
+  </section>
+
+  <CtaBand title="Рассчитать доставку" text="Позвоните и назовите адрес и смеси — посчитаем стоимость и назовём ближайшую дату." />
+</Page>
+
+<style>
+  .dv { padding: var(--section-pad-md) 0; }
+  .dv__grid { display: grid; gap: var(--space-7); margin-bottom: var(--space-7); }
+  .dv__h2 { margin: 0 0 var(--space-4); font-size: var(--fs-h3); }
+  .dv__rows { margin: 0; border-top: 1px solid var(--color-border-soft); }
+  .dv__rows div { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: var(--space-4); padding: 12px 0; border-bottom: 1px solid var(--color-border-soft); }
+  .dv__rows dt { color: var(--color-text-soft); }
+  .dv__rows dd { margin: 0; font-weight: 700; }
+  .dv__note { margin: var(--space-4) 0 0; font-size: var(--fs-small); color: var(--color-text-soft); }
+  .dv__steps { display: grid; gap: var(--space-4); margin: 0; padding: 0; list-style: none; counter-reset: s; }
+  .dv__steps li { display: grid; gap: 4px; padding-left: 52px; position: relative; counter-increment: s; }
+  .dv__steps li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 38px; height: 38px; display: grid; place-items: center; font-family: var(--font-head); font-weight: 800; color: var(--color-on-highlight); background: var(--color-highlight); border-radius: 10px; }
+  .dv__steps span { color: var(--color-text-soft); }
+  .dv__list { display: grid; gap: 8px; margin: 0 0 var(--space-7); padding-left: 1.2em; color: var(--color-text-soft); }
+  .dv__offices { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
+  .dv__offices li { display: grid; gap: 2px; padding: var(--space-4); border: 1px solid var(--color-border-soft); border-radius: var(--radius); }
+  .dv__offices span { font-size: var(--fs-small); color: var(--color-text-soft); }
+  .dv__offices a { font-weight: 700; }
+  @media (min-width: 900px) { .dv__grid { grid-template-columns: 1fr 1fr; } }
+</style>

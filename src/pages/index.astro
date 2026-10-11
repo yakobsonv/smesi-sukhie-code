@@ -1,0 +1,183 @@
+---
+// Главная: короткие блоки со ссылками «подробнее» на разделы (Николай, созвон 24.09: на главной
+// блоки коротко + ссылки на отдельные страницы). Товаров на главной нет — они в разделах.
+import Page from '../layouts/Page.astro';
+import Container from '../components/layout/Container.astro';
+import CtaBand from '../components/site/CtaBand.astro';
+import { SECTIONS, GROUPS, type SectionGroup } from '../data/sections';
+import { GROUP_ORDER, PAGES } from '../data/nav';
+import { POSITIONS, sectionCount, brandsIn, plural } from '../lib/positions';
+import { getSite, localPath, OFFICES } from '../lib/sites';
+
+const site = getSite('sukhie');
+const total = POSITIONS.length;
+const brands = brandsIn(POSITIONS);
+const byBrand = brands.map((b) => ({ brand: b, n: POSITIONS.filter((p) => p.brand === b).length }));
+const brandLine = brands.length > 3 ? `${brands.slice(0, 3).join(', ')} и других производителей` : brands.join(', ').replace(/, ([^,]+)$/, ' и $1');
+// Упаковки на первом экране: по одной позиции из разных разделов, у которых есть снимок ≥ 300 px.
+const heroPacks = SECTIONS.map((s) => POSITIONS.find((p) => p.section === s.slug && p.image && (p.imageW ?? 0) >= 300 && (p.imageH ?? 0) >= 300)).filter(Boolean).slice(0, 6);
+
+// «Что делаете?» — вход по работе. Только навигация: какие разделы относятся к работе,
+// без советов, что лучше (выбор состава — факт производителя, его даёт карточка товара).
+const WORKS: { title: string; links: string[] }[] = [
+  { title: 'Кладу стены из кирпича или блоков', links: ['kladochnye-smesi', 'klej-dlya-blokov', 'peskobeton'] },
+  { title: 'Выравниваю стены и потолки', links: ['shtukaturka-gipsovaya', 'shtukaturka-cementnaya', 'shpaklevka'] },
+  { title: 'Кладу плитку', links: ['plitochnyj-klej', 'zatirka', 'gidroizolyaciya'] },
+  { title: 'Делаю пол', links: ['styazhka-pola', 'nalivnoj-pol', 'peskobeton'] },
+  { title: 'Утепляю и отделываю фасад', links: ['uteplenie-fasada', 'shtukaturka-cementnaya', 'shpaklevka'] },
+  { title: 'Мощу двор брусчаткой', links: ['smesi-dlya-bruschatki'] },
+  { title: 'Кладу печь или камин', links: ['pechnye-smesi'] },
+];
+const bySlug = Object.fromEntries(SECTIONS.map((s) => [s.slug, s]));
+const groups = GROUP_ORDER.map((g: SectionGroup) => ({ g, title: GROUPS[g], sections: SECTIONS.filter((s) => s.group === g) }));
+---
+
+<Page
+  title="Сухие строительные смеси в Москве — Perel, Dauer, Основит"
+  description="Сухие строительные смеси Perel, Dauer, Основит и других производителей: кладочные, клей для блоков, штукатурки, шпаклёвки, плиточный клей, смеси для пола, фасада и брусчатки. Цены, доставка по Москве и области."
+>
+  <section class="hero">
+    <Container>
+      <p class="hero__kicker">Москва и Московская область</p>
+      <h1 class="hero__title">Сухие строительные смеси</h1>
+      <p class="hero__lead">{total} {plural(total, 'позиция', 'позиции', 'позиций')} {brandLine} — с ценами, назначением и характеристиками по данным производителей. Доставка по Москве и области.</p>
+      <div class="hero__actions">
+        <a class="btn btn--primary btn--lg" href="#katalog">Каталог смесей</a>
+        <a class="btn btn--ghost-inv btn--lg" href={site.phone.href}>{site.phone.display}</a>
+      </div>
+      <ul class="hero__packs" role="list" aria-hidden="true">
+        {heroPacks.map((p) => <li><img src={p!.image} alt="" width={p!.imageW} height={p!.imageH} loading="eager" decoding="async" /></li>)}
+      </ul>
+    </Container>
+  </section>
+
+  <section class="works">
+    <Container>
+      <h2 class="h2">Что делаете?</h2>
+      <ul class="works__grid" role="list">
+        {WORKS.map((w) => (
+          <li class="works__card">
+            <p class="works__title">{w.title}</p>
+            <ul role="list">
+              {w.links.filter((slug) => sectionCount(slug) > 0).map((slug) => (
+                <li><a href={localPath('sukhie', slug)}>{bySlug[slug].label} <span>{sectionCount(slug)}</span></a></li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    </Container>
+  </section>
+
+  <section class="cat" id="katalog">
+    <Container>
+      <h2 class="h2">Каталог</h2>
+      <div class="cat__groups">
+        {groups.map((gr) => (
+          <div class="cat__group">
+            <p class="cat__gtitle">{gr.title}</p>
+            <ul role="list">
+              {gr.sections.filter((s) => sectionCount(s.slug) > 0).map((s) => (
+                <li><a href={localPath('sukhie', s.slug)}><span class="cat__name">{s.label}</span><span class="cat__n">{sectionCount(s.slug)}</span></a></li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <section class="brands">
+    <Container>
+      <h2 class="h2">Производители</h2>
+      <ul class="brands__list" role="list">
+        {byBrand.map((b) => (
+          <li><span class="brands__name">{b.brand}</span><span class="brands__n">{b.n} {plural(b.n, 'позиция', 'позиции', 'позиций')}</span></li>
+        ))}
+      </ul>
+      <p class="brands__note">Назначение и характеристики каждой смеси — по данным производителя.</p>
+    </Container>
+  </section>
+
+  <section class="deliv">
+    <Container>
+      <div class="deliv__in">
+        <div>
+          <h2 class="h2">Доставка по Москве и области</h2>
+          <p>Срок — 1–2 дня, одной партией или частями по графику стройки. Стоимость считаем по объёму и адресу.</p>
+          <a class="btn btn--ghost" href={PAGES.dostavka.href}>Условия доставки</a>
+        </div>
+        <ul class="deliv__offices" role="list">
+          {OFFICES.map((o) => (
+            <li><b>{o.name}</b><span>{o.address}, {o.metro}</span><a href={o.phone.href}>{o.phone.display}</a></li>
+          ))}
+        </ul>
+      </div>
+    </Container>
+  </section>
+
+  <CtaBand />
+</Page>
+
+<style>
+  .h2 { margin: 0 0 var(--space-5); font-size: var(--fs-h2); }
+
+  .hero { position: relative; padding: clamp(48px, 8vw, 104px) 0; overflow: hidden; color: var(--color-on-dark); background: var(--hero-grad), var(--color-dark); }
+  .hero :global(.container) { position: relative; }
+  .hero__packs { display: none; }
+  @media (min-width: 1100px) {
+    .hero__packs {
+      position: absolute;
+      top: 50%;
+      right: var(--gutter);
+      display: grid;
+      grid-template-columns: repeat(3, 132px);
+      gap: 14px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      transform: translateY(-50%);
+    }
+    .hero__packs li { display: grid; place-items: center; height: 150px; padding: 10px; background: rgb(255 255 255 / 0.96); border-radius: var(--radius); }
+    .hero__packs li:nth-child(3n+2) { translate: 0 18px; }
+    .hero__packs img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  }
+  .hero__kicker { margin: 0 0 var(--space-3); font-size: var(--fs-small); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-highlight); }
+  .hero__title { max-width: 16ch; margin: 0 0 var(--space-4); font-size: clamp(36px, 6vw, 72px); line-height: 1.02; }
+  .hero__lead { max-width: 60ch; margin: 0 0 var(--space-6); font-size: var(--fs-lead); color: rgb(255 255 255 / 0.88); }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+  .works { padding: var(--section-pad-lg) 0 var(--section-pad-md); }
+  .works__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
+  .works__card { padding: var(--space-5); background: var(--color-bg-alt); border-radius: var(--radius); }
+  .works__title { margin: 0 0 var(--space-3); font-family: var(--font-head); font-size: var(--fs-h4); font-weight: 800; }
+  .works__card ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+  .works__card a { display: flex; justify-content: space-between; gap: var(--space-3); padding: 8px 12px; font-weight: 600; color: var(--color-text); background: var(--color-surface); border-radius: var(--radius-sm); }
+  .works__card a span { color: var(--color-muted); font-weight: 500; }
+  .works__card a:hover { color: var(--color-accent-text); }
+
+  .cat { padding: var(--section-pad-md) 0; scroll-margin-top: 70px; }
+  .cat__groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--space-6) var(--space-5); }
+  .cat__gtitle { margin: 0 0 var(--space-3); font-size: var(--fs-tiny); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-muted); }
+  .cat__group ul { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--color-border-soft); }
+  .cat__group a { display: flex; justify-content: space-between; gap: var(--space-3); padding: 12px 0; border-bottom: 1px solid var(--color-border-soft); color: var(--color-text); }
+  .cat__name { font-family: var(--font-head); font-weight: 800; }
+  .cat__n { color: var(--color-muted); }
+  .cat__group a:hover .cat__name { color: var(--color-accent-text); }
+
+  .brands { padding: var(--section-pad-md) 0; background: var(--color-bg-alt); }
+  .brands__list { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
+  .brands__list li { display: grid; gap: 2px; padding: var(--space-4); background: var(--color-surface); border-radius: var(--radius); }
+  .brands__name { font-family: var(--font-head); font-size: var(--fs-h4); font-weight: 800; }
+  .brands__n { font-size: var(--fs-small); color: var(--color-muted); }
+  .brands__note { margin: var(--space-4) 0 0; font-size: var(--fs-small); color: var(--color-text-soft); }
+
+  .deliv { padding: var(--section-pad-md) 0; }
+  .deliv__in { display: grid; gap: var(--space-6); }
+  .deliv__in p { max-width: 54ch; color: var(--color-text-soft); }
+  .deliv__offices { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
+  .deliv__offices li { display: grid; gap: 2px; padding: var(--space-4); border: 1px solid var(--color-border-soft); border-radius: var(--radius); }
+  .deliv__offices span { font-size: var(--fs-small); color: var(--color-text-soft); }
+  .deliv__offices a { font-weight: 700; }
+  @media (min-width: 900px) { .deliv__in { grid-template-columns: 1fr 1fr; align-items: start; } }
+</style>

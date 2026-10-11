@@ -1,0 +1,117 @@
+---
+// Страница раздела каталога — одна на 14 разделов (src/data/sections.ts).
+// Позиции — товары производителей, которые есть в магазине клиента; факты дословно,
+// цены — из магазина. Каждая позиция живёт в одном разделе.
+import Page from '../layouts/Page.astro';
+import Container from '../components/layout/Container.astro';
+import PageHead from '../components/site/PageHead.astro';
+import CtaBand from '../components/site/CtaBand.astro';
+import BrandFilter from '../components/catalog/BrandFilter.astro';
+import PositionList from '../components/catalog/PositionList.astro';
+import PositionModal from '../components/catalog/PositionModal.astro';
+import { SECTIONS, GROUPS, sectionBySlug } from '../data/sections';
+import { inSection, inPart, brandsIn, plural, minPrice } from '../lib/positions';
+import { localPath, liveUrl } from '../lib/sites';
+
+export function getStaticPaths() {
+  return SECTIONS.map((s) => ({ params: { section: s.slug } }));
+}
+
+const { section } = Astro.params as { section: string };
+const s = sectionBySlug(section);
+const items = inSection(s.slug);
+const brands = brandsIn(items);
+const parts = s.parts.map((part) => ({ ...part, items: inPart(s.slug, part.id) })).filter((p) => p.items.length > 0);
+const next = s.next.map((slug) => SECTIONS.find((x) => x.slug === slug)!).filter(Boolean);
+const showCeramic = s.slug === 'plitochnyj-klej' && items.some((p) => p.ceramic);
+
+const meta = [
+  `${items.length} ${plural(items.length, 'позиция', 'позиции', 'позиций')}`,
+  brands.join(' · '),
+  'Цены — в магазине, доставка по Москве и области',
+];
+
+// Список товаров с ценой — ItemList из Product/Offer (только позиции с ценой из магазина).
+const itemList = {
+  '@type': 'ItemList',
+  name: s.h1,
+  itemListElement: items.map((p, i) => {
+    const price = minPrice(p);
+    return {
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'Product',
+        name: p.title,
+        brand: { '@type': 'Brand', name: p.brand },
+        url: `${liveUrl('sukhie', s.slug)}#${p.id}`,
+        ...(p.image ? { image: liveUrl('sukhie', '') + p.image.replace(/^\//, '') } : {}),
+        ...(price ? { offers: { '@type': 'Offer', price: price.price.replace(/\s/g, '').replace(',', '.'), priceCurrency: 'RUB' } } : {}),
+      },
+    };
+  }),
+};
+---
+
+<Page title={s.title} description={s.description} slug={s.slug} jsonLd={[itemList]}>
+  <PageHead
+    trail={[{ label: 'Главная', href: localPath('sukhie') }, { label: GROUPS[s.group] + ': ' + s.label }]}
+    title={s.h1}
+    lead={s.lead}
+    meta={meta}
+  />
+
+  <section class="sec">
+    <Container>
+      <BrandFilter brands={brands} ceramic={showCeramic} />
+      {parts.map((part) => (
+        <div class="sec__part" id={part.id} data-part>
+          {parts.length > 1 && <h2 class="sec__h2">{part.title} <span>{part.items.length}</span></h2>}
+          <PositionList items={part.items} />
+        </div>
+      ))}
+      <p class="sec__note">Назначение и характеристики — по данным производителей. Цена указана за упаковку со склада, доставка считается отдельно.</p>
+    </Container>
+  </section>
+
+  {next.length > 0 && (
+    <section class="nx">
+      <Container>
+        <h2 class="nx__title">Следующий шаг</h2>
+        <ul class="nx__list" role="list">
+          {next.map((n) => (
+            <li><a href={localPath('sukhie', n.slug)}><span>{GROUPS[n.group]}</span>{n.label}</a></li>
+          ))}
+        </ul>
+      </Container>
+    </section>
+  )}
+
+  <CtaBand />
+  <PositionModal items={items} />
+</Page>
+
+<style>
+  .sec { padding: var(--section-pad-md) 0; }
+  .sec__part + .sec__part { margin-top: var(--space-7); }
+  .sec__part[hidden] { display: none; }
+  .sec__h2 { display: flex; align-items: baseline; gap: 12px; margin: 0 0 var(--space-4); font-size: var(--fs-h2); }
+  .sec__h2 span { font-size: var(--fs-small); font-weight: 600; color: var(--color-muted); }
+  .sec__note { margin: var(--space-5) 0 0; font-size: var(--fs-tiny); color: var(--color-muted); }
+
+  .nx { padding: var(--section-pad-sm) 0 var(--section-pad-md); }
+  .nx__title { margin: 0 0 var(--space-4); font-size: var(--fs-h3); }
+  .nx__list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
+  .nx__list a {
+    display: grid;
+    gap: 2px;
+    padding: var(--space-4);
+    font-family: var(--font-head);
+    font-weight: 800;
+    color: var(--color-text);
+    background: var(--color-bg-alt);
+    border-radius: var(--radius);
+  }
+  .nx__list a span { font-family: var(--font-body); font-size: var(--fs-tiny); font-weight: 600; color: var(--color-muted); }
+  .nx__list a:hover { color: var(--color-accent-text); }
+</style>

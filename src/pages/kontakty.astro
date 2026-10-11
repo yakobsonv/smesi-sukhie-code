@@ -1,0 +1,61 @@
+---
+// Контакты. Офисы, телефоны и часы — со страницы «Контактная информация» действующего магазина
+// клиента tk-sm.ru (снято 11.10.2026). Реквизиты — из документов клиента (src/data/legal.ts).
+// ⚠️ Телефон для этого сайта Влад пришлёт позже (11.10) — пока номера магазина.
+import Page from '../layouts/Page.astro';
+import Container from '../components/layout/Container.astro';
+import PageHead from '../components/site/PageHead.astro';
+import { getSite, localPath, OFFICES } from '../lib/sites';
+
+const site = getSite('sukhie');
+const HOURS = [
+  { days: 'Понедельник — пятница', time: '9:00–18:00, до 20:00 по договорённости' },
+  { days: 'Суббота', time: '10:00–16:00, по предварительной договорённости' },
+  { days: 'Воскресенье', time: 'консультации по телефону' },
+];
+---
+
+<Page
+  title="Контакты — ООО «Кирпичный трест», сухие строительные смеси"
+  description="Офисы продаж сухих строительных смесей в Москве: Научный проезд, 10 (м. Калужская) и ул. Большая Почтовая, 55/59 (м. Электрозаводская). Телефоны и часы работы."
+  slug="kontakty"
+>
+  <PageHead trail={[{ label: 'Главная', href: localPath('sukhie') }, { label: 'Контакты' }]} title="Контакты" lead="Перед визитом в офис позвоните — согласуем время и закажем пропуск." />
+
+  <section class="kt">
+    <Container>
+      <ul class="kt__offices" role="list">
+        {OFFICES.map((o) => (
+          <li>
+            <h2>{o.name}</h2>
+            <p>{o.address}</p>
+            <p class="kt__metro">{o.metro}</p>
+            <a class="kt__tel" href={o.phone.href}>{o.phone.display}</a>
+          </li>
+        ))}
+      </ul>
+
+      <h2 class="kt__h2">Часы работы офисов</h2>
+      <dl class="kt__hours">{HOURS.map((h) => <div><dt>{h.days}</dt><dd>{h.time}</dd></div>)}</dl>
+
+      <h2 class="kt__h2">Реквизиты</h2>
+      <p class="kt__legal">{site.legal.name}, ИНН {site.legal.inn}, ОГРН {site.legal.ogrn}. Адрес: г. Москва, {site.address.street}.</p>
+    </Container>
+  </section>
+</Page>
+
+<style>
+  .kt { padding: var(--section-pad-md) 0; }
+  .kt__offices { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-4); margin: 0 0 var(--space-7); padding: 0; list-style: none; }
+  .kt__offices li { padding: var(--space-5); background: var(--color-bg-alt); border-radius: var(--radius); }
+  .kt__offices h2 { margin: 0 0 var(--space-2); font-size: var(--fs-h4); }
+  .kt__offices p { margin: 0; color: var(--color-text-soft); }
+  .kt__metro { font-size: var(--fs-small); }
+  .kt__tel { display: inline-block; margin-top: var(--space-3); font-family: var(--font-head); font-size: var(--fs-h4); font-weight: 800; }
+  .kt__h2 { margin: 0 0 var(--space-4); font-size: var(--fs-h3); }
+  .kt__hours { max-width: 640px; margin: 0 0 var(--space-7); border-top: 1px solid var(--color-border-soft); }
+  .kt__hours div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: var(--space-4); padding: 10px 0; border-bottom: 1px solid var(--color-border-soft); }
+  .kt__hours dt { color: var(--color-text-soft); }
+  .kt__hours dd { margin: 0; font-weight: 600; }
+  .kt__legal { color: var(--color-text-soft); }
+</style>

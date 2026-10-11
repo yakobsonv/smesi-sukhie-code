@@ -1,0 +1,24 @@
+---
+// Положение об обработке персональных данных. Оператор — ООО «Кирпичный трест»; текст — его же
+// опубликованный документ (src/data/legal.ts), подставляется только адрес сайта.
+// Ссылка нужна баннеру cookies и подвалу.
+import Page from '../layouts/Page.astro';
+import Container from '../components/layout/Container.astro';
+import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
+import LegalDoc from '../components/content/LegalDoc.astro';
+import { REGULATION_BLOCKS, fillLegal } from '../data/legal';
+import { localPath, PREVIEW_ORIGIN } from '../lib/sites';
+
+const blocks = fillLegal(REGULATION_BLOCKS, PREVIEW_ORIGIN);
+---
+
+<Page
+  title="Положение об обработке персональных данных — ООО «Кирпичный трест»"
+  description="Положение об обработке персональных данных ООО «Кирпичный трест»: цели и порядок обработки, права субъекта, сроки хранения и меры защиты."
+  slug="regulation"
+>
+  <Container>
+    <Breadcrumbs site="sukhie" trail={[{ label: 'Главная', href: localPath('sukhie') }, { label: 'Положение об обработке персональных данных' }]} />
+  </Container>
+  <LegalDoc blocks={blocks} />
+</Page>

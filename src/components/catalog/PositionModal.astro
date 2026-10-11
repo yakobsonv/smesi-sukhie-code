@@ -1,0 +1,195 @@
+---
+// Окно характеристик позиции — ОДНО на страницу. Данные позиций страницы лежат в JSON внутри
+// страницы; окно заполняется по нажатию (textContent — без вставки HTML).
+// В окно НЕ выводятся адрес карточки производителя и дата сверки: это служебные поля
+// (план страниц: «источник — в данных, покупателю — „по данным производителя“»).
+// Исключение — PDF-техкарта Dauer: это документ, а не витрина с ценой.
+import { getSite } from '../../lib/sites';
+import type { Position } from '../../lib/types';
+
+interface Props {
+  items: Position[];
+}
+
+const { items } = Astro.props;
+const tel = getSite('sukhie').phone;
+const payload = items.map((p) => ({
+  id: p.id, brand: p.brand, title: p.title, name: p.name, purpose: p.purpose,
+  packaging: p.packaging, consumption: p.consumption, layer: p.layer, normative: p.normative,
+  specs: p.specs, winter: p.winter, image: p.image, pdf: p.pdf, offers: p.offers,
+}));
+---
+
+<dialog class="pm" id="pos-modal" aria-labelledby="pm-title">
+  <div class="pm__box">
+    <button class="pm__close" type="button" data-pm-close aria-label="Закрыть окно"><span aria-hidden="true">×</span></button>
+    <div class="pm__head">
+      <div class="pm__img"><img data-pm="image" alt="" width="240" height="240" /></div>
+      <div>
+        <p class="pm__brand" data-pm="brand"></p>
+        <p class="pm__title" id="pm-title" data-pm="title"></p>
+        <p class="pm__name" data-pm="name"></p>
+      </div>
+    </div>
+
+    <div class="pm__offers" data-pm-block="offers">
+      <p class="pm__label">Цена в магазине</p>
+      <ul data-pm="offers"></ul>
+      <a class="btn btn--primary pm__call" href={tel.href}>Позвонить: {tel.display}</a>
+    </div>
+
+    <div data-pm-block="purpose">
+      <p class="pm__label">Назначение</p>
+      <p class="pm__text" data-pm="purpose"></p>
+    </div>
+
+    <div data-pm-block="specs">
+      <p class="pm__label">Характеристики</p>
+      <dl class="pm__specs" data-pm="specs"></dl>
+    </div>
+
+    <p class="pm__pdf" data-pm-block="pdf"><a data-pm="pdf" href="#" target="_blank" rel="noopener">Техническая карта производителя (PDF)</a></p>
+    <p class="pm__note">Назначение и характеристики — по данным производителя.</p>
+  </div>
+</dialog>
+
+<script type="application/json" id="pos-data" set:html={JSON.stringify(payload)} />
+
+<style>
+  .pm {
+    width: min(760px, calc(100vw - 20px));
+    max-height: calc(100dvh - 24px);
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .pm::backdrop { background: var(--overlay); }
+  .pm__box { position: relative; padding: var(--space-6) var(--space-5) var(--space-5); }
+
+  .pm__close {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: var(--tap);
+    height: var(--tap);
+    display: grid;
+    place-items: center;
+    font-size: 30px;
+    line-height: 1;
+    color: var(--color-muted);
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .pm__head { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: var(--space-4); align-items: start; margin-bottom: var(--space-5); padding-right: var(--space-6); }
+  .pm__img { width: 96px; aspect-ratio: 1; display: grid; place-items: center; background: var(--color-surface-alt); border-radius: var(--radius-sm); overflow: hidden; }
+  .pm__img img { width: 100%; height: 100%; object-fit: contain; }
+  .pm__img img:not([src]) { visibility: hidden; }
+  .pm__brand { margin: 0; font-size: var(--fs-tiny); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-accent-text); }
+  .pm__title { margin: 2px 0 4px; font-family: var(--font-head); font-size: var(--fs-h3); font-weight: 800; line-height: 1.2; }
+  .pm__name { margin: 0; font-size: var(--fs-small); color: var(--color-text-soft); }
+  .pm__label { margin: var(--space-5) 0 var(--space-2); font-size: var(--fs-tiny); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--color-muted); }
+  .pm__text { margin: 0; white-space: pre-line; }
+
+  .pm__offers { padding: var(--space-4); background: var(--color-bg-alt); border-radius: var(--radius); }
+  .pm__offers .pm__label { margin-top: 0; }
+  .pm__offers ul { display: grid; gap: 6px; margin: 0 0 var(--space-4); padding: 0; list-style: none; }
+  .pm__offers li { display: flex; justify-content: space-between; gap: var(--space-4); font-size: var(--fs-small); }
+  .pm__offers li b { font-family: var(--font-head); white-space: nowrap; }
+
+  .pm__specs { display: grid; margin: 0; border-top: 1px solid var(--color-border-soft); }
+  .pm__specs div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-4); padding: 8px 0; border-bottom: 1px solid var(--color-border-soft); font-size: var(--fs-small); }
+  .pm__specs dt { color: var(--color-text-soft); }
+  .pm__specs dd { margin: 0; font-weight: 600; white-space: pre-line; overflow-wrap: anywhere; }
+  .pm__pdf { margin: var(--space-4) 0 0; font-size: var(--fs-small); }
+  .pm__note { margin: var(--space-4) 0 0; font-size: var(--fs-tiny); color: var(--color-muted); }
+
+  @media (min-width: 640px) {
+    .pm__box { padding: var(--space-7) var(--space-6) var(--space-6); }
+    .pm__head { grid-template-columns: 140px minmax(0, 1fr); }
+    .pm__img { width: 140px; }
+  }
+</style>
+
+<script>
+  type Offer = { label: string; price: string };
+  type Item = { id: string; brand: string; title: string; name: string; purpose: string; packaging: string; consumption: string; layer: string; normative: string; specs: { name: string; value: string }[]; winter: boolean; image?: string; pdf?: string; offers: Offer[] };
+
+  const dialog = document.getElementById('pos-modal') as HTMLDialogElement | null;
+  const raw = document.getElementById('pos-data')?.textContent || '[]';
+  const items: Record<string, Item> = Object.fromEntries((JSON.parse(raw) as Item[]).map((i) => [i.id, i]));
+
+  function el<T extends HTMLElement>(key: string) { return dialog?.querySelector<T>(`[data-pm="${key}"]`) ?? null; }
+  function block(key: string, show: boolean) { const b = dialog?.querySelector<HTMLElement>(`[data-pm-block="${key}"]`); if (b) b.hidden = !show; }
+
+  function open(id: string, push = true) {
+    const it = items[id];
+    if (!dialog || !it) return;
+    const img = el<HTMLImageElement>('image');
+    if (img) {
+      if (it.image) { img.src = it.image; img.alt = `${it.title} — упаковка`; } else { img.removeAttribute('src'); img.alt = ''; }
+    }
+    el('brand')!.textContent = it.brand;
+    el('title')!.textContent = it.title;
+    el('name')!.textContent = it.name !== it.title ? it.name : '';
+    el('purpose')!.textContent = it.purpose;
+    block('purpose', Boolean(it.purpose));
+
+    const offers = el<HTMLUListElement>('offers')!;
+    offers.replaceChildren(...it.offers.map((o) => {
+      const li = document.createElement('li');
+      const l = document.createElement('span'); l.textContent = o.label || it.title;
+      const p = document.createElement('b'); p.textContent = o.price ? `${o.price} ₽` : 'по телефону';
+      li.append(l, p);
+      return li;
+    }));
+
+    const rows: { name: string; value: string }[] = [];
+    if (it.packaging) rows.push({ name: 'Упаковка', value: it.packaging });
+    if (it.consumption) rows.push({ name: 'Расход', value: it.consumption });
+    if (it.layer) rows.push({ name: 'Толщина слоя или шва', value: it.layer });
+    if (it.normative) rows.push({ name: 'Нормативный документ', value: it.normative });
+    for (const s of it.specs) if (!rows.some((r) => r.value === s.value && r.name.toLowerCase() === s.name.toLowerCase())) rows.push(s);
+    const dl = el<HTMLElement>('specs')!;
+    dl.replaceChildren(...rows.map((r) => {
+      const d = document.createElement('div');
+      const dt = document.createElement('dt'); dt.textContent = r.name;
+      const dd = document.createElement('dd'); dd.textContent = r.value;
+      d.append(dt, dd);
+      return d;
+    }));
+    block('specs', rows.length > 0);
+
+    const pdf = el<HTMLAnchorElement>('pdf')!;
+    if (it.pdf) pdf.href = it.pdf;
+    block('pdf', Boolean(it.pdf));
+
+    if (!dialog.open) dialog.showModal();
+    dialog.scrollTop = 0;
+    if (push && location.hash !== `#${id}`) history.replaceState(null, '', `#${id}`);
+  }
+
+  function close() {
+    if (dialog?.open) dialog.close();
+  }
+
+  dialog?.addEventListener('close', () => {
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  });
+
+  document.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    const opener = t.closest<HTMLElement>('[data-pos]');
+    if (opener) { e.preventDefault(); open(opener.dataset.pos!); return; }
+    if (t.closest('[data-pm-close]')) { close(); return; }
+    if (t === dialog) close();
+  });
+
+  const fromHash = decodeURIComponent(location.hash.slice(1));
+  if (fromHash && items[fromHash]) open(fromHash, false);
+</script>

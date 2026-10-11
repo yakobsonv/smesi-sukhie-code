@@ -1,0 +1,62 @@
+---
+// Хлебные крошки + BreadcrumbList в микроразметке.
+// На боевых сайтах крошек нет ни на одной странице — добавляем.
+import { breadcrumbJsonLd } from '../../lib/seo';
+import type { BreadcrumbItem, SiteKey } from '../../lib/types';
+
+interface Props {
+  trail: BreadcrumbItem[];
+  site: SiteKey;
+  /** отдавать ли JSON-LD (если крошки выводятся дважды — оставить у одной) */
+  jsonLd?: boolean;
+  class?: string;
+}
+
+const { trail, site, jsonLd = true, class: className } = Astro.props;
+const data = jsonLd ? breadcrumbJsonLd(trail, site) : null;
+---
+
+{
+  trail.length > 1 && (
+    <nav class:list={['crumbs', className]} aria-label="Хлебные крошки">
+      <ol class="crumbs__list">
+        {trail.map((item, index) => (
+          <li class="crumbs__item">
+            {item.href && index < trail.length - 1 ? (
+              <a href={item.href}>{item.label}</a>
+            ) : (
+              <span aria-current="page">{item.label}</span>
+            )}
+          </li>
+        ))}
+      </ol>
+      {data && <script type="application/ld+json" set:html={JSON.stringify(data)} />}
+    </nav>
+  )
+}
+
+<style>
+  .crumbs {
+    padding-block: var(--space-3);
+    font-size: var(--fs-tiny);
+    color: var(--color-muted);
+  }
+
+  .crumbs__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .crumbs__item + .crumbs__item::before {
+    margin-right: var(--space-2);
+    content: '/';
+    opacity: 0.6;
+  }
+
+  .crumbs a { color: inherit; }
+  .crumbs [aria-current='page'] { color: var(--color-text); }
+</style>

@@ -1,0 +1,375 @@
+---
+// Первый экран: фон-фото, надтитул, H1, подзаголовок, слоган, кнопки, плитки преимуществ.
+// Один компонент на все три сайта; что не передали — не рисуется.
+import Container from '../layout/Container.astro';
+import Button from '../ui/Button.astro';
+import type { Advantage } from '../../lib/types';
+
+interface Props {
+  h1: string;
+  /** надтитул над H1 */
+  kicker?: string;
+  /** вторая строка заголовка (на боевом Осколе это отдельный H2) */
+  subtitle?: string;
+  /** слоган под заголовком */
+  lead?: string;
+  bullets?: string[];
+  /** фоновое фото */
+  image?: string;
+  /** затемнение фона, 0–1 */
+  overlay?: number;
+  actions?: { label: string; href?: string; modal?: string; variant?: 'primary' | 'secondary' | 'ghost' | 'ghost-inv' }[];
+  /** плитки преимуществ под первым экраном (у Оскола их 4) */
+  features?: Advantage[];
+  /** крупные цифры-факты полосой под контентом (М200, F100, 50 лет…) */
+  stats?: { value: string; label: string }[];
+  /** мини-свотчи-ссылки (цвета кирпича) прямо в hero */
+  chips?: { label: string; href: string; image?: string }[];
+  chipsLabel?: string;
+  align?: 'left' | 'center';
+  size?: 'md' | 'lg' | 'xl';
+  class?: string;
+}
+
+const {
+  h1,
+  kicker,
+  subtitle,
+  lead,
+  bullets = [],
+  image,
+  overlay = 0.45,
+  actions = [],
+  features = [],
+  stats = [],
+  chips = [],
+  chipsLabel,
+  align = 'left',
+  size = 'lg',
+  class: className,
+} = Astro.props;
+
+const style = image ? `--hero-image:url('${image}');--hero-overlay:${overlay};` : undefined;
+---
+
+<section
+  class:list={['hero', image && 'hero--image', `hero--${size}`, align === 'center' && 'hero--center', className]}
+  style={style}
+>
+  <Container>
+    <div class="hero__inner">
+      {kicker && <p class="hero__kicker">{kicker}</p>}
+      <h1 class="hero__title">{h1}</h1>
+      {subtitle && <p class="hero__subtitle">{subtitle}</p>}
+      {lead && <p class="hero__lead">{lead}</p>}
+
+      {bullets.length > 0 && (
+        <ul class="hero__bullets">
+          {bullets.map((item) => <li>{item}</li>)}
+        </ul>
+      )}
+
+      {actions.length > 0 && (
+        <div class="hero__actions">
+          {actions.map((action) => (
+            <Button href={action.href} modal={action.modal} variant={action.variant ?? 'primary'} size="lg">
+              {action.label}
+            </Button>
+          ))}
+        </div>
+      )}
+
+      {chips.length > 0 && (
+        <div class="hero__chips">
+          {chipsLabel && <span class="hero__chips-label">{chipsLabel}</span>}
+          <ul class="hero__chips-list">
+            {chips.map((chip) => (
+              <li>
+                <a class="hero__chip" href={chip.href}>
+                  {chip.image && <img src={chip.image} alt="" width="26" height="26" loading="lazy" />}
+                  <span>{chip.label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <slot />
+    </div>
+
+    {stats.length > 0 && (
+      <ul class="hero__stats">
+        {stats.map((stat) => (
+          <li class="hero__stat">
+            <span class="hero__stat-value">{stat.value}</span>
+            <span class="hero__stat-label">{stat.label}</span>
+          </li>
+        ))}
+      </ul>
+    )}
+
+    {features.length > 0 && (
+      <ul class="hero__features">
+        {features.map((feature) => (
+          <li class="hero__feature">
+            {feature.title && <p class="hero__feature-title">{feature.title}</p>}
+            {feature.text && <p class="hero__feature-text">{feature.text}</p>}
+          </li>
+        ))}
+      </ul>
+    )}
+  </Container>
+</section>
+
+<style>
+  .hero {
+    padding-block: var(--section-pad-lg);
+    background: var(--color-bg-alt);
+  }
+
+  .hero--image {
+    color: var(--color-on-dark);
+    /* тема может задать свой градиент (--hero-grad); дефолт — прежний ровный оверлей */
+    background-image: var(
+        --hero-grad,
+        linear-gradient(
+          rgb(0 0 0 / var(--hero-overlay, 0.45)),
+          rgb(0 0 0 / var(--hero-overlay, 0.45))
+        )
+      ),
+      var(--hero-image);
+    background-size: cover;
+    background-position: center;
+  }
+
+  .hero--lg { min-height: clamp(460px, 74vh, 740px); display: flex; align-items: center; }
+  .hero--lg > :global(.container) { width: 100%; }
+
+  .hero--xl {
+    min-height: clamp(560px, 92vh, 900px);
+    display: flex;
+    align-items: center;
+    padding-block: var(--space-8);
+  }
+  .hero--xl > :global(.container) { width: 100%; }
+
+  .hero__inner { max-width: 46rem; }
+  .hero--center .hero__inner { max-width: 52rem; margin-inline: auto; text-align: center; }
+
+  .hero__kicker {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    opacity: 0.92;
+  }
+
+  .hero__kicker::before {
+    content: '';
+    width: 34px;
+    height: 3px;
+    flex: none;
+    background: var(--color-brand);
+    border-radius: 2px;
+  }
+
+  .hero--center .hero__kicker { justify-content: center; }
+
+  .hero__title { margin: 0; }
+
+  .hero--image .hero__title { text-shadow: 0 2px 24px rgb(0 0 0 / 0.35); }
+
+  .hero__subtitle {
+    margin-top: var(--space-2);
+    font-family: var(--font-head);
+    font-size: var(--fs-h3);
+    font-weight: 500;
+  }
+
+  .hero__lead {
+    margin-top: var(--space-4);
+    font-size: var(--fs-lead);
+    opacity: 0.95;
+  }
+
+  .hero__bullets {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-5);
+    padding: 0;
+    list-style: none;
+  }
+
+  .hero__bullets li {
+    position: relative;
+    padding-left: 26px;
+  }
+
+  .hero__bullets li::before {
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 10px;
+    height: 10px;
+    background: var(--color-brand);
+    border-radius: 2px;
+    content: '';
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .hero--center .hero__actions { justify-content: center; }
+
+  /* чипы цветов прямо в hero */
+  .hero__chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .hero__chips-label {
+    font-size: var(--fs-tiny);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+
+  .hero__chips-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hero__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px 6px 7px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-on-dark);
+    text-decoration: none;
+    background: rgb(255 255 255 / 0.1);
+    border: 1px solid rgb(255 255 255 / 0.22);
+    border-radius: var(--radius-pill);
+    backdrop-filter: blur(6px);
+    transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
+  }
+
+  .hero__chip img {
+    width: 26px;
+    height: 26px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .hero__chip:hover {
+    opacity: 1;
+    background: rgb(255 255 255 / 0.22);
+    border-color: rgb(255 255 255 / 0.5);
+    transform: translateY(-2px);
+  }
+
+  /* полоса крупных цифр-фактов */
+  .hero__stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4) var(--space-6);
+    margin: var(--space-8) 0 0;
+    padding: var(--space-5) 0 0;
+    border-top: 1px solid rgb(255 255 255 / 0.22);
+    list-style: none;
+  }
+
+  @media (min-width: 900px) {
+    .hero__stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  .hero__stat {
+    display: grid;
+    gap: 4px;
+  }
+
+  .hero__stat-value {
+    font-family: var(--font-head);
+    font-size: var(--fs-stat, 32px);
+    font-weight: var(--fw-head, 700);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    /* «от 28,60 ₽» ломалось перед знаком рубля, и он падал на вторую строку — на пяти
+       страницах цвета из семи. Показатель в первом экране всегда одна строка. */
+    white-space: nowrap;
+  }
+
+  /* на узком телефоне три показателя в ряд: даём им ужаться, а не переноситься */
+  @media (max-width: 419px) {
+    .hero__stat-value { font-size: clamp(22px, 7vw, var(--fs-stat, 32px)); }
+  }
+
+  .hero__stat-label {
+    font-size: var(--fs-small);
+    opacity: 0.78;
+  }
+
+  .hero__features {
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    margin: var(--space-8) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hero__feature {
+    position: relative;
+    padding: var(--space-4) var(--space-4) var(--space-4) calc(var(--space-4) + 4px);
+    background: rgb(14 9 6 / 0.52);
+    border: 1px solid rgb(255 255 255 / 0.14);
+    border-radius: var(--radius);
+    backdrop-filter: blur(8px);
+    overflow: hidden;
+  }
+
+  .hero__feature::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: var(--color-brand);
+  }
+
+  .hero:not(.hero--image) .hero__feature {
+    background: var(--color-surface);
+    border-color: var(--color-border-soft);
+    box-shadow: var(--shadow-card);
+  }
+
+  .hero__feature-title {
+    margin-bottom: var(--space-2);
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .hero__feature-text {
+    font-size: var(--fs-small);
+    line-height: 1.45;
+    opacity: 0.88;
+  }
+</style>

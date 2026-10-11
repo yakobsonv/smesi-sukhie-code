@@ -1,0 +1,19 @@
+---
+// Контейнер 1170 с адаптивными полями (16 → 24 → 35px). Класс .container живёт в base.css.
+interface Props {
+  width?: 'default' | 'narrow' | 'wide';
+  as?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { width = 'default', as = 'div', class: className, ...rest } = Astro.props;
+const Tag = as as any;
+const cls = ['container', width !== 'default' ? `container--${width}` : null, className]
+  .filter(Boolean)
+  .join(' ');
+---
+
+<Tag class={cls} {...rest}>
+  <slot />
+</Tag>

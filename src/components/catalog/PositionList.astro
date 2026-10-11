@@ -1,0 +1,208 @@
+---
+// Список позиций одной секции раздела: строка = товар производителя.
+// В строке — назначение и три факта ДОСЛОВНО с карточки производителя (обрезка только CSS),
+// цена — из магазина клиента. Полные характеристики — в окне PositionModal (одно на страницу).
+import type { Position } from '../../lib/types';
+import { minPrice, factsOf, plural } from '../../lib/positions';
+
+interface Props {
+  items: Position[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="pos-list" role="list">
+  {items.map((p) => {
+    const price = minPrice(p);
+    const facts = factsOf(p);
+    return (
+      <li class="pos" id={p.id} data-pos-item data-brand={p.brand} data-ceramic={p.ceramic ? '1' : undefined}>
+        <div class="pos__img">
+          {p.image
+            ? <img src={p.image} alt={`${p.title} — упаковка`} width={p.imageW ?? 400} height={p.imageH ?? 400} loading="lazy" decoding="async" />
+            : <span class="pos__noimg" aria-hidden="true"></span>}
+        </div>
+        <div class="pos__main">
+          <p class="pos__brand">{p.brand}{p.winter && <span class="pos__tag">есть зимняя версия</span>}</p>
+          <h3 class="pos__title">
+            <button type="button" class="pos__open" data-pos={p.id}>{p.title}</button>
+          </h3>
+          {p.purpose && <p class="pos__purpose">{p.purpose}</p>}
+          {facts.length > 0 && (
+            <dl class="pos__facts">
+              {facts.map((f) => (
+                <div><dt>{f.label}</dt><dd>{f.value}</dd></div>
+              ))}
+            </dl>
+          )}
+        </div>
+        <div class="pos__side">
+          {price
+            ? <p class="pos__price">{p.offers.length > 1 && <span class="pos__from">от</span>} <b>{price.price}</b>&nbsp;₽</p>
+            : <p class="pos__price pos__price--ask">Цену назовём по телефону</p>}
+          {p.offers.length > 1 && <p class="pos__variants">{p.offers.length} {plural(p.offers.length, 'вариант', 'варианта', 'вариантов')}</p>}
+          <button type="button" class="btn btn--ghost btn--sm pos__more" data-pos={p.id}>Характеристики</button>
+        </div>
+      </li>
+    );
+  })}
+</ul>
+
+<style>
+  .pos-list {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pos {
+    display: grid;
+    grid-template-columns: 84px minmax(0, 1fr);
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius);
+    scroll-margin-top: 90px;
+  }
+
+  .pos[hidden] { display: none; }
+
+  .pos__img {
+    width: 84px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    background: var(--color-surface-alt);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .pos__img img { width: 100%; height: 100%; object-fit: contain; }
+
+  .pos__noimg {
+    width: 34px;
+    height: 42px;
+    border-radius: 6px 6px 9px 9px;
+    background: linear-gradient(var(--color-border) 0 0) 0 16px / 100% 6px no-repeat, var(--color-border-soft);
+  }
+
+  .pos__brand {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    margin: 0 0 2px;
+    font-size: var(--fs-tiny);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-accent-text);
+  }
+
+  .pos__tag {
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--color-text-soft);
+    background: var(--color-bg-alt);
+    border-radius: var(--radius-pill);
+  }
+
+  .pos__title {
+    margin: 0 0 var(--space-2);
+    font-size: var(--fs-h4);
+    line-height: 1.25;
+  }
+
+  .pos__open {
+    padding: 0;
+    font: inherit;
+    font-weight: 800;
+    text-align: left;
+    color: var(--color-text);
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .pos__open:hover { color: var(--color-accent-text); text-decoration: underline; text-underline-offset: 3px; }
+
+  .pos__purpose {
+    display: -webkit-box;
+    margin: 0 0 var(--space-3);
+    overflow: hidden;
+    font-size: var(--fs-small);
+    color: var(--color-text-soft);
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .pos__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+  }
+
+  .pos__facts div {
+    display: flex;
+    gap: 6px;
+    max-width: 100%;
+    padding: 4px 10px;
+    font-size: 13px;
+    background: var(--color-bg-alt);
+    border-radius: var(--radius-sm);
+  }
+
+  .pos__facts dt { color: var(--color-muted); white-space: nowrap; }
+  .pos__facts dd { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 34ch; }
+
+  .pos__side {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border-soft);
+  }
+
+  .pos__price {
+    margin: 0;
+    font-family: var(--font-head);
+    font-size: 22px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .pos__from { font-size: 15px; font-weight: 600; color: var(--color-muted); }
+  .pos__price--ask { font-family: var(--font-body); font-size: var(--fs-small); font-weight: 600; color: var(--color-text-soft); white-space: normal; }
+  .pos__variants { margin: 0; font-size: 13px; color: var(--color-muted); }
+  .pos__more { margin-left: auto; }
+
+  @media (min-width: 900px) {
+    .pos {
+      grid-template-columns: 112px minmax(0, 1fr) 200px;
+      align-items: start;
+    }
+
+    .pos__img { width: 112px; }
+
+    .pos__side {
+      grid-column: auto;
+      flex-direction: column;
+      align-items: flex-end;
+      padding-top: 0;
+      border-top: 0;
+      text-align: right;
+    }
+
+    .pos__more { margin-left: 0; margin-top: var(--space-2); }
+  }
+</style>

@@ -1,0 +1,431 @@
+---
+// Сплит-hero главной Оскола: слева контент, справа фотоколлаж, внизу полоса фактов.
+// Фон — чистый тёплый уголь с тонкой сеткой «швов» и красным свечением: не зависит
+// от качества фотографии (пасмурный кадр дома делал прежний hero грязно-бурым).
+import Container from '../layout/Container.astro';
+import Button from '../ui/Button.astro';
+
+interface Props {
+  h1: string;
+  kicker?: string;
+  subtitle?: string;
+  lead?: string;
+  actions?: { label: string; href?: string; modal?: string; variant?: 'primary' | 'secondary' | 'ghost' | 'ghost-inv' }[];
+  chips?: { label: string; href: string; image?: string }[];
+  chipsLabel?: string;
+  stats?: { value: string; label: string }[];
+  /** фотоколлаж справа: большой кадр + две плитки-текстуры */
+  photo: { src: string; alt: string };
+  tiles?: { src: string; alt: string }[];
+}
+
+const {
+  h1,
+  kicker,
+  subtitle,
+  lead,
+  actions = [],
+  chips = [],
+  chipsLabel,
+  stats = [],
+  photo,
+  tiles = [],
+} = Astro.props;
+---
+
+<section class="hsplit">
+  <Container>
+    <div class="hsplit__grid">
+      <div class="hsplit__content">
+        {kicker && <p class="hsplit__kicker">{kicker}</p>}
+        <h1 class="hsplit__title">{h1}</h1>
+        {subtitle && <p class="hsplit__subtitle">{subtitle}</p>}
+        {lead && <p class="hsplit__lead">{lead}</p>}
+
+        {actions.length > 0 && (
+          <div class="hsplit__actions">
+            {actions.map((action) => (
+              <Button href={action.href} modal={action.modal} variant={action.variant ?? 'primary'} size="lg">
+                {action.label}
+              </Button>
+            ))}
+          </div>
+        )}
+
+        {chips.length > 0 && (
+          <div class="hsplit__chips">
+            {chipsLabel && <span class="hsplit__chips-label">{chipsLabel}</span>}
+            <ul class="hsplit__chips-list">
+              {chips.map((chip) => (
+                <li>
+                  {/* при живом фильтре каталога клик фильтрует и скроллит к нему; без JS — обычная ссылка */}
+                  <a class="hsplit__chip" href={chip.href} data-color-chip={chip.href.split('/').filter(Boolean).pop()}>
+                    {chip.image && <img src={chip.image} alt="" width="30" height="30" loading="eager" />}
+                    <span>{chip.label}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {/* aria-hidden здесь стоять НЕ может: внутри три фокусируемые кнопки-переключателя.
+          Раньше блок был декоративным коллажем, и скрытие было уместно; теперь скринридер
+          попадал табом на кнопку без роли и имени (WCAG 4.1.2, правило aria-hidden-focus). */}
+      <div class="hsplit__media">
+        <img class="hsplit__photo" src={photo.src} alt={photo.alt} width="640" height="480" fetchpriority="high" />
+        {tiles.length > 0 && (
+          <div class="hsplit__tiles">
+            {tiles.map((tile) => (
+              <button class="hsplit__tile" type="button" data-hero-swap aria-label={`Показать крупно: ${tile.alt}`}>
+                <img src={tile.src} alt={tile.alt} width="200" height="200" />
+                <span class="hsplit__tile-hint" aria-hidden="true">Смотреть</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+
+    {stats.length > 0 && (
+      <ul class="hsplit__stats">
+        {stats.map((stat) => (
+          <li class="hsplit__stat">
+            <span class="hsplit__stat-value">{stat.value}</span>
+            <span class="hsplit__stat-label">{stat.label}</span>
+          </li>
+        ))}
+      </ul>
+    )}
+  </Container>
+</section>
+
+<style>
+  .hsplit {
+    display: flex;
+    align-items: center;
+    min-height: clamp(540px, 86vh, 860px);
+    padding-block: var(--space-8) var(--space-7);
+    color: var(--color-on-dark);
+    background:
+      radial-gradient(1100px 520px at 88% -12%, var(--hero-glow, rgb(218 37 28 / 0.22)), transparent 62%),
+      radial-gradient(700px 420px at -10% 110%, var(--hero-glow-soft, rgb(218 37 28 / 0.1)), transparent 55%),
+      repeating-linear-gradient(0deg, transparent 0 64px, rgb(255 255 255 / 0.03) 64px 66px),
+      repeating-linear-gradient(90deg, transparent 0 138px, rgb(255 255 255 / 0.018) 138px 140px),
+      var(--color-dark);
+  }
+
+  .hsplit > :global(.container) { width: 100%; }
+
+  .hsplit__grid {
+    display: grid;
+    gap: var(--space-7);
+    align-items: center;
+  }
+
+  /* элементы грида по умолчанию не уже своего содержимого: длинное слово
+     («Железногорский») распирало колонку и давало горизонтальный скролл */
+  .hsplit__content,
+  .hsplit__media { min-width: 0; }
+
+  @media (min-width: 980px) {
+    .hsplit__grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); }
+  }
+
+  .hsplit__kicker {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  .hsplit__kicker::before {
+    content: '';
+    width: 34px;
+    height: 3px;
+    flex: none;
+    background: var(--color-brand);
+    border-radius: 2px;
+  }
+
+  .hsplit__title {
+    margin: 0;
+    /* кегль берём из темы сайта: у ЖКЗ длинное «Железногорский» не помещается в 58px.
+       break-word вместо anywhere — слово переносится целиком, без разрыва дефисом. */
+    font-size: var(--fs-h1);
+    line-height: 1.06;
+    overflow-wrap: break-word;
+  }
+
+  .hsplit__subtitle {
+    margin-top: var(--space-3);
+    font-family: var(--font-head);
+    font-size: clamp(16px, 1.6vw, 20px);
+    font-weight: 500;
+    color: var(--color-brand);
+    filter: brightness(1.6);
+  }
+
+  .hsplit__lead {
+    margin-top: var(--space-4);
+    max-width: 44ch;
+    font-size: var(--fs-lead);
+    opacity: 0.88;
+  }
+
+  .hsplit__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .hsplit__chips {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-6);
+  }
+
+  .hsplit__chips-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .hsplit__chips-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hsplit__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 6px 15px 6px 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-on-dark);
+    text-decoration: none;
+    background: rgb(255 255 255 / 0.07);
+    border: 1px solid rgb(255 255 255 / 0.16);
+    border-radius: var(--radius-pill);
+    transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
+  }
+
+  .hsplit__chip img {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgb(255 255 255 / 0.25);
+  }
+
+  .hsplit__chip:hover {
+    opacity: 1;
+    background: rgb(255 255 255 / 0.16);
+    border-color: var(--color-brand);
+    transform: translateY(-2px);
+  }
+
+  /* фотоколлаж: большой кадр, под ним ряд плиток-переключателей.
+     Раньше плитки лежали внахлёст на нижнем крае снимка и перекрывали его. */
+  .hsplit__media {
+    position: relative;
+  }
+
+  .hsplit__photo {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 24px 60px -18px rgb(0 0 0 / 0.55);
+  }
+
+  .hsplit__tiles {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: 20px; /* запас над амплитудой покачивания в 8 px, иначе ряд подходит к фото на 4 px */
+  }
+
+  .hsplit__tile { flex: 1 1 0; }
+
+  /* Плитка — кнопка: по клику меняется местами с главным фото первого экрана.
+     Раньше это были неподвижные картинки, и посетитель не понимал, что их можно нажать. */
+  .hsplit__tile {
+    position: relative;
+    display: block;
+    padding: 0;
+    border: 3px solid var(--color-dark);
+    border-radius: var(--radius);
+    background: none;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 0 16px 36px -12px rgb(0 0 0 / 0.55);
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease),
+      border-color var(--dur) var(--ease);
+  }
+
+  .hsplit__tiles img {
+    display: block;
+    width: 100%;
+    height: clamp(84px, 9vw, 132px);
+    object-fit: cover;
+  }
+
+  .hsplit__tile-hint {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 6px 4px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-on-dark);
+    background: linear-gradient(to top, rgb(0 0 0 / 0.72), rgb(0 0 0 / 0));
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease);
+  }
+
+  .hsplit__tile:hover,
+  .hsplit__tile:focus-visible {
+    transform: translateY(-4px);
+    border-color: var(--color-brand);
+    box-shadow: 0 22px 44px -12px rgb(0 0 0 / 0.6);
+  }
+
+  .hsplit__tile:hover .hsplit__tile-hint,
+  .hsplit__tile:focus-visible .hsplit__tile-hint { opacity: 1; }
+
+  /* На тач-экране наведения не существует, и подсказка не показалась бы никогда —
+     плитки выглядели бы обычными картинками. Там держим её видимой всегда. */
+  @media (hover: none) {
+    .hsplit__tile-hint { opacity: 1; }
+  }
+
+  /* белый контур вместо фирменного: на тёмном фоне красный давал контраст 3,45:1 — впритык к порогу */
+  .hsplit__tile:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+  /* короткая смена кадра, чтобы подмена не выглядела рывком */
+  .hsplit__photo.is-swapping,
+  .hsplit__tile.is-swapping img { opacity: 0; transition: opacity 140ms var(--ease); }
+
+  /* ——— динамика: каскадный вход при загрузке + лёгкое «дыхание» тайлов */
+  @media (prefers-reduced-motion: no-preference) {
+    .hsplit__kicker { animation: hsplit-in 640ms var(--ease) both; }
+    .hsplit__title { animation: hsplit-in 640ms var(--ease) 90ms both; }
+    .hsplit__subtitle { animation: hsplit-in 640ms var(--ease) 180ms both; }
+    .hsplit__lead { animation: hsplit-in 640ms var(--ease) 260ms both; }
+    .hsplit__actions { animation: hsplit-in 640ms var(--ease) 340ms both; }
+    .hsplit__chips { animation: hsplit-in 640ms var(--ease) 430ms both; }
+    .hsplit__media { animation: hsplit-in-photo 760ms var(--ease) 200ms both; }
+    .hsplit__stats { animation: hsplit-in 640ms var(--ease) 560ms both; }
+
+    /* «дыхание» плиток. Это кнопки, поэтому при наведении и фокусе покачивание
+       останавливаем — по движущейся мишени трудно попасть. */
+    .hsplit__tile { animation: hsplit-float 7s ease-in-out infinite; }
+    .hsplit__tile:nth-child(2) { animation-delay: 1.2s; animation-duration: 8s; }
+    .hsplit__tile:nth-child(3) { animation-delay: 2.4s; animation-duration: 7.6s; }
+    /* курсор подведён к РЯДУ — замирают все три: пока цель движется, по ней трудно попасть,
+       а «дыхание» нужно только в покое */
+    .hsplit__tiles:hover .hsplit__tile,
+    .hsplit__tiles:focus-within .hsplit__tile { animation-play-state: paused; }
+
+    @keyframes hsplit-float {
+      0%, 100% { translate: 0 0; }
+      50% { translate: 0 -8px; }
+    }
+
+    @keyframes hsplit-in {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @keyframes hsplit-in-photo {
+      from { opacity: 0; transform: translateY(24px) scale(0.985); }
+      to { opacity: 1; transform: none; }
+    }
+
+  }
+
+  .hsplit__stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4) var(--space-6);
+    margin: var(--space-8) 0 0;
+    padding: var(--space-5) 0 0;
+    border-top: 1px solid rgb(255 255 255 / 0.16);
+    list-style: none;
+  }
+
+  @media (min-width: 900px) {
+    .hsplit__stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  .hsplit__stat { display: grid; gap: 4px; }
+
+  .hsplit__stat-value {
+    font-family: var(--font-head);
+    font-size: var(--fs-stat, 32px);
+    font-weight: var(--fw-head, 700);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+
+  .hsplit__stat-label {
+    font-size: var(--fs-small);
+    opacity: 0.72;
+  }
+</style>
+
+<script>
+  // Плитки первого экрана меняются местами с главным фото. Прогрессивное улучшение:
+  // без JS это просто кнопки с картинками, страница остаётся рабочей.
+  if (!(window as any).__ktHeroSwap) {
+    (window as any).__ktHeroSwap = true;
+    document.addEventListener('click', (event) => {
+      const tile = (event.target as HTMLElement).closest<HTMLElement>('[data-hero-swap]');
+      if (!tile) return;
+      const media = tile.closest('.hsplit__media') || document;
+      const main = media.querySelector<HTMLImageElement>('.hsplit__photo');
+      const small = tile.querySelector('img');
+      if (!main || !small) return;
+
+      const mainSrc = main.getAttribute('src') || '';
+      const mainAlt = main.getAttribute('alt') || '';
+      const tileSrc = small.getAttribute('src') || '';
+      const tileAlt = small.getAttribute('alt') || '';
+      if (mainSrc === tileSrc) return;
+
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const apply = () => {
+        main.setAttribute('src', tileSrc);
+        main.setAttribute('alt', tileAlt);
+        small.setAttribute('src', mainSrc);
+        small.setAttribute('alt', mainAlt);
+        tile.setAttribute('aria-label', `Показать крупно: ${mainAlt}`);
+        main.classList.remove('is-swapping');
+        tile.classList.remove('is-swapping');
+      };
+
+      if (reduce) { apply(); return; }
+      main.classList.add('is-swapping');
+      tile.classList.add('is-swapping');
+      setTimeout(apply, 140);
+    });
+  }
+</script>
