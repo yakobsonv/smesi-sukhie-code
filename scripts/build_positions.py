@@ -16,12 +16,12 @@ from collections import defaultdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, 'data')
-REC = json.load(open(os.path.join(DATA, 'records.json')))
-PRODS = {p['id']: p for p in json.load(open(os.path.join(DATA, 'products.json')))}
-MAPPING = json.load(open(os.path.join(DATA, 'mapping.json')))
-TKSM = {t['id']: t for t in json.load(open(os.path.join(DATA, 'tksm_items.json')))}
-IMAGES = json.load(open(os.path.join(DATA, 'images.json')))
-OTHER = json.load(open(os.path.join(DATA, 'other_brands.json'))) if os.path.exists(os.path.join(DATA, 'other_brands.json')) else []
+REC = json.load(open(os.path.join(DATA, 'records.json'), encoding='utf-8'))
+PRODS = {p['id']: p for p in json.load(open(os.path.join(DATA, 'products.json'), encoding='utf-8'))}
+MAPPING = json.load(open(os.path.join(DATA, 'mapping.json'), encoding='utf-8'))
+TKSM = {t['id']: t for t in json.load(open(os.path.join(DATA, 'tksm_items.json'), encoding='utf-8'))}
+IMAGES = json.load(open(os.path.join(DATA, 'images.json'), encoding='utf-8'))
+OTHER = json.load(open(os.path.join(DATA, 'other_brands.json'), encoding='utf-8')) if os.path.exists(os.path.join(DATA, 'other_brands.json')) else []
 
 # тип → (раздел, секция) — зеркало src/data/sections.ts
 TYPE_TO = {
@@ -241,7 +241,7 @@ for (site, key), offers in groups.items():
         if im: pos.update(im)
     if key.startswith('Perel RodStone Шов-'):
         # набор из сухой смеси и жидкого компонента: упаковку даём обеими строками производителя, дословно
-        core = open(os.path.join(CORE, r0['id'] + '.txt')).read().split('\n')
+        core = open(os.path.join(CORE, r0['id'] + '.txt'), encoding='utf-8').read().split('\n')
         for i, line in enumerate(core[:-1]):
             if line.startswith('Компонент А:') and core[i + 1].startswith('Компонент'):
                 pos['packaging'] = line + '\n' + core[i + 1]; break
@@ -275,12 +275,12 @@ ids = [p['id'] for p in positions]
 dups = {i for i in ids if ids.count(i) > 1}
 if dups:
     sys.exit('повтор id: ' + ', '.join(sorted(dups)))
-json.dump(positions, open(os.path.join(ROOT, 'src', 'data', 'positions.json'), 'w'), ensure_ascii=False, indent=1)
+json.dump(positions, open(os.path.join(ROOT, 'src', 'data', 'positions.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 
 report = {'positions': len(positions), 'by_brand': {}, 'problems': problems, 'skipped': {k: v for k, v in skipped.items()}}
 for p in positions:
     report['by_brand'][p['brand']] = report['by_brand'].get(p['brand'], 0) + 1
-json.dump(report, open(os.path.join(DATA, 'build_report.json'), 'w'), ensure_ascii=False, indent=1)
+json.dump(report, open(os.path.join(DATA, 'build_report.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 print(json.dumps({k: report[k] for k in ('positions', 'by_brand')}, ensure_ascii=False))
 print('проблем', len(problems), '· пропущено:', {k: len(v) for k, v in skipped.items()})
 for pr in problems[:40]:

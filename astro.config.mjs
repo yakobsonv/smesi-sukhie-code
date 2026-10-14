@@ -1,8 +1,7 @@
 import { defineConfig } from 'astro/config';
 
-// Три сайта клиента в одном проекте: /oskol, /zhkz, /stellard.
-// Пока это внутренняя версия для согласования — закрыта от поиска на уровне хостинга,
-// боевые адреса остаются на конструкторе.
+// Сайт «Сухие строительные смеси» (механика взята из сайтов кирпича клиента).
+// Домена пока нет — превью на Vercel закрыто от поиска (noindex, X-Robots-Tag, robots.txt).
 export default defineConfig({
   output: 'static',
   build: { format: 'directory' },

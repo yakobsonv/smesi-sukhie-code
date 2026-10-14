@@ -20,7 +20,7 @@ CONTRAST_JS = '''() => {
 async def main():
     async with async_playwright() as p:
         b = await p.chromium.launch()
-        for w, h in ((1440, 900), (390, 844)):
+        for w, h in ((1440, 900), (768, 1024), (390, 844), (320, 640)):
             ctx = await b.new_context(viewport={'width': w, 'height': h}, device_scale_factor=1 if w > 700 else 2, is_mobile=w < 700)
             await ctx.add_init_script("try{localStorage.setItem('cookie-consent-v1','1')}catch(e){}")
             page = await ctx.new_page(); errs = []; page.on('pageerror', lambda e: errs.append(str(e)))
@@ -55,6 +55,16 @@ async def main():
             r = await page.evaluate(CONTRAST_JS.replace("document.querySelectorAll('body *')", "document.querySelectorAll('#pos-modal *')"))
             if r: bad['окно'] = r[:6]
             print('   контраст ниже нормы:', bad or 0)
+            fails = []
+            if not (0 < dauer < total): fails.append(f'фильтр Dauer: {dauer} из {total}')
+            if await cer.count() and not (0 < ceramic < total): fails.append(f'фильтр керамогранита: {ceramic} из {total}')
+            if not dlg['open']: fails.append('окно характеристик не открылось')
+            if dlg['sw'] > w: fails.append(f'прокрутка вбок при открытом окне: {dlg["sw"]} > {w}')
+            if not closed: fails.append('окно не закрылось по Esc или остался #якорь')
+            if not byhash: fails.append('окно не открылось по ссылке с #якорем')
+            if errs: fails.append(f'ошибки JS: {errs[:2]}')
+            if bad: fails.append(f'контраст ниже нормы: {list(bad)}')
+            print(f'ИТОГ w={w}: ' + ('OK' if not fails else 'ПРОБЛЕМА — ' + '; '.join(fails)))
             await ctx.close()
         await b.close()
 asyncio.run(main())

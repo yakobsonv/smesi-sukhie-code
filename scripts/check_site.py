@@ -33,7 +33,7 @@ async def main():
     out = []; links = set()
     async with async_playwright() as p:
         b = await p.chromium.launch()
-        for w, h in ((1440, 900), (390, 844), (320, 640)):
+        for w, h in ((1440, 900), (768, 1024), (390, 844), (320, 640)):
             ctx = await b.new_context(viewport={'width': w, 'height': h}, device_scale_factor=1 if w > 700 else 2, is_mobile=w < 700)
             await ctx.add_init_script("try{localStorage.setItem('cookie-consent-v1','1')}catch(e){}")
             for path in PAGES:
