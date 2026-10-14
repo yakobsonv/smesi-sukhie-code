@@ -1,0 +1,728 @@
+[
+ {
+  "site": "perel",
+  "slug": "kladochnaya-smes",
+  "name": "Кладочная смесь",
+  "url": "https://td-perel.ru/catalog/kladochnaya-smes/"
+ },
+ {
+  "site": "perel",
+  "slug": "tsvetnaya-kladochnaya-smes",
+  "name": "Цветная кладочная смесь",
+  "url": "https://td-perel.ru/catalog/tsvetnaya-kladochnaya-smes/"
+ },
+ {
+  "site": "perel",
+  "slug": "universalnye-smesi",
+  "name": "Универсальные смеси",
+  "url": "https://td-perel.ru/catalog/universalnye-smesi/"
+ },
+ {
+  "site": "perel",
+  "slug": "teplaya-kladochnaya-smes",
+  "name": "Теплая кладочная смесь",
+  "url": "https://td-perel.ru/catalog/teplaya-kladochnaya-smes/"
+ },
+ {
+  "site": "perel",
+  "slug": "zatirki-i-rasshivki",
+  "name": "Затирки и расшивки",
+  "url": "https://td-perel.ru/catalog/zatirki-i-rasshivki/"
+ },
+ {
+  "site": "perel",
+  "slug": "tsvetnaya-zatirochnaya-smes-perel-rl",
+  "name": "Цветная затирочная смесь Perel RL",
+  "url": "https://td-perel.ru/catalog/tsvetnaya-zatirochnaya-smes-perel-rl/"
+ },
+ {
+  "site": "perel",
+  "slug": "perel-nfs-pro",
+  "name": "Цветная затирочная смесь Perel NFS Pro",
+  "url": "https://td-perel.ru/catalog/perel-nfs-pro/"
+ },
+ {
+  "site": "perel",
+  "slug": "klei-dlya-plitki-i-kamnya",
+  "name": "Клеи для плитки и камня",
+  "url": "https://td-perel.ru/catalog/klei-dlya-plitki-i-kamnya/"
+ },
+ {
+  "site": "perel",
+  "slug": "montazhnyy-kley",
+  "name": "Монтажные клея Perel",
+  "url": "https://td-perel.ru/catalog/montazhnyy-kley/"
+ },
+ {
+  "site": "perel",
+  "slug": "shpatlevki",
+  "name": "Штукатурки",
+  "url": "https://td-perel.ru/catalog/shpatlevki/"
+ },
+ {
+  "site": "perel",
+  "slug": "gipsovaya-shtukaturka",
+  "name": "Гипсовая штукатурка",
+  "url": "https://td-perel.ru/catalog/gipsovaya-shtukaturka/"
+ },
+ {
+  "site": "perel",
+  "slug": "tsementnaya-shtukaturka",
+  "name": "Цементная штукатурка",
+  "url": "https://td-perel.ru/catalog/tsementnaya-shtukaturka/"
+ },
+ {
+  "site": "perel",
+  "slug": "shpaklevki",
+  "name": "Шпаклевки",
+  "url": "https://td-perel.ru/catalog/shpaklevki/"
+ },
+ {
+  "site": "perel",
+  "slug": "gipsovaya_shpaklevka",
+  "name": "Гипсовая шпаклевка",
+  "url": "https://td-perel.ru/catalog/gipsovaya_shpaklevka/"
+ },
+ {
+  "site": "perel",
+  "slug": "polimernaya_shpaklevka",
+  "name": "Полимерная шпаклевка",
+  "url": "https://td-perel.ru/catalog/polimernaya_shpaklevka/"
+ },
+ {
+  "site": "perel",
+  "slug": "tsementnaya_shpaklevka",
+  "name": "Цементная шпаклевка",
+  "url": "https://td-perel.ru/catalog/tsementnaya_shpaklevka/"
+ },
+ {
+  "site": "perel",
+  "slug": "nalivnye-poly",
+  "name": "Наливные полы",
+  "url": "https://td-perel.ru/catalog/nalivnye-poly/"
+ },
+ {
+  "site": "perel",
+  "slug": "gidroizolyatsiya",
+  "name": "Гидроизоляция",
+  "url": "https://td-perel.ru/catalog/gidroizolyatsiya/"
+ },
+ {
+  "site": "perel",
+  "slug": "smesi-dlya-bruschatki",
+  "name": "Смеси для брусчатки",
+  "url": "https://td-perel.ru/catalog/smesi-dlya-bruschatki/"
+ },
+ {
+  "site": "perel",
+  "slug": "perel-rodstone-palitra",
+  "name": "Описание системы Perel RodStone",
+  "url": "https://td-perel.ru/catalog/perel-rodstone-palitra/"
+ },
+ {
+  "site": "perel",
+  "slug": "rodstone-osnova",
+  "name": "Дренажный раствор Perel",
+  "url": "https://td-perel.ru/catalog/rodstone-osnova/"
+ },
+ {
+  "site": "perel",
+  "slug": "rodstone-adgeziv",
+  "name": "Клей для брусчатки, тротуарной плитки и камня",
+  "url": "https://td-perel.ru/catalog/rodstone-adgeziv/"
+ },
+ {
+  "site": "perel",
+  "slug": "protivomoroznaya-dobavka",
+  "name": "Противоморозной добавки для раствора",
+  "url": "https://td-perel.ru/catalog/protivomoroznaya-dobavka/"
+ },
+ {
+  "site": "perel",
+  "slug": "gruntovka",
+  "name": "Грунтовка",
+  "url": "https://td-perel.ru/catalog/gruntovka/"
+ },
+ {
+  "site": "perel",
+  "slug": "dekorativnaya-shtukaturka",
+  "name": "Декоративная штукатурка",
+  "url": "https://td-perel.ru/catalog/dekorativnaya-shtukaturka/"
+ },
+ {
+  "site": "perel",
+  "slug": "akrilovaya",
+  "name": "Акриловая декоративная штукатурка",
+  "url": "https://td-perel.ru/catalog/akrilovaya/"
+ },
+ {
+  "site": "perel",
+  "slug": "silikonovaya",
+  "name": "Силиконовая декоративная штукатурка",
+  "url": "https://td-perel.ru/catalog/silikonovaya/"
+ },
+ {
+  "site": "perel",
+  "slug": "tsementnaya",
+  "name": "Декоративная штукатурка на цементной основе",
+  "url": "https://td-perel.ru/catalog/tsementnaya/"
+ },
+ {
+  "site": "perel",
+  "slug": "fakturnye-materialy",
+  "name": "Фактурные материалы",
+  "url": "https://td-perel.ru/catalog/fakturnye-materialy/"
+ },
+ {
+  "site": "perel",
+  "slug": "kraski",
+  "name": "Краски",
+  "url": "https://td-perel.ru/catalog/kraski/"
+ },
+ {
+  "site": "perel",
+  "slug": "gidrofobizator",
+  "name": "Гидрофобизатор",
+  "url": "https://td-perel.ru/catalog/gidrofobizator/"
+ },
+ {
+  "site": "perel",
+  "slug": "sredstvo-dlya-udaleniya-vysolov",
+  "name": "Средство для удаления высолов",
+  "url": "https://td-perel.ru/catalog/sredstvo-dlya-udaleniya-vysolov/"
+ },
+ {
+  "site": "perel",
+  "slug": "sistemy-utepleniya-fasadov",
+  "name": "Системы утепления фасадов",
+  "url": "https://td-perel.ru/catalog/sistemy-utepleniya-fasadov/"
+ },
+ {
+  "site": "perel",
+  "slug": "katalogi-perel",
+  "name": "Каталоги Perel в PDF",
+  "url": "https://td-perel.ru/catalog/katalogi-perel/"
+ },
+ {
+  "site": "perel",
+  "slug": "perel-sl",
+  "name": "Цветная кладочная смесь Perel SL",
+  "url": "https://td-perel.ru/catalog/perel-sl/"
+ },
+ {
+  "site": "perel",
+  "slug": "palitra-14-tsvetov",
+  "name": "Цветная кладочная смесь Perel SL",
+  "url": "https://td-perel.ru/catalog/palitra-14-tsvetov/"
+ },
+ {
+  "site": "perel",
+  "slug": "perel-vl",
+  "name": "Цветная кладочная смесь Perel VL",
+  "url": "https://td-perel.ru/catalog/perel-vl/"
+ },
+ {
+  "site": "perel",
+  "slug": "palitra-14-tsvetov-vl",
+  "name": "Цветная кладочная смесь Perel VL",
+  "url": "https://td-perel.ru/catalog/palitra-14-tsvetov-vl/"
+ },
+ {
+  "site": "perel",
+  "slug": "perel-nl",
+  "name": "Цветная кладочная смесь Perel NL",
+  "url": "https://td-perel.ru/catalog/perel-nl/"
+ },
+ {
+  "site": "perel",
+  "slug": "palitra-14-tsvetov-nl",
+  "name": "Цветная кладочная смесь Perel NL",
+  "url": "https://td-perel.ru/catalog/palitra-14-tsvetov-nl/"
+ },
+ {
+  "site": "perel",
+  "slug": "gotovye_shpaklevki",
+  "name": "Готовые шпаклевки",
+  "url": "https://td-perel.ru/catalog/gotovye_shpaklevki/"
+ },
+ {
+  "site": "perel",
+  "slug": "vodopronitsaemaya",
+  "name": "Заполнение швов (Водопроницаемый)",
+  "url": "https://td-perel.ru/catalog/vodopronitsaemaya/"
+ },
+ {
+  "site": "perel",
+  "slug": "palitra-perel-rodstone",
+  "name": "Палитра Perel RodStone",
+  "url": "https://td-perel.ru/catalog/palitra-perel-rodstone/"
+ },
+ {
+  "site": "perel",
+  "slug": "vodonepronitsaemaya",
+  "name": "Заполнение швов (ВодоНЕпроницаемый)",
+  "url": "https://td-perel.ru/catalog/vodonepronitsaemaya/"
+ },
+ {
+  "site": "perel",
+  "slug": "palitra-perel-rodstone8946",
+  "name": "Палитра Perel RodStone",
+  "url": "https://td-perel.ru/catalog/palitra-perel-rodstone8946/"
+ },
+ {
+  "site": "perel",
+  "slug": "modifitsirovannyy-pesok",
+  "name": "Модифицированный песок",
+  "url": "https://td-perel.ru/catalog/modifitsirovannyy-pesok/"
+ },
+ {
+  "site": "perel",
+  "slug": "kladochnye-smesi-dlya-kirpicha",
+  "name": "Кладочная смесь для кирпича",
+  "url": "https://td-perel.ru/catalog/kladochnye-smesi-dlya-kirpicha/"
+ },
+ {
+  "site": "dauer",
+  "slug": "plitochnye-klei",
+  "name": "Плиточные клеи",
+  "url": "https://dauer.ru/catalog/plitochnye-klei/"
+ },
+ {
+  "site": "dauer",
+  "slug": "shtukaturki",
+  "name": "Штукатурки",
+  "url": "https://dauer.ru/catalog/shtukaturki/"
+ },
+ {
+  "site": "dauer",
+  "slug": "shpatlevki",
+  "name": "Шпатлевки",
+  "url": "https://dauer.ru/catalog/shpatlevki/"
+ },
+ {
+  "site": "dauer",
+  "slug": "materialy-dlya-ustroystva-polov",
+  "name": "Материалы для устройства полов",
+  "url": "https://dauer.ru/catalog/materialy-dlya-ustroystva-polov/"
+ },
+ {
+  "site": "dauer",
+  "slug": "grunty",
+  "name": "Dauer® Грунты",
+  "url": "https://dauer.ru/catalog/grunty/"
+ },
+ {
+  "site": "dauer",
+  "slug": "tsementno-peschanye-smesi",
+  "name": "Dauer® Цементно-песчаные смеси",
+  "url": "https://dauer.ru/catalog/tsementno-peschanye-smesi/"
+ },
+ {
+  "site": "dauer",
+  "slug": "montazhnye-i-kladochnye",
+  "name": "Монтажные и кладочные",
+  "url": "https://dauer.ru/catalog/montazhnye-i-kladochnye/"
+ },
+ {
+  "site": "dauer",
+  "slug": "gidroizolyatsiya",
+  "name": "Гидроизоляция",
+  "url": "https://dauer.ru/catalog/gidroizolyatsiya/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "novinki",
+  "name": "Новинки",
+  "url": "https://osnovit.ru/catalog/novinki/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "smesi-dlya-ustroystva-pola",
+  "name": "Смеси для пола Основит",
+  "url": "https://osnovit.ru/catalog/smesi-dlya-ustroystva-pola/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "nalivnye-poly",
+  "name": "Наливные полы Основит",
+  "url": "https://osnovit.ru/catalog/nalivnye-poly/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "rovniteli",
+  "name": "Ровнители для пола Основит",
+  "url": "https://osnovit.ru/catalog/rovniteli/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "styazhki",
+  "name": "Стяжки для пола Основит",
+  "url": "https://osnovit.ru/catalog/styazhki/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "shtukaturki",
+  "name": "Штукатурка Основит",
+  "url": "https://osnovit.ru/catalog/shtukaturki/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "shtukaturki-gipsovye",
+  "name": "Гипсовая штукатурка Основит",
+  "url": "https://osnovit.ru/catalog/shtukaturki-gipsovye/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "seria-techno",
+  "name": "Серия ТЕХНО Основит",
+  "url": "https://osnovit.ru/catalog/seria-techno/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "shtukaturki-tsementnye",
+  "name": "Цементная штукатурка Основит",
+  "url": "https://osnovit.ru/catalog/shtukaturki-tsementnye/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "shpaklevki",
+  "name": "Шпаклевка Основит",
+  "url": "https://osnovit.ru/catalog/shpaklevki/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "shpaklevki-gipsovye",
+  "name": "Гипсовая шпаклевка Основит",
+  "url": "https://osnovit.ru/catalog/shpaklevki-gipsovye/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "shpaklevki-polimernye",
+  "name": "Полимерная шпаклевка Основит",
+  "url": "https://osnovit.ru/catalog/shpaklevki-polimernye/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "shpaklevki-tsementnye",
+  "name": "Цементная шпаклевка Основит",
+  "url": "https://osnovit.ru/catalog/shpaklevki-tsementnye/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "shpaklevki-gotovye",
+  "name": "Готовые шпаклевки Основит",
+  "url": "https://osnovit.ru/catalog/shpaklevki-gotovye/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "plitochnye-klei",
+  "name": "Клеи для плитки и камня Основит",
+  "url": "https://osnovit.ru/catalog/plitochnye-klei/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "plitochnyy-kley-dlya-keramicheskoy-plitki",
+  "name": "Клей для керамической плитки Основит",
+  "url": "https://osnovit.ru/catalog/plitochnyy-kley-dlya-keramicheskoy-plitki/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "plitochnyy-kley-dlya-klinkernoy-plitki",
+  "name": "Клей для клинкерной плитки Основит",
+  "url": "https://osnovit.ru/catalog/plitochnyy-kley-dlya-klinkernoy-plitki/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "plitochnyy-kley-dlya-krupnoformatnoy-plitki",
+  "name": "Клей для крупноформатной плитки Основит",
+  "url": "https://osnovit.ru/catalog/plitochnyy-kley-dlya-krupnoformatnoy-plitki/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "plitochnyy-kley-dlya-keramogranita",
+  "name": "Плиточный клей для керамогранита Основит",
+  "url": "https://osnovit.ru/catalog/plitochnyy-kley-dlya-keramogranita/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "plitochnyy-kley-dlya-mozaiki",
+  "name": "Плиточный клей для мозаики Основит",
+  "url": "https://osnovit.ru/catalog/plitochnyy-kley-dlya-mozaiki/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "plitochnyy-kley-dlya-mramora",
+  "name": "Плиточный клей для мрамора Основит",
+  "url": "https://osnovit.ru/catalog/plitochnyy-kley-dlya-mramora/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "plitochnyy-kley-dlya-naturalnogo-i-iskusstvennogo-kamnya",
+  "name": "Плиточный клей для натурального и искусственного камня Основит",
+  "url": "https://osnovit.ru/catalog/plitochnyy-kley-dlya-naturalnogo-i-iskusstvennogo-kamnya/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "zatirki-i-rasshivki",
+  "name": "Затирки и расшивки Основит",
+  "url": "https://osnovit.ru/catalog/zatirki-i-rasshivki/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "zatirka-shvov",
+  "name": "Затирка швов Основит",
+  "url": "https://osnovit.ru/catalog/zatirka-shvov/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "rasshivki",
+  "name": "Расшивки Основит",
+  "url": "https://osnovit.ru/catalog/rasshivki/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "epoksidnye-zatirki-i-materialy-dlya-ochistki-",
+  "name": "Эпоксидные затирки и материалы для очистки  Основит",
+  "url": "https://osnovit.ru/catalog/epoksidnye-zatirki-i-materialy-dlya-ochistki-/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "germetiki",
+  "name": "Герметики Основит",
+  "url": "https://osnovit.ru/catalog/germetiki/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "dekorativnye-shtukaturki",
+  "name": "Декоративная штукатурка Основит",
+  "url": "https://osnovit.ru/catalog/dekorativnye-shtukaturki/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "dekorativnye-shtukaturki-gotovye",
+  "name": "Готовая декоративная штукатурка Основит",
+  "url": "https://osnovit.ru/catalog/dekorativnye-shtukaturki-gotovye/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "dekorativnye-shtukaturki-mineralnye",
+  "name": "Минеральная декоративная штукатурка Основит",
+  "url": "https://osnovit.ru/catalog/dekorativnye-shtukaturki-mineralnye/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "dekorativnye-shtukaturki-mineralnye-modeliruemye",
+  "name": "Моделируемая минеральная декоративная штукатурка  Основит",
+  "url": "https://osnovit.ru/catalog/dekorativnye-shtukaturki-mineralnye-modeliruemye/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "dekorativnye-shtukaturki-akrilovye",
+  "name": "Акриловая декоративная штукатурка Основит",
+  "url": "https://osnovit.ru/catalog/dekorativnye-shtukaturki-akrilovye/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "dekorativnye-shtukaturki-silikatnye",
+  "name": "Силикатная декоративная штукатурка Основит",
+  "url": "https://osnovit.ru/catalog/dekorativnye-shtukaturki-silikatnye/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "dekorativnye-shtukaturki-silikatno-silikonovye",
+  "name": "Силикатно-силиконовая декоративная штукатурка Основит",
+  "url": "https://osnovit.ru/catalog/dekorativnye-shtukaturki-silikatno-silikonovye/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "dekorativnye-shtukaturki-silikonovye",
+  "name": "Силиконовая декоративная штукатурка Основит",
+  "url": "https://osnovit.ru/catalog/dekorativnye-shtukaturki-silikonovye/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "smesi-dlya-teploizolyatsii",
+  "name": "Смеси для теплоизоляции Основит",
+  "url": "https://osnovit.ru/catalog/smesi-dlya-teploizolyatsii/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "kleevye-sostavy",
+  "name": "Клеевые составы Основит",
+  "url": "https://osnovit.ru/catalog/kleevye-sostavy/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "bazovye-shtukaturnye-sostavy",
+  "name": "Базовые штукатурные составы Основит",
+  "url": "https://osnovit.ru/catalog/bazovye-shtukaturnye-sostavy/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "kladochnye-rastvory",
+  "name": "Кладочные растворы Основит",
+  "url": "https://osnovit.ru/catalog/kladochnye-rastvory/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "kladochnye-rastvory-osnovit",
+  "name": "Растворы для рядовой кладки Основит",
+  "url": "https://osnovit.ru/catalog/kladochnye-rastvory-osnovit/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "tsvetnye-kladochnye-rastvory",
+  "name": "Цветные кладочные растворы Основит",
+  "url": "https://osnovit.ru/catalog/tsvetnye-kladochnye-rastvory/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "teploizolyatsionnye-kladochnye-rastvory",
+  "name": "Теплоизоляционные кладочные растворы Основит",
+  "url": "https://osnovit.ru/catalog/teploizolyatsionnye-kladochnye-rastvory/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "montazhnye-klei",
+  "name": "Монтажные клеи Основит",
+  "url": "https://osnovit.ru/catalog/montazhnye-klei/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "gidroizolyatsiya",
+  "name": "Гидроизоляция Основит",
+  "url": "https://osnovit.ru/catalog/gidroizolyatsiya/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "gidroplomba",
+  "name": "Гидропломба Основит",
+  "url": "https://osnovit.ru/catalog/gidroplomba/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "obmazochnaya-gidroizolyatsiya",
+  "name": "Обмазочная гидроизоляция Основит",
+  "url": "https://osnovit.ru/catalog/obmazochnaya-gidroizolyatsiya/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "soputstvuyushchie-tovary",
+  "name": "Сопутствующие товары Основит",
+  "url": "https://osnovit.ru/catalog/soputstvuyushchie-tovary/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "emali",
+  "name": "Эмали Основит",
+  "url": "https://osnovit.ru/catalog/emali/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "spetsialnye-rastvory",
+  "name": "Специальные растворы Основит",
+  "url": "https://osnovit.ru/catalog/spetsialnye-rastvory/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "gruntovki",
+  "name": "Грунты Основит",
+  "url": "https://osnovit.ru/catalog/gruntovki/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "smesi-dlya-bruschatki",
+  "name": "Смеси для брусчатки Основит",
+  "url": "https://osnovit.ru/catalog/smesi-dlya-bruschatki/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "drenazhnye-rastvory",
+  "name": "Подстилающие растворы Основит",
+  "url": "https://osnovit.ru/catalog/drenazhnye-rastvory/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "kleevye-rastvory",
+  "name": "Клеевые растворы Основит",
+  "url": "https://osnovit.ru/catalog/kleevye-rastvory/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "zapolnenie-shvov",
+  "name": "Заполнение швов Основит",
+  "url": "https://osnovit.ru/catalog/zapolnenie-shvov/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "remont-i-zashchita-betona",
+  "name": "Ремонтный состав Основит",
+  "url": "https://osnovit.ru/catalog/remont-i-zashchita-betona/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "dobavki-v-rastvory",
+  "name": "Добавки в растворы Основит",
+  "url": "https://osnovit.ru/catalog/dobavki-v-rastvory/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "klei-dlya-oboev",
+  "name": "Клеи для обоев Основит",
+  "url": "https://osnovit.ru/catalog/klei-dlya-oboev/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "polimernye-pokrytiya",
+  "name": "Полимерные покрытия Основит",
+  "url": "https://osnovit.ru/catalog/polimernye-pokrytiya/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "smesi-dlya-pechey-i-kaminov",
+  "name": "Смеси для печей и каминов Основит",
+  "url": "https://osnovit.ru/catalog/smesi-dlya-pechey-i-kaminov/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "kladochnye-pechnye-smesi",
+  "name": "Кладочные печные смеси Основит",
+  "url": "https://osnovit.ru/catalog/kladochnye-pechnye-smesi/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "termostoykie-sostavy",
+  "name": "Термостойкие составы Основит",
+  "url": "https://osnovit.ru/catalog/termostoykie-sostavy/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "kraski",
+  "name": "Краски Основит",
+  "url": "https://osnovit.ru/catalog/kraski/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "fasadnye-kraski",
+  "name": "Фасадные краски Основит",
+  "url": "https://osnovit.ru/catalog/fasadnye-kraski/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "interernye-kraski",
+  "name": "Интерьерные краски Основит",
+  "url": "https://osnovit.ru/catalog/interernye-kraski/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "osnovit-home",
+  "name": "Средства для ухода и ремонта Основит",
+  "url": "https://osnovit.ru/catalog/osnovit-home/"
+ },
+ {
+  "site": "osnovit",
+  "slug": "osnovit-pro",
+  "name": "Основит PRO",
+  "url": "https://osnovit.ru/catalog/osnovit-pro/"
+ }
+]

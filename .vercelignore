@@ -1,5 +1,7 @@
 /data
 /scripts
+/recon
+/docs
 node_modules
 /dist
 /.astro

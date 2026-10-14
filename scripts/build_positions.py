@@ -94,7 +94,7 @@ def clean_field(kind, v, brand):
     return v
 
 
-CORE = os.path.join(os.path.dirname(ROOT), 'Николай (стройматериалы)', 'recon', 'smesi-sukhie', 'data', 'core')
+CORE = os.path.join(ROOT, 'recon', 'data', 'core')  # ядро текста карточек производителей (сырьё разведки 09.10, перенесено в репозиторий 14.10)
 
 
 CERAMIC = re.compile(r'керамогранит|крупноформат|крупного формата|крупных форматов|крупного размера', re.I)
@@ -149,22 +149,46 @@ for m in MAPPING:
 os.makedirs(os.path.join(ROOT, 'public', 'assets', 'p'), exist_ok=True)
 
 
+def jpeg_size(path):
+    """Ширина и высота JPEG без сторонних библиотек (маркер SOF)."""
+    with open(path, 'rb') as f:
+        data = f.read()
+    i = 2
+    while i < len(data):
+        if data[i] != 0xFF:
+            i += 1; continue
+        marker = data[i + 1]
+        if marker in (0xC0, 0xC1, 0xC2):
+            return int.from_bytes(data[i + 7:i + 9], 'big'), int.from_bytes(data[i + 5:i + 7], 'big')
+        i += 2 + int.from_bytes(data[i + 2:i + 4], 'big')
+    raise ValueError('не JPEG: ' + path)
+
+
 def put_image(pid, src_file):
-    if not src_file or not os.path.exists(src_file):
-        return None
+    """Уменьшенная копия упаковки в public/assets/p/. Готовая копия лежит в git — исходник не нужен.
+    Исходники (data/img_src/, 206 МБ) в git не лежат; адрес исходника у производителя — поле img в images.json."""
     out = os.path.join(ROOT, 'public', 'assets', 'p', pid + '.jpg')
     if not os.path.exists(out):
+        # путь в данных записан с Мака Влада — ищем файл по имени в своей data/img_src/
+        src = os.path.join(DATA, 'img_src', os.path.basename(src_file)) if src_file else None
+        if not src or not os.path.exists(src):
+            return None
         # только уменьшение: маленький исходник не растягиваем (стандарт картинок проекта)
-        sz = subprocess.run(['sips', '-g', 'pixelWidth', '-g', 'pixelHeight', src_file], capture_output=True, text=True).stdout
-        sw = int((re.search(r'pixelWidth: (\d+)', sz) or [0, 0])[1]); sh = int((re.search(r'pixelHeight: (\d+)', sz) or [0, 0])[1])
-        args = ['sips', '-s', 'format', 'jpeg', '-s', 'formatOptions', '82']
-        if max(sw, sh) > 480:
-            args += ['-Z', '480']
-        subprocess.run(args + [src_file, '--out', out], capture_output=True)
-    s = subprocess.run(['sips', '-g', 'pixelWidth', '-g', 'pixelHeight', out], capture_output=True, text=True).stdout
-    w = re.search(r'pixelWidth: (\d+)', s); h = re.search(r'pixelHeight: (\d+)', s)
-    return {'image': '/assets/p/' + pid + '.jpg', 'imageW': int(w.group(1)), 'imageH': int(h.group(1))}
-
+        try:
+            from PIL import Image
+            im = Image.open(src).convert('RGB')
+            if max(im.size) > 480:
+                im.thumbnail((480, 480))
+            im.save(out, 'JPEG', quality=82)
+        except ImportError:  # без Pillow — штатный sips на Маке
+            sz = subprocess.run(['sips', '-g', 'pixelWidth', '-g', 'pixelHeight', src], capture_output=True, text=True).stdout
+            sw = int((re.search(r'pixelWidth: (\d+)', sz) or [0, 0])[1]); sh = int((re.search(r'pixelHeight: (\d+)', sz) or [0, 0])[1])
+            args = ['sips', '-s', 'format', 'jpeg', '-s', 'formatOptions', '82']
+            if max(sw, sh) > 480:
+                args += ['-Z', '480']
+            subprocess.run(args + [src, '--out', out], capture_output=True)
+    w, h = jpeg_size(out)
+    return {'image': '/assets/p/' + pid + '.jpg', 'imageW': w, 'imageH': h}
 
 positions = []
 for (site, key), offers in groups.items():
