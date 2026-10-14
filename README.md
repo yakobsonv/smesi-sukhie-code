@@ -31,7 +31,12 @@
 ## Сборка и выкладка
 
 ```
-python3 -I scripts/build_positions.py
-npm run build
-vercel deploy --prod --yes
+python3 -I scripts/build_positions.py   # после правки data/
+npm run build && npx astro check        # 17 страниц, 0 ошибок — до пуша
+git push origin main                    # = выкладка
 ```
+
+**Пуш в `main` = выкладка на https://smesi-sukhie-code.vercel.app** (проект Vercel `smesi-sukhie-code` подключён
+к https://github.com/yakobsonv/smesi-sukhie-code, собирает и выкладывает сам). Аккаунт и токен Vercel не нужны.
+Репозиторий **открытый** (решение Влада 14.10: бесплатный Vercel не выкладывает чужие пуши в закрытый) — секретов
+в него не класть. Ветки, кроме `main`, дают превью-деплои под авторизацией Vercel — проверять на `main` или локально.
