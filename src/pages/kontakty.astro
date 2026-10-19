@@ -51,7 +51,9 @@ const HOURS = [
   .kt__offices h2 { margin: 0 0 var(--space-2); font-size: var(--fs-h4); }
   .kt__offices p { margin: 0; color: var(--color-text-soft); }
   .kt__metro { font-size: var(--fs-small); }
-  .kt__tel { display: inline-block; margin-top: var(--space-3); font-family: var(--font-head); font-size: var(--fs-h4); font-weight: 800; }
+  /* Зона нажатия телефона 44 px: поля по 10 px сверху и снизу съедены отступами —
+     на вид номер стоит там же, где стоял (раньше margin-top 12 px, высота 24 px). */
+  .kt__tel { display: inline-block; margin: 2px 0 -10px; padding-block: 10px; font-family: var(--font-head); font-size: var(--fs-h4); font-weight: 800; }
   .kt__h2 { margin: 0 0 var(--space-4); font-size: var(--fs-h3); }
   .kt__hours { max-width: 640px; margin: 0 0 var(--space-7); border-top: 1px solid var(--color-border-soft); }
   .kt__hours div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: var(--space-4); padding: 10px 0; border-bottom: 1px solid var(--color-border-soft); }

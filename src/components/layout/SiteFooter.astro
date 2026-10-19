@@ -174,6 +174,19 @@ const legalLine = legal ?? `${config.legal.name}, ИНН ${config.legal.inn}`;
 
   .site-footer__note { flex-basis: 100%; }
 
+  /* Телефон и планшет: ссылки подвала — зона нажатия 44 px (было 20 px вплотную друг к другу).
+     Шаг списка тот же по смыслу — промежуток ушёл внутрь ссылки. */
+  @media (max-width: 899.98px) {
+    .site-footer__links { gap: 0; }
+    .site-footer__links a,
+    .site-footer__policy a {
+      display: inline-flex;
+      align-items: center;
+      min-height: var(--tap);
+    }
+    .site-footer__policy { row-gap: 0; }
+  }
+
   @media (min-width: 768px) {
     .site-footer__top { grid-template-columns: minmax(220px, 1fr) 2fr; }
     .site-footer__columns { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
