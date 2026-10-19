@@ -72,6 +72,7 @@ const { items } = Astro.props;
   .pos[hidden] { display: none; }
 
   .pos__img {
+    position: relative;
     width: 84px;
     aspect-ratio: 1;
     display: grid;
@@ -81,7 +82,19 @@ const { items } = Astro.props;
     overflow: hidden;
   }
 
-  .pos__img img { width: 100%; height: 100%; object-fit: contain; }
+  /* Упаковка целиком внутри квадрата. Раньше было width/height: 100% + contain, но высота
+     в процентах у ячейки сетки не вычислялась — картинка шла в свою высоту и обрезалась
+     сверху и снизу (119 из 132 миниатюр). Абсолют от квадрата + max-* вписывают её
+     по большей стороне с сохранением пропорций и не растягивают маленький исходник. */
+  .pos__img img {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+  }
 
   .pos__noimg {
     width: 34px;
