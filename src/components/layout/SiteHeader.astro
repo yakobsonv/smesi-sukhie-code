@@ -593,6 +593,17 @@ const homeHref = brand.href ?? localPath(site);
       });
     });
 
+    // Телефон: Tab из открытой панели дальше шапки закрывает меню — иначе фокус уходил
+    // под затемнение, а меню оставалось открытым (QA #50, повторная проверка).
+    document.querySelectorAll<HTMLElement>('.site-header').forEach((header) => {
+      header.addEventListener('focusout', (event) => {
+        const next = event.relatedTarget as Node | null;
+        if (next && !header.contains(next)) {
+          header.querySelectorAll<HTMLElement>('[data-nav-panel][data-open]').forEach((panel) => setPanel(panel, false));
+        }
+      });
+    });
+
     // Переход через 1180 px (поворот планшета, окно ПК): мобильная панель и раскрытые
     // списки сбрасываются — иначе на ПК осталась бы заблокированная прокрутка без бургера.
     DESKTOP.addEventListener('change', () => {
