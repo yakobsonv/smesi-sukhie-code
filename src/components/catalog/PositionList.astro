@@ -173,8 +173,25 @@ const { items } = Astro.props;
     border-radius: var(--radius-sm);
   }
 
-  .pos__facts dt { flex: 0 1 auto; max-width: 22ch; overflow: hidden; text-overflow: ellipsis; color: var(--color-muted); white-space: nowrap; }
-  .pos__facts dd { display: -webkit-box; margin: 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; max-width: 40ch; overflow-wrap: anywhere; }
+  /* Подписи и значения не обрезаются (раньше — многоточие на 22ch и два строки значения:
+     на 390 px от подписей оставалось «Р.», «Уп…»). Длинная подпись переносится. */
+  .pos__facts dt { flex: 0 1 auto; max-width: 22ch; color: var(--color-muted); }
+  .pos__facts dd { margin: 0; max-width: 40ch; overflow-wrap: anywhere; }
+
+  /* Телефон: колонка текста рядом с фото узкая (154 px на 320), поэтому факты уходят
+     под фото на всю ширину карточки, подпись — над значением. .pos__main растворяется
+     в сетке карточки (display: contents), строки — сами по порядку. */
+  @media (max-width: 639.98px) {
+    .pos { row-gap: 0; }
+    .pos__img { grid-row: 1 / span 3; }
+    .pos__main { display: contents; }
+    .pos__brand, .pos__title, .pos__purpose { grid-column: 2; }
+    .pos__purpose { margin-bottom: 0; }
+    .pos__facts { grid-column: 1 / -1; margin-top: var(--space-3); }
+    .pos__facts div { flex-direction: column; gap: 0; }
+    .pos__facts dt, .pos__facts dd { max-width: none; }
+    .pos__side { margin-top: var(--space-4); }
+  }
 
   .pos__side {
     grid-column: 1 / -1;
