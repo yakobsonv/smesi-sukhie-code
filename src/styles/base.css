@@ -60,9 +60,12 @@ table { border-collapse: collapse; }
 
 :target { scroll-margin-top: 90px; }
 
-/* Видимый фокус — обязателен, клавиатурная навигация не должна теряться */
+/* Видимый фокус — обязателен, клавиатурная навигация не должна теряться.
+   Цвет рамки — --focus-color: на светлом фоне акцент (#1f5a85 на белом 7,34:1), внутри
+   тёмных блоков (первый экран главной, подвал, тёмная полоса со звонком) блок сам
+   переопределяет его на светлый — синий на #15191c давал 2,41:1 (QA #50). */
 :focus-visible {
-  outline: var(--focus-ring) solid var(--color-accent-text);
+  outline: var(--focus-ring) solid var(--focus-color, var(--color-accent-text));
   outline-offset: 2px;
 }
 

@@ -124,12 +124,15 @@ const style = bg === 'image' && image
   .section--bg-surface { background: var(--color-surface); }
   .section--bg-soft { background: var(--color-brand-soft); }
 
+  /* --focus-color: рамка фокуса не сливается с фоном блока (base.css) */
   .section--bg-brand {
+    --focus-color: var(--color-on-brand);
     background: var(--color-brand-fill);
     color: var(--color-on-brand);
   }
 
   .section--bg-dark {
+    --focus-color: var(--color-brand-on-dark, var(--color-on-dark));
     background: var(--color-dark);
     color: var(--color-on-dark);
   }
