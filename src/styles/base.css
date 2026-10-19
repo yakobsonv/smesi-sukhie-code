@@ -66,6 +66,17 @@ table { border-collapse: collapse; }
   outline-offset: 2px;
 }
 
+/* ==== БЛОКИРОВКА ПРОКРУТКИ ====
+   Под открытым меню и окном характеристик страница стоит (src/lib/scroll-lock.ts).
+   overflow у корня не сбрасывает позицию прокрутки. body возвращаем в visible: иначе
+   его overflow-x: hidden перестаёт уходить во viewport, body сам становится областью
+   прокрутки, и липкая шапка «прилипает» к нему — уезжает за верх экрана. */
+html.is-scroll-locked {
+  overflow: hidden;
+  padding-right: var(--scrollbar-gap, 0px);
+}
+html.is-scroll-locked body { overflow: visible; }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {

@@ -120,6 +120,9 @@ const homeHref = brand.href ?? localPath(site);
       </div>
     </div>
   </Container>
+  <!-- Подложка под открытой панелью на телефоне: тап по ней закрывает меню и не
+       срабатывает по ссылке под ней. Видна только при открытом меню (< 1180 px). -->
+  <div class="site-header__backdrop" data-nav-backdrop aria-hidden="true"></div>
 </header>
 
 <style>
@@ -254,16 +257,55 @@ const homeHref = brand.href ?? localPath(site);
     content: '';
   }
 
+  .site-header__burger-icon { transition: background-color var(--dur) var(--ease); }
+  .site-header__burger-icon::before,
+  .site-header__burger-icon::after { transition: transform var(--dur) var(--ease); }
   .site-header__burger-icon::before { transform: translateY(-6px); }
   .site-header__burger-icon::after { transform: translateY(4px); }
 
+  /* Открытое меню: ≡ превращается в ×. Средняя полоса гаснет, крайние сходятся в центре
+     (::before лежит на 0–2 px, ::after — на 2–4 px, отсюда translateY(-2px)). */
+  .site-header__burger[aria-expanded='true'] .site-header__burger-icon { background-color: transparent; }
+  .site-header__burger[aria-expanded='true'] .site-header__burger-icon::before { transform: rotate(45deg); }
+  .site-header__burger[aria-expanded='true'] .site-header__burger-icon::after { transform: translateY(-2px) rotate(-45deg); }
+
+  /* Панель — второй строкой шапки. Поля 6 px по бокам и сверху (с таким же отрицательным
+     отступом) — чтобы рамка фокуса у пунктов не обрезалась краем прокрутки. */
   .site-header__panel {
     display: none;
-    width: 100%;
-    padding-bottom: var(--space-4);
+    width: calc(100% + 12px);
+    margin: -6px -6px 0;
+    padding: 6px 6px var(--space-4);
   }
 
-  .site-header__panel[data-open] { display: block; }
+  /* Шапка липкая, панель в потоке: без ограничения высоты низ меню с раскрытым «Каталогом»
+     уходил за экран (320×640 — «Контакты» и «Позвонить», 844×390 — 9 пунктов из 17),
+     а прокрутка страницы его не поднимала. Панель прокручивается сама в пределах экрана;
+     --nav-offset — всё в шапке, кроме панели: верхняя строка и нижние поля. */
+  .site-header__panel[data-open] {
+    --nav-offset: 71px;
+    display: block;
+    max-height: calc(100vh - var(--nav-offset));
+    max-height: calc(100dvh - var(--nav-offset));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .site-header__backdrop { display: none; }
+
+  @media (max-width: 1179.98px) {
+    .site-header.is-menu-open .site-header__backdrop {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      display: block;
+      height: 100vh;
+      height: 100dvh;
+      background: var(--overlay);
+      touch-action: none;
+    }
+  }
 
   .site-nav__list {
     display: flex;
@@ -373,12 +415,36 @@ const homeHref = brand.href ?? localPath(site);
       align-items: center;
       gap: var(--space-5);
       width: auto;
-      padding-bottom: 0;
+      max-height: none;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
     }
 
     .site-nav__list { flex-direction: row; flex-wrap: nowrap; gap: 14px; min-width: 0; }
 
     .site-nav__link { font-size: 14px; }
+
+    /* Выпадающий «Каталог» — поверх страницы на всех ширинах шапки в одну строку.
+       Раньше абсолютное положение включалось только с 1400 px, и на 1180–1399 список
+       раскрывался прямо в шапке (73 → 513 px). Открывает/закрывает скрипт атрибутом
+       data-open: наведение, клик, Enter; закрывают уход мыши, клик мимо, Esc, Tab прочь. */
+    .site-nav__item { position: relative; }
+
+    .site-nav__sub {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      z-index: 5;
+      min-width: 220px;
+      margin: 0;
+      padding: var(--space-3);
+      background: var(--color-surface);
+      color: var(--color-text);
+      border: 1px solid var(--color-border-soft);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+    }
 
     .site-header__phone { font-size: 17px; }
 
@@ -391,26 +457,7 @@ const homeHref = brand.href ?? localPath(site);
     .site-header__phone { font-size: 19px; }
     .site-header__hours { display: block; }
 
-    .site-nav__item { position: relative; }
-
     .site-nav__link { min-height: 0; padding: var(--space-2) 0; white-space: nowrap; }
-
-    .site-nav__sub {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      z-index: 5;
-      min-width: 220px;
-      padding: var(--space-3);
-      background: var(--color-surface);
-      color: var(--color-text);
-      border: 1px solid var(--color-border-soft);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-card);
-    }
-
-    .site-nav__item:hover > .site-nav__sub,
-    .site-nav__item:focus-within > .site-nav__sub { display: block; }
 
     .site-header__contact { margin-top: 0; text-align: right; }
     .site-header__cta { margin-top: 0; }
@@ -418,17 +465,61 @@ const homeHref = brand.href ?? localPath(site);
 </style>
 
 <script>
+  import { lockScroll, unlockScroll } from '../../lib/scroll-lock';
+
   // Бургер и выпадающие пункты. Делегирование, одна привязка на страницу.
-  function closePanel(panel: HTMLElement) {
-    panel.removeAttribute('data-open');
-    document
-      .querySelector(`[data-nav-toggle][aria-controls="${panel.id}"]`)
-      ?.setAttribute('aria-expanded', 'false');
-    panel.closest('.site-header')?.classList.remove('is-menu-open');
+  // Состояние — только атрибуты: data-open у панели и у пункта меню, aria-expanded у кнопок.
+  const DESKTOP = window.matchMedia('(min-width: 1180px)');
+
+  function toggleOf(panel: HTMLElement) {
+    return document.querySelector<HTMLElement>(`[data-nav-toggle][aria-controls="${panel.id}"]`);
+  }
+
+  // Панель на телефоне: открыта — страница под ней стоит, бургер показывает × и
+  // называется «Закрыть меню».
+  function setPanel(panel: HTMLElement, open: boolean) {
+    if (panel.hasAttribute('data-open') === open) return;
+    panel.toggleAttribute('data-open', open);
+    const toggle = toggleOf(panel);
+    toggle?.setAttribute('aria-expanded', String(open));
+    if (open) toggle?.setAttribute('aria-label', 'Закрыть меню');
+    else toggle?.removeAttribute('aria-label');
+    panel.closest('.site-header')?.classList.toggle('is-menu-open', open);
+    if (open) {
+      panel.scrollTop = 0;
+      lockScroll('nav');
+    } else {
+      unlockScroll('nav');
+    }
+  }
+
+  function openPanels() {
+    return document.querySelectorAll<HTMLElement>('[data-nav-panel][data-open]');
+  }
+
+  function setSub(item: HTMLElement, open: boolean) {
+    item.toggleAttribute('data-open', open);
+    item.querySelector('[data-nav-sub]')?.setAttribute('aria-expanded', String(open));
+    if (!open) delete item.dataset.hover;
+  }
+
+  function closeSubs(except?: Element | null) {
+    document.querySelectorAll<HTMLElement>('.site-nav__item[data-open]').forEach((item) => {
+      if (item !== except) setSub(item, false);
+    });
   }
 
   if (!(window as any).__ktNavInit) {
     (window as any).__ktNavInit = true;
+
+    // Тап по подложке закрывает меню; ссылка под подложкой при этом не срабатывает.
+    // Слушатель прямо на элементе: на iOS клик по «некликабельному» узлу до document не доходит.
+    document.querySelectorAll<HTMLElement>('[data-nav-backdrop]').forEach((backdrop) => {
+      backdrop.addEventListener('click', (event) => {
+        event.preventDefault();
+        openPanels().forEach((panel) => setPanel(panel, false));
+      });
+    });
 
     document.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;
@@ -436,14 +527,12 @@ const homeHref = brand.href ?? localPath(site);
       const toggle = target.closest<HTMLElement>('[data-nav-toggle]');
       if (toggle) {
         const panel = document.getElementById(toggle.getAttribute('aria-controls') || '');
-        if (panel) {
-          const open = panel.hasAttribute('data-open');
-          panel.toggleAttribute('data-open', !open);
-          toggle.setAttribute('aria-expanded', String(!open));
-          panel.closest('.site-header')?.classList.toggle('is-menu-open', !open);
-        }
+        if (panel) setPanel(panel, !panel.hasAttribute('data-open'));
         return;
       }
+
+      // Клик вне панели (и не по бургеру) закрывает открытое меню.
+      if (!target.closest('[data-nav-panel]')) openPanels().forEach((panel) => setPanel(panel, false));
 
       // Тап по ссылке в раскрытом меню закрывает панель. Раньше она закрывалась только
       // бургером и Escape: после тапа «Доставка» страница уезжала к разделу, а панель
@@ -451,23 +540,64 @@ const homeHref = brand.href ?? localPath(site);
       const link = target.closest<HTMLAnchorElement>('[data-nav-panel] a[href]');
       if (link) {
         const panel = link.closest<HTMLElement>('[data-nav-panel]');
-        if (panel?.hasAttribute('data-open')) closePanel(panel);
+        if (panel) setPanel(panel, false);
       }
 
       const sub = target.closest<HTMLElement>('[data-nav-sub]');
-      if (sub) {
-        const item = sub.closest<HTMLElement>('.site-nav__item');
-        if (item) {
-          const open = item.hasAttribute('data-open');
-          item.toggleAttribute('data-open', !open);
-          sub.setAttribute('aria-expanded', String(!open));
-        }
+      const item = sub?.closest<HTMLElement>('.site-nav__item') ?? null;
+      // На ПК клик мимо раскрытого «Каталога» его закрывает.
+      if (DESKTOP.matches) closeSubs(item);
+      if (sub && item) {
+        // Открыт наведением — клик его «закрепляет», а не закрывает: иначе меню,
+        // раскрывшееся под мышью, схлопывалось бы от первого же клика.
+        if (item.dataset.hover) delete item.dataset.hover;
+        else setSub(item, !item.hasAttribute('data-open'));
       }
     });
 
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape') return;
-      document.querySelectorAll<HTMLElement>('[data-nav-panel][data-open]').forEach(closePanel);
+      const panels = openPanels();
+      if (panels.length) {
+        panels.forEach((panel) => {
+          setPanel(panel, false);
+          toggleOf(panel)?.focus();
+        });
+        return;
+      }
+      if (!DESKTOP.matches) return;
+      document.querySelectorAll<HTMLElement>('.site-nav__item[data-open]').forEach((item) => {
+        const hadFocus = item.contains(document.activeElement);
+        setSub(item, false);
+        if (hadFocus) item.querySelector<HTMLElement>('[data-nav-sub]')?.focus();
+      });
+    });
+
+    // ПК: наведение мыши раскрывает «Каталог», уход мыши закрывает; фокус ушёл из пункта
+    // на другой элемент (Tab дальше или назад) — тоже закрывает.
+    document.querySelectorAll<HTMLElement>('.site-nav__item--has-children').forEach((item) => {
+      item.addEventListener('pointerenter', (event) => {
+        if (event.pointerType !== 'mouse' || !DESKTOP.matches || item.hasAttribute('data-open')) return;
+        closeSubs(item);
+        setSub(item, true);
+        item.dataset.hover = '1';
+      });
+      item.addEventListener('pointerleave', (event) => {
+        if (event.pointerType === 'mouse' && DESKTOP.matches) setSub(item, false);
+      });
+      // relatedTarget пуст при клике по «пустому» месту — это решает обработчик клика выше,
+      // иначе клик по полю самого списка закрывал бы его.
+      item.addEventListener('focusout', (event) => {
+        const next = event.relatedTarget as Node | null;
+        if (DESKTOP.matches && next && !item.contains(next)) setSub(item, false);
+      });
+    });
+
+    // Переход через 1180 px (поворот планшета, окно ПК): мобильная панель и раскрытые
+    // списки сбрасываются — иначе на ПК осталась бы заблокированная прокрутка без бургера.
+    DESKTOP.addEventListener('change', () => {
+      openPanels().forEach((panel) => setPanel(panel, false));
+      closeSubs();
     });
 
     // Тень липкой шапки после начала прокрутки
