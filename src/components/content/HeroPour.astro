@@ -6,7 +6,7 @@
 ---
 
 <canvas class="pour-canvas" data-pour-canvas aria-hidden="true"></canvas>
-<button type="button" class="pour-toggle" data-pour-toggle aria-pressed="false" aria-label="Остановить анимацию" hidden>
+<button type="button" class="pour-toggle" data-pour-toggle aria-pressed="false" aria-label="Остановить анимацию" title="Остановить анимацию" hidden>
   <svg class="pour-toggle__pause" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" rx="1" /><rect x="9.5" y="2" width="3.5" height="12" rx="1" /></svg>
   <svg class="pour-toggle__play" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 2.2v11.6a.8.8 0 0 0 1.2.7l9.4-5.8a.8.8 0 0 0 0-1.4L5.2 1.5A.8.8 0 0 0 4 2.2Z" /></svg>
 </button>
@@ -26,7 +26,7 @@
   .pour-toggle {
     position: absolute;
     right: var(--gutter);
-    bottom: 12px;
+    bottom: 16px;
     z-index: 2;
     width: var(--tap);
     height: var(--tap);
@@ -44,6 +44,13 @@
   .pour-toggle[hidden] { display: none; }
   .pour-toggle:hover { background: var(--color-brand); border-color: var(--color-brand); }
   .pour-toggle svg { fill: currentColor; }
+
+  /* Уже 1100 px справа сыплется горка — кнопка слева, под кнопками героя (зазор ≥ 20 px за счёт нижнего
+     отступа героя, index.astro), тоньше и мельче, чтобы не читалась третьей кнопкой действия. */
+  @media (max-width: 1099.98px) {
+    .pour-toggle { right: auto; left: var(--gutter); border-color: rgb(255 255 255 / 0.25); }
+    .pour-toggle svg { width: 14px; height: 14px; }
+  }
   .pour-toggle__play { display: none; }
   .pour-toggle[aria-pressed='true'] .pour-toggle__pause { display: none; }
   .pour-toggle[aria-pressed='true'] .pour-toggle__play { display: block; }

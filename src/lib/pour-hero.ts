@@ -29,6 +29,9 @@ export interface PourStats {
   heapTop: number;
   mode: 'desktop' | 'mobile' | '';
   reduced: boolean;
+  /** откуда сыплется струя, px от левого верхнего угла первого экрана */
+  x0: number;
+  y0: number;
 }
 
 const rnd = (a: number, b: number) => a + Math.random() * (b - a);
@@ -43,7 +46,7 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
   if (!ctx) return null;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const stats: PourStats = { frames: 0, grains: 0, dust: 0, stepMs: 0, maxStepMs: 0, running: false, fill: 0, heapTop: 0, mode: '', reduced };
+  const stats: PourStats = { frames: 0, grains: 0, dust: 0, stepMs: 0, maxStepMs: 0, running: false, fill: 0, heapTop: 0, mode: '', reduced, x0: 0, y0: 0 };
 
   // ── Цвета зёрен: цвет × оттенок яркости = «ведро»; рисуем по вёдрам, чтобы не менять fillStyle на каждое зерно
   const palette: string[] = [];
@@ -107,6 +110,7 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
   let dpr = 1;
   let mode: PourMode = POUR.desktop;
   let x0 = 0;
+  let y0 = 0; // откуда начинается струя (на телефоне — под абзацем)
   let drift = 0;
   let cw = 3;
   let cols = 0;
@@ -121,6 +125,8 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
   let rects = new Float32Array(0); // l, t, r, b — текст и кнопки (с отступом), в координатах первого экрана
   let pattern: CanvasPattern | null = null;
   let shade: CanvasGradient | null = null;
+  let fade: CanvasGradient | null = null;
+  let fadeH = 90;
   let sprite: HTMLCanvasElement | null = null;
   let laidOut = false;
 
@@ -130,7 +136,7 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
     off.width = s;
     off.height = s;
     const o = off.getContext('2d')!;
-    o.fillStyle = '#a19d94';
+    o.fillStyle = POUR.heapBase;
     o.fillRect(0, 0, s, s);
     const dot = dpr >= 1.5 ? 2 : 1;
     for (let k = 0; k < 1700; k++) {
@@ -176,18 +182,33 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
     // Запретные зоны: строки текста (по строкам, а не по блокам) и кнопки — с отступом 6 px.
     const pad = 6;
     const list: number[] = [];
+    let textR = 0; // правая граница строк текста
+    let actR = 0; // правая граница кнопок
+    let leadBottom = 0;
     const add = (b: DOMRect) => {
       if (b.width && b.height) list.push(b.left - box.left - pad, b.top - box.top - pad, b.right - box.left + pad, b.bottom - box.top + pad);
     };
     hero.querySelectorAll('.hero__kicker, .hero__title, .hero__lead').forEach((el) => {
       const range = document.createRange();
       range.selectNodeContents(el);
-      for (const b of range.getClientRects()) add(b);
+      for (const b of range.getClientRects()) {
+        add(b);
+        if (b.width) textR = Math.max(textR, b.right - box.left);
+      }
+      if (el.classList.contains('hero__lead')) leadBottom = el.getBoundingClientRect().bottom - box.top;
     });
-    hero.querySelectorAll('.hero__actions a').forEach((el) => add(el.getBoundingClientRect()));
+    hero.querySelectorAll('.hero__actions a').forEach((el) => {
+      const b = el.getBoundingClientRect();
+      add(b);
+      actR = Math.max(actR, b.right - box.left);
+    });
     rects = Float32Array.from(list);
 
-    // «Жерло»: на ПК — щель между 2-м и 3-м столбцами упаковок, иначе — середина левого поля.
+    // «Жерло».
+    // ПК: щель между 2-м и 3-м столбцами упаковок, струя от верхней кромки.
+    // Уже 1100 px: если справа от текста полоса >= 48 px (планшет) — струя сверху посередине этой полосы;
+    // иначе (телефон) — струя начинается на 24 px ниже абзаца, справа от кнопок, горка — в правом нижнем углу.
+    // Струя не ближе 8 px к буквам и кнопкам: разброс drift ограничен шириной свободной полосы.
     const packs = hero.querySelectorAll<HTMLElement>('.hero__packs li');
     let half: number;
     if (packs.length >= 3 && packs[1].offsetParent && packs[1].getBoundingClientRect().width) {
@@ -195,12 +216,25 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
       const b = packs[2].getBoundingClientRect();
       x0 = (a.right + b.left) / 2 - box.left;
       half = (b.left - a.right) / 2;
+      y0 = 0;
     } else {
       const text = hero.querySelector('.hero__text')?.getBoundingClientRect();
-      half = text ? (text.left - box.left) / 2 : 8;
-      x0 = half;
+      const gutter = text ? text.left - box.left : 16;
+      const right = W - gutter;
+      const busyR = Math.max(textR, actR);
+      if (right - busyR >= 48) {
+        x0 = (busyR + right) / 2;
+        half = (right - busyR) / 2 - 8;
+        y0 = 0;
+      } else {
+        x0 = (actR + 8 + right) / 2;
+        half = Math.min(x0 - actR, W - x0) - 8;
+        y0 = leadBottom + 24;
+      }
     }
     drift = Math.max(0, Math.min(mode.drift, half - 2.5));
+    stats.x0 = x0;
+    stats.y0 = y0;
 
     // Карта высот: полная куча — треугольник с откосом slope, вершина не выше peak·H
     // и ни в одной колонке не выше «низ текста над ней − отступ».
@@ -208,14 +242,22 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
     const oldFill = oldTarget > 0 ? heapSum / oldTarget : 0;
     cw = mode.col;
     cols = Math.ceil(W / cw);
-    const cap = new Float32Array(cols).fill(H * mode.peak);
+    const peakCap = Math.min(H * mode.peak, mode.peakMaxPx ?? Infinity);
+    const cap = new Float32Array(cols).fill(peakCap);
     for (let k = 0; k < rects.length; k += 4) {
       const l = Math.max(0, Math.floor(rects[k] / cw));
       const r = Math.min(cols - 1, Math.floor(rects[k + 2] / cw));
       const limit = Math.max(0, H - rects[k + 3] - POUR.textGap);
       for (let c = l; c <= r; c++) if (cap[c] > limit) cap[c] = limit;
     }
-    peakH = H * mode.peak;
+    // под кнопкой паузы горка не выше 20 px от низа (кнопка стоит в 16 px от низа — заходит под неё не больше чем на 4 px)
+    const tb = !reduced && toggle && !toggle.hidden ? toggle.getBoundingClientRect() : null;
+    if (tb && tb.width) {
+      const l = Math.max(0, Math.floor((tb.left - box.left) / cw));
+      const r = Math.min(cols - 1, Math.floor((tb.right - box.left) / cw));
+      for (let c = l; c <= r; c++) if (cap[c] > 20) cap[c] = 20;
+    }
+    peakH = peakCap;
     for (let c = 0; c < cols; c++) {
       const v = cap[c] + mode.slope * Math.abs((c + 0.5) * cw - x0);
       if (v < peakH) peakH = v;
@@ -249,7 +291,28 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
     shade = ctx.createLinearGradient(0, H - Math.max(peakH, 1), 0, H);
     shade.addColorStop(0, 'rgb(21 25 28 / 0)');
     shade.addColorStop(1, `rgb(21 25 28 / ${POUR.heapShadeBottom})`);
+    fadeH = desk ? POUR.fadeIn.desktop : POUR.fadeIn.mobile;
+    fade = ctx.createLinearGradient(0, y0, 0, y0 + fadeH);
+    fade.addColorStop(0, 'rgb(0 0 0 / 1)');
+    fade.addColorStop(1, 'rgb(0 0 0 / 0)');
+    if (reduced) staticStream();
     laidOut = true;
+  };
+
+  // Без движения: один кадр струи (~200 зёрен вдоль x0), чтобы горка не читалась силуэтом горы.
+  const staticStream = () => {
+    const sizes = dpr >= 1.5 ? POUR.grainPx.x2 : POUR.grainPx.x1;
+    const c0 = Math.min(cols - 1, Math.max(0, (x0 / cw) | 0));
+    const bottom = H - heap[c0];
+    n = 0;
+    for (let k = 0; k < 200 && bottom > y0; k++) {
+      const i = n++;
+      gx[i] = x0 + rnd(-drift, drift) * 0.6;
+      gy[i] = y0 + Math.sqrt(Math.random()) * (bottom - y0);
+      gst[i] = 0;
+      gcol[i] = pickBucket();
+      gsz[i] = Math.random() < 0.5 ? sizes[0] : sizes[1];
+    }
   };
 
   const inText = (x: number, y: number, m: number) => {
@@ -275,10 +338,17 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
   // ── Шаг симуляции
   let acc = 0;
   let clock = 0;
+  let openedAt = 0; // когда «кран» открыли (старт или повторный запуск)
+  /** 0…1: насколько открыт кран — плавный старт и, если включён autoStopSeconds, закрытие за 0,8 с */
+  const tap = () => {
+    const t = clock - openedAt;
+    const open = Math.min(1, t / POUR.rampSeconds);
+    if (!(POUR.autoStopSeconds > 0)) return open;
+    return open * Math.max(0, Math.min(1, 1 - (t - POUR.autoStopSeconds) / 0.8));
+  };
   const step = (dt: number) => {
     clock += dt;
-    const ramp = Math.min(1, clock / POUR.rampSeconds);
-    acc += mode.rate * ramp * dt;
+    acc += mode.rate * tap() * dt;
     const sizes = dpr >= 1.5 ? POUR.grainPx.x2 : POUR.grainPx.x1;
     while (acc >= 1) {
       acc -= 1;
@@ -286,14 +356,14 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
       const i = n++;
       const jitter = Math.sin(clock * 1.7) * 0.8 + Math.sin(clock * 4.3 + 1) * 0.5 + rnd(-0.8, 0.8);
       gx[i] = x0 + Math.max(-drift, Math.min(drift, jitter));
-      gy[i] = -rnd(0, 6);
+      gy[i] = y0 - rnd(0, 6);
       gvx[i] = rnd(-3, 3);
       gvy[i] = rnd(POUR.launch[0], POUR.launch[1]);
       gph[i] = rnd(0, 6.283);
       gst[i] = 0;
       gcol[i] = pickBucket();
       gsz[i] = Math.random() < 0.5 ? sizes[0] : sizes[1];
-      if (Math.random() < POUR.dustAtMouth) spawnDust(gx[i], 4, 0.5);
+      if (Math.random() < POUR.dustAtMouth) spawnDust(gx[i], y0 + 4, 0.5);
     }
 
     const full = targetSum > 0 && heapSum >= targetSum * 0.985;
@@ -324,6 +394,7 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
         if (c < 0 || c >= cols || target[c] <= 0 || (full && Math.random() > POUR.rollWhenFull)) { killGrain(i); continue; }
         gst[i] = 1;
         gph[i] = 0;
+        gcol[i] -= gcol[i] % POUR.shades.length; // скатывается — самый тёмный оттенок своего цвета (без белой «соли» по контуру)
         // край экрана — стенка: куча прислоняется к ней, а не «стекает» за край
         const hl = c > 0 ? heap[c - 1] : heap[c] + 1e3;
         const hr = c < cols - 1 ? heap[c + 1] : heap[c] + 1e3;
@@ -400,6 +471,16 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
       stats.heapTop = top;
     } else stats.heapTop = 0;
 
+    // «ядро» потока: тонкая полупрозрачная линия под зёрнами — струя читается сплошной
+    const c0 = (x0 / cw) | 0;
+    const coreTop = y0 + fadeH;
+    const coreBottom = H - (c0 >= 0 && c0 < cols ? heap[c0] : 0);
+    if ((n > 0 || reduced) && coreBottom > coreTop) {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.fillStyle = POUR.core;
+      ctx.fillRect(x0 - 1.5, coreTop, 3, coreBottom - coreTop);
+    }
+
     // зёрна — по вёдрам цвета, с привязкой к физическим пикселям
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     for (let b = 0; b < palette.length; b++) {
@@ -414,6 +495,15 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
         ctx.fillStyle = palette[b];
         ctx.fill();
       }
+    }
+
+    // струя «проявляется из темноты»: верх стираем градиентом (только полоса вокруг струи)
+    if (fade) {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = fade;
+      ctx.fillRect(x0 - 40, y0 - 8, 80, fadeH + 8);
+      ctx.globalCompositeOperation = 'source-over';
     }
 
     // пыль
@@ -451,6 +541,8 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
     stats.frames++;
     stats.stepMs = ms;
     if (ms > stats.maxStepMs && stats.frames > 3) stats.maxStepMs = ms;
+    // кран закрыт (autoStopSeconds) и всё улеглось — цикл засыпает, кнопка показывает «запустить»
+    if (POUR.autoStopSeconds > 0 && tap() === 0 && n === 0 && nd === 0) setPaused(true);
     schedule();
   };
 
@@ -466,6 +558,14 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
       raf = 0;
     }
     stats.running = raf !== 0;
+  };
+
+  const setPaused = (v: boolean) => {
+    paused = v;
+    if (toggle) {
+      toggle.setAttribute('aria-pressed', String(v));
+      toggle.title = v ? 'Запустить анимацию' : 'Остановить анимацию';
+    }
   };
 
   const relayout = () => {
@@ -489,9 +589,11 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
     });
     if (toggle) {
       toggle.hidden = false;
+      setPaused(false);
       toggle.addEventListener('click', () => {
-        paused = !paused;
-        toggle.setAttribute('aria-pressed', String(paused));
+        // запуск после самостоятельной остановки крана — кран открывается заново
+        if (paused && POUR.autoStopSeconds > 0 && tap() === 0) openedAt = clock;
+        setPaused(!paused);
         schedule();
       });
     }

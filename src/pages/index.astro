@@ -138,8 +138,8 @@ const groups = GROUP_ORDER.map((g: SectionGroup) => ({ g, title: GROUPS[g], sect
   .hero { --focus-color: var(--color-brand-on-dark); position: relative; isolation: isolate; padding: clamp(48px, 8vw, 104px) 0; overflow: hidden; color: var(--color-on-dark); background: var(--hero-grad), var(--color-dark); }
   /* Текст и упаковки — над слоем сыплющейся смеси (HeroPour, z-index 0). */
   .hero :global(.container) { position: relative; z-index: 1; }
-  /* Телефон: внизу полоса под кучку смеси и кнопку паузы, чтобы они не подходили к кнопкам героя вплотную. */
-  @media (max-width: 639.98px) { .hero { padding-bottom: 68px; } }
+  /* Уже 1100 px внизу полоса под горку смеси и кнопку паузы (44 px + 16 px от низа): от кнопок героя до паузы ≥ 20 px. */
+  @media (max-width: 1099.98px) { .hero { padding-bottom: max(80px, 8vw); } }
   .hero__packs { display: none; }
   @media (min-width: 1100px) {
     .hero :global(.container) { display: grid; grid-template-columns: minmax(0, 1fr) 424px; align-items: center; column-gap: 48px; }

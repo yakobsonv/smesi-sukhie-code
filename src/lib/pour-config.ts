@@ -14,6 +14,8 @@ export interface PourMode {
   peak: number;
   /** крутизна склона: px высоты на px ширины (≈ угол естественного откоса; 0,5 ≈ 27°) */
   slope: number;
+  /** потолок высоты вершины, px (если задан) */
+  peakMaxPx?: number;
   /** ширина колонки карты высот, px */
   col: number;
   /** насколько струю может увести вбок, px (дальше не пускаем: рядом текст или упаковки) */
@@ -21,8 +23,8 @@ export interface PourMode {
 }
 
 export const POUR = {
-  desktop: { maxGrains: 1400, rate: 950, maxDust: 90, peak: 0.18, slope: 0.5, col: 3, drift: 4 } satisfies PourMode,
-  mobile: { maxGrains: 560, rate: 420, maxDust: 40, peak: 0.12, slope: 0.35, col: 2, drift: 2.5 } satisfies PourMode,
+  desktop: { maxGrains: 1400, rate: 950, maxDust: 90, peak: 0.14, slope: 0.6, col: 3, drift: 4 } satisfies PourMode,
+  mobile: { maxGrains: 400, rate: 380, maxDust: 24, peak: 0.1, slope: 0.6, col: 2, drift: 3, peakMaxPx: 52 } satisfies PourMode,
 
   /** с какой ширины первого экрана — набор desktop (там же появляются упаковки, см. index.astro) */
   desktopFrom: 1100,
@@ -40,6 +42,9 @@ export const POUR = {
   fillSeconds: 5,
   /** за сколько секунд струя «открывается» от нуля до полного потока */
   rampSeconds: 0.5,
+  /** 0 — сыплется бесконечно. Больше 0 — через столько секунд «кран закрывается» (поток → 0 за 0,8 с),
+   *  горка остаётся, цикл засыпает, кнопка переходит в «запустить» (повторный запуск — по нажатию) */
+  autoStopSeconds: 0,
   /** скатывание по склону: стартовая и предельная скорость, px/с, и разгон, px/с² */
   slide: { start: 40, max: 220, accel: 700 },
   /** когда куча уже насыпана: какая доля упавших зёрен ещё скатывается к подножию (остальные растворяются сразу) */
@@ -66,9 +71,16 @@ export const POUR = {
   ],
   /** разброс яркости зерна: множители цвета */
   shades: [0.8, 0.9, 1] as const,
-  /** куча: непрозрачность и затемнение к основанию (0 — нет, 1 — до цвета фона) */
+  /** куча: основа текстуры, непрозрачность и затемнение к основанию (0 — нет, 1 — до цвета фона).
+   *  Палитра материала общая со струйкой в каталоге: токены --mix-grey / --mix-light / --mix-sand
+   *  в tokens.css (#8a8882 / #aeaba4 / #a39275) — меняя цвета здесь, сверяй с ними. */
+  heapBase: '#aca89f',
   heapAlpha: 0.9,
-  heapShadeBottom: 0.55,
+  heapShadeBottom: 0.6,
+  /** «ядро» потока — сплошная линия 3 px под зёрнами */
+  core: 'rgb(200 195 184 / 0.22)',
+  /** высота «проявления» струи из темноты от её начала, px: ПК / уже 1100 px */
+  fadeIn: { desktop: 90, mobile: 50 },
   /** отступ кучи и пыли от текста и кнопок, px */
   textGap: 8,
   /** потолок devicePixelRatio */
