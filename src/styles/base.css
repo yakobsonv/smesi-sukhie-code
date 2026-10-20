@@ -256,53 +256,60 @@ textarea.field__control {
 }
 
 /* ==== СТРУЙКА СМЕСИ ====
-   «Сыплется из мешка» под упаковкой: строка каталога (наведение на фото, PositionList) и окно
-   характеристик (открытие, PositionModal). Слой <span class="pour"> лежит внутри квадрата с фото,
-   занимает его нижнюю треть и обрезает всё по своим краям — за квадрат струйка не выходит.
-   Частицы — две колонки по 8 зёрен (точка + box-shadow), каждая пролетает дважды: ~16 зёрен за 1,1 с;
-   внизу растёт и тает горка (радиальный градиент). Без анимации слой невидим. */
+   «Сыплется из мешка» в строке каталога (PositionList): слой <span class="pour"><i></i></span> висит ПОД
+   квадратом с фото (в свободном месте колонки), 40 px, обрезает всё по своим краям; строка — overflow: clip.
+   Три колонки зёрен по 6 штук (центр и ±2 px), круглые 2,5 px; падение 28 px за 0,5 с, два прохода;
+   внизу растёт горка и остаётся, пока курсор на строке. Запуск — PositionList (только ПК с мышью). */
 .pour {
   position: absolute;
   left: 0;
   right: 0;
-  top: 66%;
-  bottom: 0;
+  top: 100%;
+  height: 40px;
   z-index: 1;
   overflow: hidden;
   opacity: 0;
   pointer-events: none;
-  background: radial-gradient(closest-side, rgb(139 128 108 / 0.95), rgb(150 139 118 / 0.55) 60%, rgb(150 139 118 / 0)) 50% calc(100% + 8px) / 0 0 no-repeat;
+  /* горка — верхняя половина эллипса, растёт вверх от линии на 7 px выше низа слоя (там, куда долетают зёрна) */
+  background: radial-gradient(50% 100% at 50% 100%, rgb(138 136 130 / 0.85), rgb(138 136 130 / 0.4) 65%, transparent) 50% calc(100% - 7px) / 0 0 no-repeat;
 }
 
 .pour::before,
-.pour::after {
+.pour::after,
+.pour > i {
   content: '';
   position: absolute;
   top: 0;
-  left: calc(50% - 1px);
-  width: 2px;
-  height: 2px;
+  left: calc(50% - 1.25px);
+  width: 2.5px;
+  height: 2.5px;
   border-radius: 50%;
-  background: #8c8577;
-  box-shadow: 1px 5px #a88f62, -1px 10px #7a756b, 0 15px #9d998f, 1px 20px #8c8577, -1px 25px #a88f62, 0 30px #7a756b, 1px 35px #958f82;
+  opacity: 0.85;
+  background: var(--mix-grey);
+  box-shadow: 0 -5px var(--mix-sand), 0 -10px var(--mix-light), 0 -15px var(--mix-grey), 0 -20px var(--mix-sand), 0 -25px var(--mix-light);
   translate: 0 -40px;
 }
 
 .pour::after {
-  left: calc(50% - 0.5px);
-  background: #a88f62;
-  box-shadow: -1px 4px #8c8577, 1px 9px #9d998f, 0 14px #7a756b, -1px 19px #a88f62, 1px 24px #8c8577, 0 29px #958f82, -1px 34px #7a756b;
+  left: calc(50% - 3.25px);
+  background: var(--mix-sand);
+  box-shadow: 0 -6px var(--mix-grey), 0 -11px var(--mix-sand), 0 -16px var(--mix-light), 0 -21px var(--mix-grey), 0 -26px var(--mix-sand);
+}
+
+.pour > i {
+  left: calc(50% + 0.75px);
+  background: var(--mix-light);
+  box-shadow: 0 -4px var(--mix-grey), 0 -9px var(--mix-sand), 0 -14px var(--mix-grey), 0 -19px var(--mix-light), 0 -24px var(--mix-sand);
 }
 
 @keyframes pour-heap {
-  0% { opacity: 1; background-size: 0 0; }
-  80% { opacity: 1; background-size: 54% 16px; }
-  100% { opacity: 0; background-size: 54% 16px; }
+  from { opacity: 1; background-size: 0 0; }
+  to { opacity: 1; background-size: 46% 7px; }
 }
 
 @keyframes pour-fall {
-  from { translate: 0 -40px; }
-  to { translate: 0 70px; }
+  from { translate: 0 0; }
+  to { translate: 0 28px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

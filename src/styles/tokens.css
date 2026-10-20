@@ -173,5 +173,10 @@
   --shadow-card: 0 10px 30px -18px rgba(21, 25, 28, 0.45);
   --shadow-lift: 0 18px 40px -20px rgba(21, 25, 28, 0.5);
 
+  /* Палитра сухой смеси (струйка в каталоге — base.css .pour; горка на главной — src/lib/pour-config.ts) */
+  --mix-grey: #8a8882;
+  --mix-light: #aeaba4;
+  --mix-sand: #a39275;
+
   --hero-grad: linear-gradient(100deg, rgb(21 25 28 / 0.92) 0%, rgb(21 25 28 / 0.78) 50%, rgb(21 25 28 / 0.55) 100%);
 }
