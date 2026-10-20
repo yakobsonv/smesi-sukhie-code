@@ -52,9 +52,12 @@ const { brands, ceramic = false } = Astro.props;
     let ceramic = false;
     const count = root.querySelector<HTMLElement>('[data-bf-count]');
     const word = (n: number) => { const a = n % 10, b = n % 100; return a === 1 && b !== 11 ? 'позиция' : a >= 2 && a <= 4 && (b < 12 || b > 14) ? 'позиции' : 'позиций'; };
-    const apply = () => {
+    const rows = [...document.querySelectorAll<HTMLElement>('[data-pos-item]')];
+    const motionOk = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const update = () => {
       let shown = 0;
-      document.querySelectorAll<HTMLElement>('[data-pos-item]').forEach((li) => {
+      rows.forEach((li) => {
         const ok = (!brand || li.dataset.brand === brand) && (!ceramic || li.dataset.ceramic === '1');
         li.hidden = !ok;
         if (ok) shown++;
@@ -62,8 +65,53 @@ const { brands, ceramic = false } = Astro.props;
       document.querySelectorAll<HTMLElement>('[data-part]').forEach((part) => {
         part.hidden = !part.querySelector('[data-pos-item]:not([hidden])');
       });
+      // Показанные фильтром строки видны сразу, не дожидаясь появления при прокрутке (Reveal,
+      // [data-reveal-items]): без этого строка снизу списка, поднявшаяся на экран, оставалась прозрачной.
+      const late = rows.filter((li) => !li.hidden && !li.classList.contains('is-revealed'));
+      late.forEach((li) => { li.style.transition = 'none'; li.classList.add('is-revealed'); });
+      if (late.length) requestAnimationFrame(() => requestAnimationFrame(() => late.forEach((li) => { li.style.transition = ''; })));
       if (count) count.textContent = brand || ceramic ? `Показано: ${shown} ${word(shown)}` : '';
     };
+
+    // Плавная смена списка (только строки у экрана, без блокировки кликов): уходящие тают и опускаются
+    // на 6 px (копия на старом месте, 200 мс), новые проявляются с подъёмом на 6 px, оставшиеся
+    // переезжают на новые места (240 мс). Состояние списка и счётчик меняются сразу.
+    const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
+    const near = (r: DOMRect) => r.bottom > -100 && r.top < window.innerHeight + 100;
+    const apply = (animate = false) => {
+      if (!animate || !motionOk || !('animate' in Element.prototype)) { update(); return; }
+      const before = new Map<HTMLElement, DOMRect>();
+      rows.forEach((li) => { if (!li.hidden) { const r = li.getBoundingClientRect(); if (near(r)) before.set(li, r); } });
+      const wasShown = new Set(rows.filter((li) => !li.hidden));
+      update();
+      before.forEach((r, li) => {
+        if (!li.hidden) return;
+        // ушла: копия без id и data-атрибутов (её не находят скрипты и проверки), поверх страницы, мимо кликов
+        const ghost = li.cloneNode(true) as HTMLElement;
+        for (const el of [ghost, ...ghost.querySelectorAll<HTMLElement>('[id], [data-pos]')]) { el.removeAttribute('id'); el.removeAttribute('data-pos'); }
+        ghost.removeAttribute('data-pos-item');
+        ghost.removeAttribute('data-brand');
+        ghost.removeAttribute('data-ceramic');
+        ghost.hidden = false;
+        ghost.setAttribute('aria-hidden', 'true');
+        ghost.inert = true;
+        Object.assign(ghost.style, { position: 'absolute', left: `${r.left + window.scrollX}px`, top: `${r.top + window.scrollY}px`, width: `${r.width}px`, height: `${r.height}px`, margin: '0', zIndex: '1', pointerEvents: 'none', transition: 'none' });
+        document.body.append(ghost);
+        ghost.animate([{ opacity: 1, translate: '0 0' }, { opacity: 0, translate: '0 6px' }], { duration: 200, easing: EASE, fill: 'forwards' }).finished.finally(() => ghost.remove());
+      });
+      rows.forEach((li) => {
+        if (li.hidden) return;
+        const r = li.getBoundingClientRect();
+        const old = before.get(li);
+        if (old) {
+          const dy = old.top - r.top;
+          if (Math.abs(dy) > 1) li.animate([{ translate: `0 ${dy}px` }, { translate: '0 0' }], { duration: 240, easing: EASE });
+        } else if (!wasShown.has(li) && near(r)) {
+          li.animate([{ opacity: 0, translate: '0 6px' }, { opacity: 1, translate: '0 0' }], { duration: 240, easing: EASE });
+        }
+      });
+    };
+
     root.addEventListener('click', (e) => {
       const chip = (e.target as HTMLElement).closest<HTMLElement>('[data-bf-brand]');
       if (!chip) return;
@@ -72,12 +120,12 @@ const { brands, ceramic = false } = Astro.props;
         c.classList.toggle('is-on', c === chip);
         c.setAttribute('aria-pressed', String(c === chip));
       });
-      apply();
+      apply(true);
     });
     const check = root.querySelector<HTMLInputElement>('[data-bf-ceramic]');
     check?.addEventListener('change', () => {
       ceramic = check.checked;
-      apply();
+      apply(true);
     });
     // Галочку браузер восстанавливает сам (обновление, «Назад», страница из bfcache), а
     // состояние скрипта начиналось с false: галочка стояла, а список показывал всё.
