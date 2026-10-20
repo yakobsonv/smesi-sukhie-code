@@ -1,0 +1,58 @@
+---
+// Слой «сыплется сухая смесь» для первого экрана главной: canvas под текстом и кнопка паузы.
+// Ставится первым ребёнком секции с position: relative (см. .hero в index.astro); текст лежит выше по z-index.
+// До запуска скрипта canvas прозрачный, кнопка скрыта — первая отрисовка текста скрипта не ждёт.
+// Логика — src/lib/pour-hero.ts, параметры — src/lib/pour-config.ts.
+---
+
+<canvas class="pour-canvas" data-pour-canvas aria-hidden="true"></canvas>
+<button type="button" class="pour-toggle" data-pour-toggle aria-pressed="false" aria-label="Остановить анимацию" hidden>
+  <svg class="pour-toggle__pause" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" rx="1" /><rect x="9.5" y="2" width="3.5" height="12" rx="1" /></svg>
+  <svg class="pour-toggle__play" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 2.2v11.6a.8.8 0 0 0 1.2.7l9.4-5.8a.8.8 0 0 0 0-1.4L5.2 1.5A.8.8 0 0 0 4 2.2Z" /></svg>
+</button>
+
+<style>
+  .pour-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    pointer-events: none;
+  }
+
+  /* В языке сайта — как кнопка «наверх» (.kt-top): тёмный круг со светлой обводкой. 44 px — зона нажатия. */
+  .pour-toggle {
+    position: absolute;
+    right: var(--gutter);
+    bottom: 12px;
+    z-index: 2;
+    width: var(--tap);
+    height: var(--tap);
+    display: grid;
+    place-items: center;
+    padding: 0;
+    color: var(--color-on-dark);
+    background: rgb(21 25 28 / 0.72);
+    border: 1px solid rgb(255 255 255 / 0.35);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+
+  .pour-toggle[hidden] { display: none; }
+  .pour-toggle:hover { background: var(--color-brand); border-color: var(--color-brand); }
+  .pour-toggle svg { fill: currentColor; }
+  .pour-toggle__play { display: none; }
+  .pour-toggle[aria-pressed='true'] .pour-toggle__pause { display: none; }
+  .pour-toggle[aria-pressed='true'] .pour-toggle__play { display: block; }
+</style>
+
+<script>
+  import { startPour } from '../../lib/pour-hero';
+
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-pour-canvas]');
+  const hero = canvas?.parentElement;
+  if (canvas && hero) startPour(hero, canvas, document.querySelector<HTMLButtonElement>('[data-pour-toggle]'));
+</script>

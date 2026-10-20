@@ -4,6 +4,7 @@
 import Page from '../layouts/Page.astro';
 import Container from '../components/layout/Container.astro';
 import CtaBand from '../components/site/CtaBand.astro';
+import HeroPour from '../components/content/HeroPour.astro';
 import { SECTIONS, GROUPS, type SectionGroup } from '../data/sections';
 import { GROUP_ORDER, PAGES } from '../data/nav';
 import { POSITIONS, sectionCount, brandsIn, plural } from '../lib/positions';
@@ -46,6 +47,7 @@ const groups = GROUP_ORDER.map((g: SectionGroup) => ({ g, title: GROUPS[g], sect
   description="Сухие строительные смеси Perel, Dauer, Основит и других производителей: кладочные, клей для блоков, штукатурки, шпаклёвки, плиточный клей, смеси для пола, фасада и брусчатки. Цены, доставка по Москве и области."
 >
   <section class="hero">
+    <HeroPour />
     <Container>
       <div class="hero__text">
       <p class="hero__kicker">Москва и Московская область</p>
@@ -133,7 +135,11 @@ const groups = GROUP_ORDER.map((g: SectionGroup) => ({ g, title: GROUPS[g], sect
 <style>
   .h2 { margin: 0 0 var(--space-5); font-size: var(--fs-h2); }
 
-  .hero { --focus-color: var(--color-brand-on-dark); padding: clamp(48px, 8vw, 104px) 0; overflow: hidden; color: var(--color-on-dark); background: var(--hero-grad), var(--color-dark); }
+  .hero { --focus-color: var(--color-brand-on-dark); position: relative; isolation: isolate; padding: clamp(48px, 8vw, 104px) 0; overflow: hidden; color: var(--color-on-dark); background: var(--hero-grad), var(--color-dark); }
+  /* Текст и упаковки — над слоем сыплющейся смеси (HeroPour, z-index 0). */
+  .hero :global(.container) { position: relative; z-index: 1; }
+  /* Телефон: внизу полоса под кучку смеси и кнопку паузы, чтобы они не подходили к кнопкам героя вплотную. */
+  @media (max-width: 639.98px) { .hero { padding-bottom: 68px; } }
   .hero__packs { display: none; }
   @media (min-width: 1100px) {
     .hero :global(.container) { display: grid; grid-template-columns: minmax(0, 1fr) 424px; align-items: center; column-gap: 48px; }
