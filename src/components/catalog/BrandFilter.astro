@@ -82,11 +82,11 @@ const { brands, ceramic = false } = Astro.props;
       if (!animate || !motionOk || !('animate' in Element.prototype)) { update(); return; }
       const before = new Map<HTMLElement, DOMRect>();
       rows.forEach((li) => { if (!li.hidden) { const r = li.getBoundingClientRect(); if (near(r)) before.set(li, r); } });
-      const wasShown = new Set(rows.filter((li) => !li.hidden));
       update();
       before.forEach((r, li) => {
         if (!li.hidden) return;
-        // ушла: копия без id и data-атрибутов (её не находят скрипты и проверки), поверх страницы, мимо кликов
+        // ушла: копия без id и data-атрибутов (её не находят скрипты и проверки), мимо кликов, ПОД строками
+        // (z-index −1): где на её место уже встала другая строка, текст не двоится — копия видна только в пустоте
         const ghost = li.cloneNode(true) as HTMLElement;
         for (const el of [ghost, ...ghost.querySelectorAll<HTMLElement>('[id], [data-pos]')]) { el.removeAttribute('id'); el.removeAttribute('data-pos'); }
         ghost.removeAttribute('data-pos-item');
@@ -95,7 +95,7 @@ const { brands, ceramic = false } = Astro.props;
         ghost.hidden = false;
         ghost.setAttribute('aria-hidden', 'true');
         ghost.inert = true;
-        Object.assign(ghost.style, { position: 'absolute', left: `${r.left + window.scrollX}px`, top: `${r.top + window.scrollY}px`, width: `${r.width}px`, height: `${r.height}px`, margin: '0', zIndex: '1', pointerEvents: 'none', transition: 'none' });
+        Object.assign(ghost.style, { position: 'absolute', left: `${r.left + window.scrollX}px`, top: `${r.top + window.scrollY}px`, width: `${r.width}px`, height: `${r.height}px`, margin: '0', zIndex: '-1', pointerEvents: 'none', transition: 'none' });
         document.body.append(ghost);
         ghost.animate([{ opacity: 1, translate: '0 0' }, { opacity: 0, translate: '0 6px' }], { duration: 200, easing: EASE, fill: 'forwards' }).finished.finally(() => ghost.remove());
       });
@@ -106,7 +106,8 @@ const { brands, ceramic = false } = Astro.props;
         if (old) {
           const dy = old.top - r.top;
           if (Math.abs(dy) > 1) li.animate([{ translate: `0 ${dy}px` }, { translate: '0 0' }], { duration: 240, easing: EASE });
-        } else if (!wasShown.has(li) && near(r)) {
+        } else if (near(r)) {
+          // новая строка или приехавшая из-за края экрана — проявляется
           li.animate([{ opacity: 0, translate: '0 6px' }, { opacity: 1, translate: '0 0' }], { duration: 240, easing: EASE });
         }
       });
