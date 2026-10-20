@@ -4,6 +4,8 @@
 //
 // - [data-reveal]          — элемент всплывает при попадании в вьюпорт
 // - [data-reveal-stagger]  — дети контейнера всплывают каскадом
+// - [data-reveal-items]    — каждый ребёнок всплывает сам, когда доходит до экрана; вошедшие вместе —
+//                            каскадом через 50 мс (строки каталога; фильтр брендов показывает их сразу)
 // - [data-count="1991"]    — число досчитывает до значения при появлении
 // - [data-reveal="head"]   — то же, но крупнее и со снятием размытия (для больших заголовков)
 // - [data-parallax="0.12"] — фон/фото внутри своего контейнера движется медленнее прокрутки
@@ -35,10 +37,23 @@
         requestAnimationFrame(tick);
       };
 
+      // строки [data-reveal-items], вошедшие в экран одним махом, — сверху вниз с шагом 50 мс (не дольше 300 мс);
+      // проскочившие выше экрана (прыжок по якорю) — сразу и не занимают место в каскаде
+      const revealItems = (list: [HTMLElement, DOMRectReadOnly][]) => {
+        let k = 0;
+        list.sort((a, b) => a[1].top - b[1].top).forEach(([el, r]) => {
+          el.style.transitionDelay = r.bottom <= 0 ? '0ms' : `${Math.min(k++, 6) * 50}ms`;
+          el.classList.add('is-revealed');
+          io.unobserve(el);
+        });
+      };
+
       const io = new IntersectionObserver(
         (entries) => {
+          const items = entries.filter((e) => e.isIntersecting && e.target.parentElement?.hasAttribute('data-reveal-items'));
+          revealItems(items.map((e) => [e.target as HTMLElement, e.boundingClientRect]));
           for (const entry of entries) {
-            if (!entry.isIntersecting) continue;
+            if (!entry.isIntersecting || items.includes(entry)) continue;
             const el = entry.target as HTMLElement;
             el.classList.add('is-revealed');
             if (el.hasAttribute('data-reveal-stagger')) {
@@ -55,7 +70,7 @@
       );
 
       document
-        .querySelectorAll('[data-reveal], [data-reveal-stagger]')
+        .querySelectorAll('[data-reveal], [data-reveal-stagger], [data-reveal-items] > *')
         .forEach((el) => io.observe(el));
 
       // Страховка. Наблюдатель может не успеть за быстрой прокруткой или прыжком
@@ -68,13 +83,15 @@
         io.unobserve(el);
       };
       const sweep = () => {
-        document
-          .querySelectorAll<HTMLElement>(
-            '[data-reveal]:not(.is-revealed), [data-reveal-stagger]:not(.is-revealed)'
-          )
-          .forEach((el) => {
-            if (el.getBoundingClientRect().top < window.innerHeight) reveal(el);
-          });
+        // сначала только читаем положение, потом разом показываем — без лишних пересчётов раскладки
+        const late = [
+          ...document.querySelectorAll<HTMLElement>('[data-reveal]:not(.is-revealed), [data-reveal-stagger]:not(.is-revealed)'),
+        ].filter((el) => el.getBoundingClientRect().top < window.innerHeight);
+        const lateItems = [...document.querySelectorAll<HTMLElement>('[data-reveal-items] > :not(.is-revealed)')]
+          .map((el): [HTMLElement, DOMRectReadOnly] => [el, el.getBoundingClientRect()])
+          .filter(([, r]) => r.top < window.innerHeight);
+        late.forEach(reveal);
+        revealItems(lateItems);
       };
       let sweepRaf = 0;
       const queueSweep = () => {
@@ -192,6 +209,18 @@
 
   html.js-reveal [data-reveal].is-revealed,
   html.js-reveal [data-reveal-stagger].is-revealed > * {
+    opacity: 1;
+    translate: none;
+  }
+
+  /* строки каталога: подъём на 12 px, короче и мягче, чем у блоков */
+  html.js-reveal [data-reveal-items] > * {
+    opacity: 0;
+    translate: 0 12px;
+    transition: opacity 450ms var(--ease), translate 450ms var(--ease);
+  }
+
+  html.js-reveal [data-reveal-items] > .is-revealed {
     opacity: 1;
     translate: none;
   }

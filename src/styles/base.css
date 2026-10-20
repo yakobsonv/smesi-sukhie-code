@@ -255,6 +255,60 @@ textarea.field__control {
   color: var(--color-error);
 }
 
+/* ==== СТРУЙКА СМЕСИ ====
+   «Сыплется из мешка» под упаковкой: строка каталога (наведение на фото, PositionList) и окно
+   характеристик (открытие, PositionModal). Слой <span class="pour"> лежит внутри квадрата с фото,
+   занимает его нижнюю треть и обрезает всё по своим краям — за квадрат струйка не выходит.
+   Частицы — две колонки по 8 зёрен (точка + box-shadow), каждая пролетает дважды: ~16 зёрен за 1,1 с;
+   внизу растёт и тает горка (радиальный градиент). Без анимации слой невидим. */
+.pour {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 66%;
+  bottom: 0;
+  z-index: 1;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgb(139 128 108 / 0.95), rgb(150 139 118 / 0.55) 60%, rgb(150 139 118 / 0)) 50% calc(100% + 8px) / 0 0 no-repeat;
+}
+
+.pour::before,
+.pour::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: calc(50% - 1px);
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #8c8577;
+  box-shadow: 1px 5px #a88f62, -1px 10px #7a756b, 0 15px #9d998f, 1px 20px #8c8577, -1px 25px #a88f62, 0 30px #7a756b, 1px 35px #958f82;
+  translate: 0 -40px;
+}
+
+.pour::after {
+  left: calc(50% - 0.5px);
+  background: #a88f62;
+  box-shadow: -1px 4px #8c8577, 1px 9px #9d998f, 0 14px #7a756b, -1px 19px #a88f62, 1px 24px #8c8577, 0 29px #958f82, -1px 34px #7a756b;
+}
+
+@keyframes pour-heap {
+  0% { opacity: 1; background-size: 0 0; }
+  80% { opacity: 1; background-size: 54% 16px; }
+  100% { opacity: 0; background-size: 54% 16px; }
+}
+
+@keyframes pour-fall {
+  from { translate: 0 -40px; }
+  to { translate: 0 70px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pour { display: none; }
+}
+
 /* ==== ТЕКСТОВЫЙ БЛОК ==== */
 .prose { max-width: 72ch; }
 .prose > * + * { margin-top: var(--space-4); }
