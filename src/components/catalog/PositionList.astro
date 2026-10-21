@@ -69,7 +69,9 @@ const { items } = Astro.props;
     scroll-margin-top: 90px;
     position: relative;
     isolation: isolate;
-    overflow: clip; /* струйка под фото не вылезает за карточку у коротких строк */
+    /* струйка под фото не вылезает за карточку; hidden — для Safari < 16, где clip не знают */
+    overflow: hidden;
+    overflow: clip;
   }
 
   .pos[hidden] { display: none; }
@@ -261,9 +263,12 @@ const { items } = Astro.props;
   .pos__more { margin-left: auto; }
 
   @media (min-width: 900px) {
+    /* min-height: рамка 1 + отступ + фото 112 + слой струйки 40 + рамка 1 — у самой низкой строки
+       горка под фото не срезается нижним краем карточки (было 164–166 px при нужных 170) */
     .pos {
       grid-template-columns: 112px minmax(0, 1fr) 200px;
       align-items: start;
+      min-height: calc(var(--space-4) + 112px + 40px + 2px);
     }
 
     .pos__img { width: 112px; }
