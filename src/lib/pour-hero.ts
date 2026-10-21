@@ -250,12 +250,22 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
       const limit = Math.max(0, H - rects[k + 3] - POUR.textGap);
       for (let c = l; c <= r; c++) if (cap[c] > limit) cap[c] = limit;
     }
-    // под кнопкой паузы горка не выше 20 px от низа (кнопка стоит в 16 px от низа — заходит под неё не больше чем на 4 px)
+    // у кнопки паузы горка не ближе 12 px к кругу (+ 4 px: зерно над поверхностью и сглаживание): колонка в пределах
+    // радиус + 16 px от центра — не выше нижней дуги этого «круга с запасом» (под центром кнопки,
+    // стоящей в 16 px от низа, — 0; у края круга ~6 px; в 16 px сбоку — без предела)
     const tb = !reduced && toggle && !toggle.hidden ? toggle.getBoundingClientRect() : null;
     if (tb && tb.width) {
-      const l = Math.max(0, Math.floor((tb.left - box.left) / cw));
-      const r = Math.min(cols - 1, Math.floor((tb.right - box.left) / cw));
-      for (let c = l; c <= r; c++) if (cap[c] > 20) cap[c] = 20;
+      const R = tb.width / 2 + 16;
+      const cx = (tb.left + tb.right) / 2 - box.left;
+      const cy = box.bottom - (tb.top + tb.bottom) / 2; // центр кнопки от низа первого экрана
+      const l = Math.max(0, Math.floor((cx - R) / cw));
+      const r = Math.min(cols - 1, Math.floor((cx + R) / cw));
+      for (let c = l; c <= r; c++) {
+        const d = Math.max(0, c * cw - cx, cx - (c + 1) * cw); // ближайшая к центру точка колонки
+        if (d >= R) continue;
+        const lim = Math.max(0, cy - Math.sqrt(R * R - d * d));
+        if (cap[c] > lim) cap[c] = lim;
+      }
     }
     peakH = peakCap;
     for (let c = 0; c < cols; c++) {
@@ -294,6 +304,8 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
     fadeH = desk ? POUR.fadeIn.desktop : POUR.fadeIn.mobile;
     fade = ctx.createLinearGradient(0, y0, 0, y0 + fadeH);
     fade.addColorStop(0, 'rgb(0 0 0 / 1)');
+    // первые 10 px — почти полностью стёрты (остаётся ≤ 2 %): у стыка с шапкой струи не видно
+    fade.addColorStop(Math.min(0.5, 10 / fadeH), 'rgb(0 0 0 / 0.98)');
     fade.addColorStop(1, 'rgb(0 0 0 / 0)');
     if (reduced) staticStream();
     laidOut = true;
@@ -363,7 +375,8 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
       gst[i] = 0;
       gcol[i] = pickBucket();
       gsz[i] = Math.random() < 0.5 ? sizes[0] : sizes[1];
-      if (Math.random() < POUR.dustAtMouth) spawnDust(gx[i], y0 + 4, 0.5);
+      // у жерла под верхней кромкой (y0 = 0) пыль не нужна: её всё равно стирает затемнение
+      if (y0 > 0 && Math.random() < POUR.dustAtMouth) spawnDust(gx[i], y0 + 4, 0.5);
     }
 
     const full = targetSum > 0 && heapSum >= targetSum * 0.985;
@@ -497,15 +510,6 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
       }
     }
 
-    // струя «проявляется из темноты»: верх стираем градиентом (только полоса вокруг струи)
-    if (fade) {
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.globalCompositeOperation = 'destination-out';
-      ctx.fillStyle = fade;
-      ctx.fillRect(x0 - 40, y0 - 8, 80, fadeH + 8);
-      ctx.globalCompositeOperation = 'source-over';
-    }
-
     // пыль
     if (nd && sprite) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -516,6 +520,16 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
         ctx.drawImage(sprite, dx[i] - s / 2, dy[i] - s / 2, s, s);
       }
       ctx.globalAlpha = 1;
+    }
+
+    // струя «проявляется из темноты»: верх стираем градиентом (только полоса вокруг струи) — после пыли,
+    // чтобы и пыль у начала струи уходила в темноту; выше y0 полоса стёрта целиком
+    if (fade) {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = fade;
+      ctx.fillRect(x0 - 40, y0 - 24, 80, fadeH + 24);
+      ctx.globalCompositeOperation = 'source-over';
     }
 
     stats.grains = n;
