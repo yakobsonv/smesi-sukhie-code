@@ -562,10 +562,8 @@ export function startPour(hero: HTMLElement, canvas: HTMLCanvasElement, toggle: 
 
   const setPaused = (v: boolean) => {
     paused = v;
-    if (toggle) {
-      toggle.setAttribute('aria-pressed', String(v));
-      toggle.title = v ? 'Запустить анимацию' : 'Остановить анимацию';
-    }
+    // подпись постоянная («Остановить анимацию»), состояние — aria-pressed: иначе title и aria-label расходятся
+    if (toggle) toggle.setAttribute('aria-pressed', String(v));
   };
 
   const relayout = () => {

@@ -1,15 +1,22 @@
 ---
 // Слой «сыплется сухая смесь» для первого экрана главной: canvas под текстом и кнопка паузы.
-// Ставится первым ребёнком секции с position: relative (см. .hero в index.astro); текст лежит выше по z-index.
+// Ставится дважды в секцию с position: relative (см. .hero в index.astro): <HeroPour /> — первым ребёнком
+// (canvas, текст лежит выше по z-index), <HeroPour toggle /> — после текста и кнопок героя: в порядке Tab
+// пауза идёт после «Каталог смесей» и телефона, на экране она стоит там же (position: absolute от секции).
 // До запуска скрипта canvas прозрачный, кнопка скрыта — первая отрисовка текста скрипта не ждёт.
 // Логика — src/lib/pour-hero.ts, параметры — src/lib/pour-config.ts.
+interface Props {
+  /** вывести кнопку паузы (вместо canvas) */
+  toggle?: boolean;
+}
+const { toggle = false } = Astro.props;
 ---
 
-<canvas class="pour-canvas" data-pour-canvas aria-hidden="true"></canvas>
-<button type="button" class="pour-toggle" data-pour-toggle aria-pressed="false" aria-label="Остановить анимацию" title="Остановить анимацию" hidden>
+{!toggle && <canvas class="pour-canvas" data-pour-canvas aria-hidden="true"></canvas>}
+{toggle && <button type="button" class="pour-toggle" data-pour-toggle aria-pressed="false" aria-label="Остановить анимацию" title="Остановить анимацию" hidden>
   <svg class="pour-toggle__pause" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" rx="1" /><rect x="9.5" y="2" width="3.5" height="12" rx="1" /></svg>
   <svg class="pour-toggle__play" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 2.2v11.6a.8.8 0 0 0 1.2.7l9.4-5.8a.8.8 0 0 0 0-1.4L5.2 1.5A.8.8 0 0 0 4 2.2Z" /></svg>
-</button>
+</button>}
 
 <style>
   .pour-canvas {

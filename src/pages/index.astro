@@ -62,6 +62,7 @@ const groups = GROUP_ORDER.map((g: SectionGroup) => ({ g, title: GROUPS[g], sect
         {heroPacks.map((p) => <li><img src={p.image} alt="" width={p.imageW} height={p.imageH} loading="eager" decoding="async" /></li>)}
       </ul>
     </Container>
+    <HeroPour toggle />
   </section>
 
   <section class="works">
