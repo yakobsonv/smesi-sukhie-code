@@ -137,8 +137,11 @@ const { brands, ceramic = false } = Astro.props;
           if (Math.abs(dy) > 1 && crosses(old.r, r)) li.animate([{ translate: `0 ${dy}px`, zIndex: 1 }, { translate: '0 0', zIndex: 1 }], { duration: 240, easing: EASE });
           else if (old.op < 0.95 && near(r)) li.animate([{ opacity: old.op }, { opacity: 1 }], { duration: 240, easing: EASE });
         } else if (near(r)) {
-          // новая строка (или почти растаявшая копия) — проявляется на своём месте
-          li.animate([{ opacity: was ? was.op : 0, translate: '0 6px' }, { opacity: 1, translate: '0 0' }], { duration: 240, easing: EASE });
+          // новая строка (или почти растаявшая копия) — проявляется на своём месте. Если на этом месте ещё
+          // тает копия ушедшей строки (прямое переключение бренд → бренд), ждём её: иначе ~0,1 с видны
+          // два текста сразу (QA 21.10)
+          const overGhost = [...ghosts.values()].some((g) => { const gr = g.getBoundingClientRect(); return gr.bottom > r.top + 1 && gr.top < r.bottom - 1; });
+          li.animate([{ opacity: was ? was.op : 0, translate: '0 6px' }, { opacity: 1, translate: '0 0' }], { duration: 240, delay: overGhost ? 190 : 0, fill: 'backwards', easing: EASE });
         }
       });
     };
