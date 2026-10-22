@@ -45,6 +45,8 @@ export interface HeroScene {
   pickAt(clientX: number, clientY: number): number;
   setPointer(x: number, y: number): void;
   setRunning(onScreen: boolean, visible: boolean): void;
+  /** было взаимодействие (указатель, прокрутка, фокус) — продолжить рендер после остановки в покое */
+  wake(): void;
   relayout(): void;
   stats(): Record<string, unknown>;
   dispose(): void;
@@ -62,7 +64,9 @@ const easeOut = (k: number) => 1 - Math.pow(1 - Math.min(1, Math.max(0, k)), 3);
 export function createScene(o: SceneOptions): HeroScene | null {
   let renderer: WebGLRenderer;
   try {
-    renderer = new WebGLRenderer({ canvas: o.canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
+    // сглаживание — только с мышью (ПК); на сенсорных экранах высокая плотность пикселей и так скрывает «лесенку»
+    const fine = window.matchMedia('(pointer: fine)').matches;
+    renderer = new WebGLRenderer({ canvas: o.canvas, antialias: fine, alpha: false, powerPreference: 'default' });
   } catch {
     return null;
   }
@@ -72,8 +76,14 @@ export function createScene(o: SceneOptions): HeroScene | null {
   renderer.info.autoReset = false; // считаем вызовы отрисовки за кадр целиком (витрина + частицы)
 
   let mode: Mode = o.mode;
-  let time = 0; // время интро/входа, с
-  let clock = 0; // время для парения, с
+  // время интро/входа — реальное, от старта (не копится по кадрам): на 10 fps интро всё равно укладывается в 5 с,
+  // пропуская кадры; скрытая вкладка останавливает цикл, а по возвращении интро уже закончено
+  let t0 = performance.now();
+  let time = 0;
+  let clock = 0; // время для парения, с (копится по кадрам — после паузы мешки не прыгают)
+  let deadlineTimer = 0;
+  let lastActivity = performance.now();
+  let lastRender = 0;
   let phaseIdx = mode === 'intro' ? 0 : PHASES.length;
   let particles: TitleParticles | null = null;
   const pScene = new Scene();
@@ -98,6 +108,12 @@ export function createScene(o: SceneOptions): HeroScene | null {
     onLoaded: () => { dirty = true; schedule(); },
   });
 
+  const touch = () => {
+    lastActivity = performance.now();
+    dirty = true;
+    schedule();
+  };
+
   const isMobile = () => W < HERO.mobileBelow || window.matchMedia('(pointer: coarse)').matches;
 
   const measure = () => {
@@ -110,17 +126,29 @@ export function createScene(o: SceneOptions): HeroScene | null {
     renderer.setSize(W, H, false);
     const s = o.stage.getBoundingClientRect();
     show.setStage({ left: s.left - box.left, top: s.top - box.top, width: Math.max(1, s.width), height: Math.max(1, s.height) }, W, H, W < HERO.mobileBelow);
-    if (particles) particles.setLayout({ width: W, height: H, dpr, title: sampleTitle(o.h1, box, particleMode().sampleStep) });
+    if (particles) particles.setLayout(particleLayout(box));
     dirty = true;
   };
 
   const particleMode = () => (mobile ? HERO.particles.mobile : HERO.particles.desktop);
 
+  /** раскладка для частиц; на телефоне — свободная полоса первого экрана под кнопками героя и «Пропустить» */
+  function particleLayout(box: DOMRect) {
+    let freeTop: number | undefined;
+    let visibleBottom: number | undefined;
+    if (W < HERO.mobileBelow) {
+      const bottoms = [o.hero.querySelector('.hero__actions'), o.hero.querySelector('[data-hero-intro]')]
+        .filter((el): el is Element => Boolean(el?.getClientRects().length))
+        .map((el) => el.getBoundingClientRect().bottom - box.top);
+      freeTop = Math.max(0, ...bottoms) + 12;
+      visibleBottom = Math.min(H, window.innerHeight - box.top);
+    }
+    return { width: W, height: H, dpr, title: sampleTitle(o.h1, box, particleMode().sampleStep), freeTop, visibleBottom };
+  }
+
   const buildParticles = () => {
     particles?.dispose();
-    const box = o.hero.getBoundingClientRect();
-    const pm = particleMode();
-    particles = new TitleParticles(pm, { width: W, height: H, dpr, title: sampleTitle(o.h1, box, pm.sampleStep) });
+    particles = new TitleParticles(particleMode(), particleLayout(o.hero.getBoundingClientRect()));
     pScene.add(particles.points);
   };
 
@@ -147,9 +175,13 @@ export function createScene(o: SceneOptions): HeroScene | null {
     }
   };
 
+  /** что-то движется не «само по себе»: интро, вход, уход при «Повторить», карусель, жест, поворот, смена ореола */
+  const busy = () =>
+    (mode === 'intro' && phaseIdx < PHASES.length) || (mode === 'enter' && time < T.returnRise + 0.6) || leaveAt >= 0 || show.busy();
   const animating = () => {
     if (mode === 'still') return false;
-    return true; // интро, вход и парение мешков
+    // парение в покое — пока было взаимодействие за последние idleStop секунд
+    return busy() || performance.now() - lastActivity < HERO.render.idleStop * 1000;
   };
 
   const render = () => {
@@ -164,9 +196,15 @@ export function createScene(o: SceneOptions): HeroScene | null {
 
   const frame = (now: number) => {
     raf = 0;
-    const dt = last ? Math.min((now - last) / 1000, 1 / 30) : 1 / 60;
+    // покой: не чаще idleFps (rAF продолжает идти, но кадр не рисуется)
+    if (!busy() && !dirty && now - lastRender < 1000 / HERO.render.idleFps - 4) {
+      schedule();
+      return;
+    }
+    const dt = last ? Math.min((now - last) / 1000, 1 / 15) : 1 / 60;
     last = now;
-    time += dt;
+    lastRender = now;
+    time = (performance.now() - t0) / 1000;
     clock += dt;
     if (leaveAt >= 0 && time - leaveAt > 0.4) leaveAt = -1;
     if (mode === 'intro') {
@@ -191,10 +229,17 @@ export function createScene(o: SceneOptions): HeroScene | null {
     }
   };
 
+  /** жёсткий предел интро по реальному времени (таймер, а не кадры — сработает и при 1–5 fps) */
+  function armDeadline() {
+    window.clearTimeout(deadlineTimer);
+    deadlineTimer = window.setTimeout(() => api.skip(), T.deadline * 1000);
+  }
+
   measure();
   if (mode === 'intro') {
-    buildParticles();
     o.onPhase('cloud');
+    buildParticles();
+    armDeadline();
   }
   schedule();
 
@@ -203,7 +248,9 @@ export function createScene(o: SceneOptions): HeroScene | null {
     get playing() { return mode === 'intro' && phaseIdx < PHASES.length; },
     get active() { return show.active; },
     skip() {
+      window.clearTimeout(deadlineTimer);
       if (mode !== 'intro' || phaseIdx >= PHASES.length) return;
+      t0 = Math.min(t0, performance.now() - T.end * 1000);
       time = Math.max(time, T.end);
       advancePhases();
       leaveAt = -1;
@@ -214,42 +261,48 @@ export function createScene(o: SceneOptions): HeroScene | null {
       if (mode === 'still') return;
       leaveFrom = emerge(0);
       mode = 'intro';
+      t0 = performance.now();
       time = 0;
       leaveAt = 0;
       phaseIdx = 0;
+      lastActivity = t0;
+      o.onPhase('cloud'); // сначала DOM («Пропустить» на своём месте) — потом замер свободного места под облако
       buildParticles();
-      o.onPhase('cloud');
+      armDeadline();
       dirty = true;
       schedule();
     },
-    next(d) { show.next(d); dirty = true; schedule(); },
-    goTo(i) { show.goTo(i); dirty = true; schedule(); },
-    spin() { show.spin(); dirty = true; schedule(); },
-    dragStart() { show.dragStart(); },
-    dragMove(dx) { show.dragMove(dx); dirty = true; schedule(); },
-    dragEnd(dx, vx) { show.dragEnd(dx, vx); dirty = true; schedule(); },
+    next(d) { show.next(d); touch(); },
+    goTo(i) { show.goTo(i); touch(); },
+    spin() { show.spin(); touch(); },
+    dragStart() { show.dragStart(); touch(); },
+    dragMove(dx) { show.dragMove(dx); touch(); },
+    dragEnd(dx, vx) { show.dragEnd(dx, vx); touch(); },
     pickAt(cx, cy) {
       const r = o.canvas.getBoundingClientRect();
       if (!r.width || !r.height) return -1;
       return show.pick(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
     },
-    setPointer(x, y) { show.setPointer(x, y); },
+    setPointer(x, y) { show.setPointer(x, y); lastActivity = performance.now(); schedule(); },
     setRunning(s, v) { onScreen = s; visible = v; schedule(); },
+    wake() { lastActivity = performance.now(); schedule(); },
     relayout() { measure(); schedule(); },
     stats() {
       return {
         mode, time: +time.toFixed(2), phase: mode !== 'intro' ? mode : phaseIdx === 0 ? 'cloud' : PHASES[phaseIdx - 1][0], frames, running: raf !== 0,
         particles: particles ? particleMode().count : 0, dpr, mobile, calls: renderer.info.render.calls, W, H,
-        active: show.active,
+        active: show.active, busy: busy(), idleFor: +((performance.now() - lastActivity) / 1000).toFixed(1),
       };
     },
     dispose() {
       if (raf) cancelAnimationFrame(raf);
       raf = 0;
+      window.clearTimeout(deadlineTimer);
       dropParticles();
       show.dispose();
       renderer.dispose();
-      renderer.forceContextLoss();
+      // контекст уже потерян (сбой драйвера) — повторная потеря дала бы предупреждение в консоли
+      if (!renderer.getContext().isContextLost()) renderer.forceContextLoss();
     },
   };
   return api;

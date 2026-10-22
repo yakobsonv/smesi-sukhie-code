@@ -114,6 +114,10 @@ export interface ParticleLayout {
   height: number;
   dpr: number;
   title: TitleSample;
+  /** телефон: облако — в первом экране и не под кнопками: свободная полоса от freeTop (ниже кнопок героя
+   *  и «Пропустить») до visibleBottom (низ видимой области), px от верха первого экрана */
+  freeTop?: number;
+  visibleBottom?: number;
 }
 
 export class TitleParticles {
@@ -238,11 +242,25 @@ export class TitleParticles {
     u.uTextSize.value = this.step * P.textSize;
     const b = title.box;
     const narrow = layout.width < HERO.mobileBelow;
-    const radius = Math.max(narrow ? layout.width * P.cloudRadius.mobile : 60, Math.min(b.width * P.cloudRadius.ofTitle, P.cloudRadius.max, layout.width * P.cloudRadius.ofScreen));
+    let radius = Math.max(60, Math.min(b.width * P.cloudRadius.ofTitle, P.cloudRadius.max, layout.width * P.cloudRadius.ofScreen));
+    let cy = Math.min(layout.height - radius * 0.6, b.top + b.height + radius * P.cloudBelow.desktop);
+    if (narrow) {
+      // облако по вертикали занимает ≈ ±0,75 радиуса: радиус ≤ свободная полоса / 1,5
+      const r0 = layout.width * P.cloudRadius.mobile;
+      const top = layout.freeTop ?? b.top + b.height;
+      const avail = (layout.visibleBottom ?? layout.height) - top;
+      if (avail / 1.5 >= 90) {
+        radius = Math.min(r0, avail / 1.5);
+        cy = top + avail / 2;
+      } else {
+        // низкий экран (320×568): свободного места под кнопками нет — облако на месте будущего заголовка
+        radius = Math.min(r0, Math.max(80, b.height));
+        cy = b.top + b.height / 2;
+      }
+    }
     u.uRadius.value = radius;
     u.uFocal.value = radius * 2.6;
-    // облако — под заголовком, на свободном месте над витриной; к буквам частицы летят снизу вверх
-    u.uCenter.value = [b.left + b.width / 2, Math.min(layout.height - radius * 0.6, b.top + b.height + radius * (narrow ? P.cloudBelow.mobile : P.cloudBelow.desktop))];
+    u.uCenter.value = [b.left + b.width / 2, cy];
 
     const pts = title.points;
     const m = pts.length / 2;

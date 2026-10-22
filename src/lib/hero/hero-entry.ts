@@ -53,21 +53,27 @@ export function initHero(hero: HTMLElement) {
     setIntroLabel(intro);
   }
 
-  // Интро не может держать заголовок скрытым дольше startTimeout, если сцена ещё не загрузилась
+  // Интро не может держать заголовок скрытым дольше startTimeout от начала загрузки страницы (performance.now() —
+  // от навигации), если сцена ещё не загрузилась. Таймер может опоздать на занятом потоке — поэтому boot() ещё
+  // и сверяет время сам.
+  const tooLate = () => performance.now() > HERO.startTimeout * 1000;
   const late = window.setTimeout(() => {
     if (scene || !intro) return;
     intro = false;
     hero.dataset.intro = 'done';
     reveal();
     setIntroLabel(false);
-  }, HERO.startTimeout * 1000);
+  }, Math.max(0, HERO.startTimeout * 1000 - performance.now()));
 
   // ── Фазы интро → DOM (только смена классов; кадры DOM не трогают)
   let fastTimer = 0;
   const onPhase = (p: Phase) => {
     hero.dataset.phase = p;
     if (p === 'cloud') {
-      hero.classList.add('is-h1-hidden', 'is-info-hidden');
+      // интро ведёт сцена (с дедлайном по реальному времени) — CSS-страховка на 8 с больше не нужна:
+      // иначе на медленном устройстве она проявила бы H1 раньше, чем в него прилетят частицы
+      hero.dataset.intro = 'play';
+      hero.classList.add('is-h1-hidden', 'is-info-hidden', 'is-js-intro');
       setIntroLabel(true);
     } else if (p === 'reveal') hero.classList.remove('is-h1-hidden');
     else if (p === 'show') hero.classList.remove('is-info-hidden');
@@ -109,7 +115,7 @@ export function initHero(hero: HTMLElement) {
         return `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
       })();
       const [mod] = await Promise.all([import('./scene'), document.fonts?.load(font).catch(() => null)]);
-      if (mode === 'intro' && !intro) mode = 'enter'; // опоздали — без интро
+      if (mode === 'intro' && (!intro || tooLate())) mode = 'enter'; // опоздали — без интро
       if (used) {
         const fresh = canvas!.cloneNode() as HTMLCanvasElement;
         canvas!.replaceWith(fresh);
@@ -127,15 +133,24 @@ export function initHero(hero: HTMLElement) {
     if (scene.mode === 'intro') {
       try { sessionStorage.setItem(HERO.storageKey, '1'); } catch { /* приватный режим — интро может повториться */ }
     } else {
+      hero.dataset.intro = scene.mode === 'still' ? 'still' : 'done';
       reveal();
       setIntroLabel(false);
     }
     scene.setRunning(onScreen, pageVisible);
-    (hero as HTMLElement & { heroStats?: () => unknown }).heroStats = () => scene?.stats();
+    // счётчики сцены для проверки — только с ?debug в адресе
+    if (new URLSearchParams(location.search).has('debug')) (hero as HTMLElement & { heroStats?: () => unknown }).heroStats = () => scene?.stats();
   };
 
 
   // ── Управление витриной: стрелки, «Повернуть», клавиши, свайп, клик по мешку, курсор — controls.ts
+  // взаимодействие продолжает остановленный в покое рендер (парение)
+  const wake = () => scene?.wake();
+  hero.addEventListener('pointermove', wake, { passive: true });
+  hero.addEventListener('pointerdown', wake, { passive: true });
+  hero.addEventListener('focusin', wake);
+  window.addEventListener('scroll', wake, { passive: true });
+
   bindControls({ region, stage, reduced, scene: () => scene, prev: $('[data-hero-prev]'), next: $('[data-hero-next]'), rotate: $('[data-hero-rotate]') });
 
   introBtn?.addEventListener('click', () => {

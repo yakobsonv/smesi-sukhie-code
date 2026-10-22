@@ -285,6 +285,14 @@ export class Showcase {
     return this.bagH * this.mode.lift;
   }
 
+  /** идёт ли движение, которому нужны все кадры: карусель догоняет цель, жест, поворот, ореол меняет цвет */
+  busy(): boolean {
+    if (this.dragging || Math.abs(this.target - this.pos) > 1e-3 || Math.abs(this.vel) > 1e-3) return true;
+    if (this.bags.some((b) => b && b.spinStart !== -1)) return true;
+    const glow = this.bags[this.active]?.glow;
+    return Boolean(glow && glow.some((v, c) => Math.abs(v - this.haloColor[c]) > 0.003));
+  }
+
   get active() {
     return wrap(Math.round(this.dragging ? this.pos : this.target), this.n);
   }
