@@ -43,7 +43,11 @@ export function initHero(hero: HTMLElement) {
   let onScreen = true;
   let pageVisible = document.visibilityState === 'visible';
 
+  // «Повторить анимацию» на телефоне — отдельная кнопка под подписью (в DOM там же, где на экране);
+  // на ПК её роль играет та же кнопка, что и «Пропустить» (CSS показывает нужную по ширине)
+  const replayM = $<HTMLButtonElement>('[data-hero-replay]');
   const setIntroLabel = (playing: boolean) => {
+    if (replayM) replayM.hidden = playing || reduced;
     if (!introBtn || !introLabel) return;
     introLabel.textContent = playing ? LABEL_SKIP : LABEL_REPLAY;
     introBtn.dataset.state = playing ? 'skip' : 'replay';
@@ -169,6 +173,13 @@ export function initHero(hero: HTMLElement) {
       intro = true;
       scene.replay();
     }
+  });
+  replayM?.addEventListener('click', () => {
+    if (!scene) return;
+    intro = true;
+    scene.replay();
+    // кнопка под подписью скрылась — фокус на «Пропустить» в углу сцены, а не в никуда
+    if (introBtn && introBtn.getClientRects().length) introBtn.focus();
   });
 
   // ── Остановка вне экрана и в скрытой вкладке; уход с экрана во время интро = «пропустить»

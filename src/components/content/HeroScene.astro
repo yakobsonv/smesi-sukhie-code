@@ -94,6 +94,7 @@ const packs = items.slice(0, 6);
             <a class="btn btn--ghost-inv" href="#katalog">Каталог смесей</a>
           </div>
         </div>
+        <button class="hero__replay" type="button" data-hero-replay hidden>Повторить анимацию</button>
       </div>
     )}
 
@@ -158,17 +159,20 @@ const packs = items.slice(0, 6);
   .hero__intro { min-height: 44px; padding: 0 18px; white-space: nowrap; font: inherit; font-size: 14px; font-weight: 600; color: rgb(255 255 255 / 0.86); background: transparent; border: 1px solid rgb(255 255 255 / 0.3); border-radius: var(--radius); cursor: pointer; transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease); }
   .hero__intro:hover { background: rgb(255 255 255 / 0.1); border-color: rgb(255 255 255 / 0.6); }
   .hero__intro[hidden] { display: none; }
+  .hero__replay { display: none; }
 
   /* Телефон: «Пропустить / Повторить» — строкой над сценой справа (в первом экране, не под сгибом) */
   /* Телефон: «Пропустить анимацию» — поверх правого верхнего угла сцены (ряд ‹ › остаётся в первом экране);
      после интро «Повторить анимацию» — обычной кнопкой под подписью. Телефон в шапке героя — залитая кнопка действия. */
   @media (max-width: 767.98px) {
-    .hero[data-gl='1'] .hero__show { grid-template-areas: 'stage' 'bar' 'info'; }
+    .hero[data-gl='1'] .hero__show { grid-template-areas: 'stage' 'bar' 'info' 'replay'; }
     .hero__ctl { display: contents; }
     .hero__bar { grid-area: bar; justify-self: center; gap: var(--space-2); }
     .hero__intro[data-state='skip'] { grid-area: stage; align-self: start; justify-self: end; position: relative; z-index: 2; margin: 0; padding: 0 12px; min-height: 44px; font-size: 13px; color: rgb(255 255 255 / 0.75); background: rgb(21 25 28 / 0.55); border: 0; }
-    /* после интро на телефоне «Повторить» не показываем (по ТЗ дизайнера): ряд ‹ › остаётся в первом экране */
+    /* после интро «Повторить» на телефоне — отдельной компактной кнопкой под подписью (.hero__replay), не в углу сцены */
     .hero__intro[data-state='replay'] { display: none; }
+    .hero__replay:not([hidden]) { display: inline-flex; grid-area: replay; justify-self: start; align-items: center; min-height: 44px; padding: 0 14px; font: inherit; font-size: 14px; font-weight: 600; color: rgb(255 255 255 / 0.75); background: transparent; border: 1px solid rgb(255 255 255 / 0.25); border-radius: var(--radius); cursor: pointer; }
+    .hero__replay:hover { color: var(--color-on-dark); border-color: rgb(255 255 255 / 0.6); }
     .hero[data-gl='1'] .hero__phone { color: var(--color-on-brand); background: var(--color-brand-fill); border-color: var(--color-brand-fill); }
     .hero[data-gl='1'] .hero__phone:hover { background: var(--color-brand-hover); border-color: var(--color-brand-hover); }
   }
