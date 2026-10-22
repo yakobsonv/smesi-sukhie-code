@@ -4,28 +4,21 @@
 import Page from '../layouts/Page.astro';
 import Container from '../components/layout/Container.astro';
 import CtaBand from '../components/site/CtaBand.astro';
-import HeroPour from '../components/content/HeroPour.astro';
+import HeroScene from '../components/content/HeroScene.astro';
 import { SECTIONS, GROUPS, type SectionGroup } from '../data/sections';
 import { GROUP_ORDER, PAGES } from '../data/nav';
 import { POSITIONS, sectionCount, brandsIn, plural } from '../lib/positions';
 import { getSite, localPath, OFFICES } from '../lib/sites';
+import { pickShowcase } from '../lib/showcase-config';
 
 const site = getSite('sukhie');
 const total = POSITIONS.length;
 const brands = brandsIn(POSITIONS);
 const byBrand = brands.map((b) => ({ brand: b, n: POSITIONS.filter((p) => p.brand === b).length })).sort((a, b) => b.n - a.n);
 const brandLine = brands.length > 3 ? `${brands.slice(0, 3).join(', ')} и других производителей` : brands.join(', ').replace(/, ([^,]+)$/, ' и $1');
-// Упаковки на первом экране: по очереди из разных брендов и разделов, только снимки ≥ 300 px.
-const heroPool = POSITIONS.filter((p) => p.image && Math.max(p.imageW ?? 0, p.imageH ?? 0) >= 300);
-const heroPacks: typeof POSITIONS = [];
-const usedSections = new Set<string>();
-for (let round = 0; heroPacks.length < 6 && round < 3; round++) {
-  for (const b of brands) {
-    const free = heroPool.filter((p) => p.brand === b && !heroPacks.includes(p));
-    const pick = free.find((p) => !usedSections.has(p.section)) ?? (round > 0 ? free[0] : undefined);
-    if (pick && heroPacks.length < 6) { heroPacks.push(pick); usedSections.add(pick.section); }
-  }
-}
+// Мешки на витрине первого экрана: по очереди из разных брендов и разделов, только снимки ≥ 300 px
+// (свой набор — src/lib/showcase-config.ts).
+const showcase = pickShowcase(POSITIONS);
 
 // «Что делаете?» — вход по работе. Только навигация: какие разделы относятся к работе,
 // без советов, что лучше (выбор состава — факт производителя, его даёт карточка товара).
@@ -46,24 +39,13 @@ const groups = GROUP_ORDER.map((g: SectionGroup) => ({ g, title: GROUPS[g], sect
   title="Сухие строительные смеси в Москве — Perel, Dauer, Основит"
   description="Сухие строительные смеси Perel, Dauer, Основит и других производителей: кладочные, клей для блоков, штукатурки, шпаклёвки, плиточный клей, смеси для пола, фасада и брусчатки. Цены, доставка по Москве и области."
 >
-  <section class="hero">
-    <HeroPour />
-    <Container>
-      <div class="hero__text">
-      <p class="hero__kicker">Москва и Московская область</p>
-      <h1 class="hero__title">Сухие строительные смеси</h1>
-      <p class="hero__lead">{total} {plural(total, 'позиция', 'позиции', 'позиций')} {brandLine} — с ценами, назначением и характеристиками по данным производителей. Доставка по Москве и области.</p>
-      <div class="hero__actions">
-        <a class="btn btn--primary btn--lg" href="#katalog">Каталог смесей</a>
-        <a class="btn btn--ghost-inv btn--lg" href={site.phone.href}>{site.phone.display}</a>
-      </div>
-      </div>
-      <ul class="hero__packs" role="list" aria-hidden="true">
-        {heroPacks.map((p) => <li><img src={p.image} alt="" width={p.imageW} height={p.imageH} loading="eager" decoding="async" /></li>)}
-      </ul>
-    </Container>
-    <HeroPour toggle />
-  </section>
+  <HeroScene
+    kicker="Москва и Московская область"
+    title="Сухие строительные смеси"
+    lead={`${total} ${plural(total, 'позиция', 'позиции', 'позиций')} ${brandLine} — с ценами, назначением и характеристиками по данным производителей. Доставка по Москве и области.`}
+    phone={site.phone}
+    items={showcase}
+  />
 
   <section class="works">
     <Container>
@@ -135,31 +117,6 @@ const groups = GROUP_ORDER.map((g: SectionGroup) => ({ g, title: GROUPS[g], sect
 
 <style>
   .h2 { margin: 0 0 var(--space-5); font-size: var(--fs-h2); }
-
-  .hero { --focus-color: var(--color-brand-on-dark); position: relative; isolation: isolate; padding: clamp(48px, 8vw, 104px) 0; overflow: hidden; color: var(--color-on-dark); background: var(--hero-grad), var(--color-dark); }
-  /* Текст и упаковки — над слоем сыплющейся смеси (HeroPour, z-index 0). */
-  .hero :global(.container) { position: relative; z-index: 1; }
-  /* Уже 1100 px внизу полоса под горку смеси и кнопку паузы (44 px + 16 px от низа): от кнопок героя до паузы ≥ 20 px. */
-  @media (max-width: 1099.98px) { .hero { padding-bottom: max(80px, 8vw); } }
-  .hero__packs { display: none; }
-  @media (min-width: 1100px) {
-    .hero :global(.container) { display: grid; grid-template-columns: minmax(0, 1fr) 424px; align-items: center; column-gap: 48px; }
-    .hero__packs {
-      display: grid;
-      grid-template-columns: repeat(3, 132px);
-      gap: 14px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-    .hero__packs li { display: grid; place-items: center; height: 150px; padding: 10px; overflow: hidden; background: rgb(255 255 255 / 0.96); border-radius: var(--radius); }
-    .hero__packs li:nth-child(3n+2) { translate: 0 18px; }
-    .hero__packs img { width: 100%; height: 130px; object-fit: contain; }
-  }
-  .hero__kicker { margin: 0 0 var(--space-3); font-size: var(--fs-small); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-highlight); }
-  .hero__title { max-width: 14ch; margin: 0 0 var(--space-4); font-size: clamp(36px, 6vw, 72px); line-height: 1.02; }
-  .hero__lead { max-width: 60ch; margin: 0 0 var(--space-6); font-size: var(--fs-lead); color: rgb(255 255 255 / 0.88); }
-  .hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
 
   .works { padding: var(--section-pad-lg) 0 var(--section-pad-md); }
   .works__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4); margin: 0; padding: 0; list-style: none; }

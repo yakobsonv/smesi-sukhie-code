@@ -1,0 +1,202 @@
+---
+// Первый экран главной: «облако смеси → заголовок → витрина мешков» (бриф заказчика, ветка particle-hero).
+//
+// Слои: canvas WebGL во весь первый экран (под текстом) и обычная разметка поверх: H1 (настоящий, всегда в DOM),
+// подзаголовок, кнопки, место под витрину (stage), подпись активной смеси, управление.
+// Без JS и без WebGL — статичный экран: текст, кнопки и ряд упаковок-картинок (на телефоне — одна).
+// Режим выбирает inline-скрипт ДО первой отрисовки (data-gl, data-intro), дальше — src/lib/hero/hero-entry.ts,
+// сцена (three) — src/lib/hero/scene.ts. Параметры анимации — src/lib/hero-config.ts, набор мешков — src/lib/showcase-config.ts.
+import type { Position } from '../../lib/types';
+import { HERO } from '../../lib/hero-config';
+import { shortText } from '../../lib/showcase-config';
+import { localPath } from '../../lib/sites';
+
+interface Props {
+  kicker: string;
+  /** текст H1 (меняется в index.astro) */
+  title: string;
+  lead: string;
+  phone: { display: string; href: string };
+  /** мешки витрины (pickShowcase) */
+  items: Position[];
+}
+
+const { kicker, title, lead, phone, items } = Astro.props;
+const show = items.map((p) => ({
+  id: p.id,
+  title: p.title,
+  href: `${localPath('sukhie', p.section)}#${p.id}`,
+  image: p.image ?? '',
+  desc: shortText(p.purpose),
+}));
+const first = show[0];
+const packs = items.slice(0, 6);
+---
+
+<section class="hero" data-hero>
+  <script is:inline define:vars={{ key: HERO.storageKey }}>
+    (function (h) {
+      try {
+        var c = document.createElement('canvas');
+        var gl = c.getContext('webgl2') || c.getContext('webgl');
+        if (!gl) { h.dataset.gl = '0'; return; }
+        var lose = gl.getExtension('WEBGL_lose_context');
+        if (lose) lose.loseContext();
+        h.dataset.gl = '1';
+        var played = false;
+        try { played = sessionStorage.getItem(key) === '1'; } catch (e) {}
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) h.dataset.intro = 'still';
+        else if (played) h.dataset.intro = 'done';
+        else { h.dataset.intro = 'play'; h.classList.add('is-h1-hidden', 'is-info-hidden'); }
+      } catch (e) { h.dataset.gl = '0'; }
+    })(document.currentScript.parentElement);
+  </script>
+  <canvas class="hero__gl" data-hero-gl aria-hidden="true"></canvas>
+  <div class="container hero__in">
+    <div class="hero__text">
+      <p class="hero__kicker">{kicker}</p>
+      <h1 class="hero__title">{title}</h1>
+      <p class="hero__lead">{lead}</p>
+      <div class="hero__actions">
+        <a class="btn btn--primary btn--lg hero__cat" href="#katalog">Каталог смесей</a>
+        <a class="btn btn--ghost-inv btn--lg" href={phone.href}>{phone.display}</a>
+      </div>
+    </div>
+
+    {first && (
+      <div class="hero__show" data-hero-show role="region" aria-roledescription="карусель" aria-label="Смеси на витрине">
+        <div class="hero__stage" data-hero-stage></div>
+        <div class="hero__info" data-hero-info>
+          <p class="hero__name" data-hero-name aria-live="polite">{first.title}</p>
+          <p class="hero__desc" data-hero-desc>{first.desc}</p>
+          <div class="hero__info-actions">
+            <a class="btn btn--primary" href={first.href} data-hero-more aria-label={`Подробнее: ${first.title}`}>Подробнее</a>
+            <a class="btn btn--ghost-inv" href="#katalog">Каталог смесей</a>
+          </div>
+        </div>
+        <div class="hero__ctl">
+          <div class="hero__nav">
+            <button class="hero__btn" type="button" data-hero-prev aria-label="Предыдущая смесь" title="Предыдущая смесь">
+              <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M12.5 4 6.5 10l6 6" /></svg>
+            </button>
+            <button class="hero__btn hero__rotate" type="button" data-hero-rotate aria-label="Повернуть упаковку" title="Повернуть упаковку">
+              <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M15.5 6.5A6.5 6.5 0 1 0 16.5 11" /><path d="M16 2.8v4h-4" /></svg>
+              <span class="hero__rotate-text" aria-hidden="true">Повернуть упаковку</span>
+            </button>
+            <button class="hero__btn" type="button" data-hero-next aria-label="Следующая смесь" title="Следующая смесь">
+              <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="m7.5 4 6 6-6 6" /></svg>
+            </button>
+          </div>
+          <button class="hero__intro" type="button" data-hero-intro data-state="skip" hidden><span data-label>Пропустить анимацию</span></button>
+        </div>
+      </div>
+    )}
+
+    <ul class="hero__packs" role="list" aria-hidden="true">
+      {packs.map((p) => <li><img src={p.image} alt="" width={p.imageW} height={p.imageH} loading="eager" decoding="async" /></li>)}
+    </ul>
+  </div>
+  <script is:inline type="application/json" data-hero-items set:html={JSON.stringify(show)} />
+</section>
+
+<script>
+  import { initHero } from '../../lib/hero/hero-entry';
+
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  if (hero) initHero(hero);
+</script>
+
+<style>
+  .hero { --focus-color: var(--color-brand-on-dark); position: relative; isolation: isolate; padding: clamp(48px, 8vw, 104px) 0; overflow: hidden; color: var(--color-on-dark); background: var(--hero-grad), var(--color-dark); }
+  .hero__gl { display: none; position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; max-width: none; pointer-events: none; }
+  .hero__in { position: relative; z-index: 1; }
+
+  .hero__kicker { margin: 0 0 var(--space-3); font-size: var(--fs-small); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-highlight); }
+  .hero__title { max-width: 14ch; margin: 0 0 var(--space-4); font-size: clamp(36px, 6vw, 72px); line-height: 1.02; transition: opacity 500ms var(--ease); }
+  .hero__lead { max-width: 60ch; margin: 0 0 var(--space-6); font-size: var(--fs-lead); color: rgb(255 255 255 / 0.88); }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+  /* ── Статичный экран (без JS / без WebGL): ряд упаковок; на телефоне — одна */
+  .hero__show { display: none; }
+  .hero__packs { display: flex; margin: var(--space-6) 0 0; padding: 0; list-style: none; }
+  .hero__packs li { display: grid; place-items: center; width: 150px; height: 180px; padding: 10px; overflow: hidden; background: rgb(255 255 255 / 0.96); border-radius: var(--radius); }
+  .hero__packs li:not(:first-child) { display: none; }
+  .hero__packs img { width: 100%; height: 160px; object-fit: contain; }
+  @media (min-width: 1100px) {
+    .hero__in { display: grid; grid-template-columns: minmax(0, 1fr) 424px; align-items: center; column-gap: 48px; }
+    .hero__packs { display: grid; grid-template-columns: repeat(3, 132px); gap: 14px; margin: 0; }
+    .hero__packs li, .hero__packs li:not(:first-child) { display: grid; width: auto; height: 150px; }
+    .hero__packs li:nth-child(3n+2) { translate: 0 18px; }
+    .hero__packs img { height: 130px; }
+  }
+
+  /* ── Объёмная сцена (WebGL есть): H1 сверху, витрина в центре и внизу */
+  .hero[data-gl='1'] { padding: clamp(28px, 4vw, 48px) 0 clamp(24px, 3vw, 40px); }
+  .hero[data-gl='1'] .hero__gl { display: block; }
+  .hero[data-gl='1'] .hero__in { display: block; }
+  .hero[data-gl='1'] .hero__packs, .hero[data-gl='1'] .hero__cat { display: none; }
+  .hero[data-gl='1'] .hero__title { max-width: none; font-size: clamp(30px, 8.4vw, 40px); }
+  .hero[data-gl='1'] .hero__lead { margin-bottom: var(--space-4); }
+  .hero[data-gl='1'] .hero__show { display: grid; grid-template-areas: 'stage' 'ctl' 'info'; gap: var(--space-4); margin-top: var(--space-4); }
+
+  .hero__stage { grid-area: stage; position: relative; height: clamp(270px, 84vw, 360px); touch-action: pan-y; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+  .hero__stage.is-pick { cursor: pointer; }
+  .hero__stage.is-dragging { cursor: grabbing; }
+
+  .hero__ctl { grid-area: ctl; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--space-3) var(--space-4); }
+  .hero__nav { display: flex; gap: var(--space-2); }
+  .hero__btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-width: 48px; height: 48px; padding: 0; color: var(--color-on-dark); background: rgb(21 25 28 / 0.6); border: 1px solid rgb(255 255 255 / 0.42); border-radius: var(--radius-pill); cursor: pointer; transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .hero__btn:hover { background: var(--color-brand); border-color: var(--color-brand); }
+  .hero__btn svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .hero__rotate-text { display: none; }
+  @media (min-width: 768px) {
+    .hero__rotate { padding: 0 20px 0 16px; }
+    .hero__rotate-text { display: inline; font-size: 15px; font-weight: 600; }
+  }
+  .hero__intro { min-height: 44px; padding: 0 18px; white-space: nowrap; font: inherit; font-size: 14px; font-weight: 600; color: rgb(255 255 255 / 0.86); background: transparent; border: 1px solid rgb(255 255 255 / 0.3); border-radius: var(--radius-pill); cursor: pointer; transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .hero__intro:hover { background: rgb(255 255 255 / 0.1); border-color: rgb(255 255 255 / 0.6); }
+  .hero__intro[hidden] { display: none; }
+
+  /* Телефон: «Пропустить / Повторить» — строкой над сценой справа (в первом экране, не под сгибом) */
+  @media (max-width: 767.98px) {
+    .hero[data-gl='1'] .hero__show { grid-template-areas: 'intro' 'stage' 'nav' 'info'; }
+    .hero__ctl { display: contents; }
+    .hero__nav { grid-area: nav; justify-self: center; }
+    .hero__intro { grid-area: intro; justify-self: end; margin-bottom: calc(-1 * var(--space-2)); }
+  }
+
+  .hero__info { grid-area: info; max-width: 62ch; }
+  .hero__name { margin: 0 0 var(--space-2); font-family: var(--font-head); font-size: clamp(22px, 2.1vw, 30px); font-weight: 800; line-height: 1.15; }
+  .hero__desc { margin: 0 0 var(--space-5); font-size: 16px; line-height: 1.45; color: rgb(255 255 255 / 0.8); }
+  .hero__name, .hero__desc { transition: opacity 160ms var(--ease); }
+  .hero__info.is-swapping .hero__name, .hero__info.is-swapping .hero__desc { opacity: 0; }
+  .hero__info-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+  @media (min-width: 768px) {
+    .hero[data-gl='1'] .hero__title { font-size: clamp(40px, 5.1vw, 76px); }
+    .hero__stage { height: 420px; }
+  }
+  @media (min-width: 1024px) {
+    .hero[data-gl='1'] .hero__text { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--space-6); align-items: end; }
+    .hero[data-gl='1'] .hero__kicker, .hero[data-gl='1'] .hero__title { grid-column: 1 / -1; }
+    .hero[data-gl='1'] .hero__lead { margin-bottom: 0; }
+    .hero[data-gl='1'] .hero__actions { justify-self: end; }
+    .hero[data-gl='1'] .hero__show { grid-template-columns: minmax(270px, 340px) minmax(0, 1fr); grid-template-areas: 'info stage' '. ctl'; column-gap: var(--space-6); align-items: center; margin-top: var(--space-2); }
+    .hero__stage { height: clamp(380px, calc(100svh - 420px), 560px); }
+    .hero__ctl { display: grid; grid-template-columns: 1fr auto 1fr; }
+    .hero__nav { grid-column: 2; }
+    .hero__intro { grid-column: 3; justify-self: end; }
+    .hero__desc { min-height: calc(1.45em * 4); }
+  }
+
+  /* ── Фазы интро: H1 скрыт до сборки из частиц (только opacity — в DOM он всегда), подпись и управление —
+     до выхода мешков. Страховка на случай сбоя JS: через 8 с всё проявляется само. */
+  .hero__info, .hero__nav { transition: opacity 450ms var(--ease), visibility 0s linear 0s; }
+  .hero.is-h1-hidden .hero__title { opacity: 0; animation: hero-safe 0.4s 8s forwards; }
+  .hero.is-info-hidden .hero__info, .hero.is-info-hidden .hero__nav { opacity: 0; visibility: hidden; transition: opacity 300ms var(--ease), visibility 0s linear 300ms; animation: hero-safe 0.4s 8s forwards; }
+  .hero.is-fast .hero__title, .hero.is-fast .hero__info, .hero.is-fast .hero__nav { transition-duration: 150ms; }
+  @keyframes hero-safe { to { opacity: 1; visibility: visible; } }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__title, .hero__info, .hero__nav, .hero__name, .hero__desc { transition: none; }
+  }
+</style>
