@@ -67,14 +67,6 @@ const packs = items.slice(0, 6);
     {first && (
       <div class="hero__show" data-hero-show role="region" aria-roledescription="карусель" aria-label="Смеси на витрине">
         <div class="hero__stage" data-hero-stage></div>
-        <div class="hero__info" data-hero-info>
-          <p class="hero__name" data-hero-name aria-live="polite">{first.title}</p>
-          <p class="hero__desc" data-hero-desc>{first.desc}</p>
-          <div class="hero__info-actions">
-            <a class="btn btn--primary" href={first.href} data-hero-more aria-label={`Подробнее: ${first.title}`}>Подробнее</a>
-            <a class="btn btn--ghost-inv" href="#katalog">Каталог смесей</a>
-          </div>
-        </div>
         <div class="hero__ctl">
           <div class="hero__bar">
             <div class="hero__nav">
@@ -91,6 +83,16 @@ const packs = items.slice(0, 6);
             </button>
           </div>
           <button class="hero__intro" type="button" data-hero-intro data-state="skip" hidden><span data-label>Пропустить анимацию</span></button>
+        </div>
+        <div class="hero__info" data-hero-info>
+          <div class="hero__copy">
+            <p class="hero__name" data-hero-name aria-live="polite">{first.title}</p>
+            <p class="hero__desc" data-hero-desc>{first.desc}</p>
+          </div>
+          <div class="hero__info-actions">
+            <a class="btn btn--primary" href={first.href} data-hero-more aria-label={`Подробнее: ${first.title}`}>Подробнее</a>
+            <a class="btn btn--ghost-inv" href="#katalog">Каталог смесей</a>
+          </div>
         </div>
       </div>
     )}
@@ -161,17 +163,23 @@ const packs = items.slice(0, 6);
   /* Телефон: «Пропустить анимацию» — поверх правого верхнего угла сцены (ряд ‹ › остаётся в первом экране);
      после интро «Повторить анимацию» — обычной кнопкой под подписью. Телефон в шапке героя — залитая кнопка действия. */
   @media (max-width: 767.98px) {
-    .hero[data-gl='1'] .hero__show { grid-template-areas: 'stage' 'bar' 'info' 'replay'; }
+    .hero[data-gl='1'] .hero__show { grid-template-areas: 'stage' 'bar' 'info'; }
     .hero__ctl { display: contents; }
     .hero__bar { grid-area: bar; justify-self: center; gap: var(--space-2); }
     .hero__intro[data-state='skip'] { grid-area: stage; align-self: start; justify-self: end; position: relative; z-index: 2; margin: 0; padding: 0 12px; min-height: 44px; font-size: 13px; color: rgb(255 255 255 / 0.75); background: rgb(21 25 28 / 0.55); border: 0; }
-    .hero__intro[data-state='replay'] { grid-area: replay; justify-self: start; }
+    /* после интро на телефоне «Повторить» не показываем (по ТЗ дизайнера): ряд ‹ › остаётся в первом экране */
+    .hero__intro[data-state='replay'] { display: none; }
     .hero[data-gl='1'] .hero__phone { color: var(--color-on-brand); background: var(--color-brand-fill); border-color: var(--color-brand-fill); }
     .hero[data-gl='1'] .hero__phone:hover { background: var(--color-brand-hover); border-color: var(--color-brand-hover); }
   }
 
-  .hero__info { grid-area: info; max-width: 62ch; }
-  .hero__name { margin: 0 0 var(--space-2); font-family: var(--font-head); font-size: clamp(22px, 2.1vw, 30px); font-weight: 800; line-height: 1.15; }
+  /* Название + описание — блок постоянной высоты (название до 2 строк, описание до 5 / 3 / 4 строк):
+     при смене мешка кнопки и всё ниже не прыгают */
+  .hero__info { --name-fs: clamp(22px, 2.1vw, 30px); --desc-lines: 5; grid-area: info; max-width: 62ch; }
+  .hero__copy { min-height: calc(2 * 1.15 * var(--name-fs) + var(--space-2) + var(--desc-lines) * 1.45 * 16px + var(--space-5)); }
+  @media (min-width: 768px) { .hero__info { --desc-lines: 3; } }
+  @media (min-width: 1024px) { .hero__info { --desc-lines: 4; } }
+  .hero__name { margin: 0 0 var(--space-2); font-family: var(--font-head); font-size: var(--name-fs); font-weight: 800; line-height: 1.15; }
   .hero__desc { margin: 0 0 var(--space-5); font-size: 16px; line-height: 1.45; color: rgb(255 255 255 / 0.8); }
   .hero__name, .hero__desc { transition: opacity 160ms var(--ease); }
   .hero__info.is-swapping .hero__name, .hero__info.is-swapping .hero__desc { opacity: 0; }
@@ -186,14 +194,13 @@ const packs = items.slice(0, 6);
     .hero[data-gl='1'] .hero__kicker, .hero[data-gl='1'] .hero__title { grid-column: 1 / -1; }
     .hero[data-gl='1'] .hero__lead { margin-bottom: 0; }
     .hero[data-gl='1'] .hero__actions { justify-self: end; }
-    .hero[data-gl='1'] .hero__show { grid-template-columns: minmax(270px, 340px) minmax(0, 1fr); grid-template-areas: 'info stage' '. ctl'; column-gap: var(--space-6); align-items: center; margin-top: var(--space-2); }
+    .hero[data-gl='1'] .hero__show { grid-template-columns: minmax(0, 1fr) minmax(270px, 340px); grid-template-areas: 'stage info' 'ctl .'; column-gap: var(--space-6); align-items: center; margin-top: var(--space-2); }
     .hero__stage { height: clamp(380px, calc(100svh - 420px), 560px); }
     .hero__ctl { display: grid; grid-template-columns: 1fr auto 1fr; column-gap: var(--space-4); }
     .hero__bar { grid-column: 2; }
     .hero__intro { grid-column: 3; justify-self: end; }
     /* телефон на экране уже третий раз (шапка, здесь, подвал) — обычного размера, легче «Подробнее» */
     .hero[data-gl='1'] .hero__phone { padding: var(--btn-pad-y) var(--btn-pad-x); font-size: var(--btn-fs); }
-    .hero__desc { min-height: calc(1.45em * 4); }
   }
 
   /* ── Фазы интро: H1 скрыт до сборки из частиц (только opacity — в DOM он всегда), подпись и управление —
@@ -201,6 +208,8 @@ const packs = items.slice(0, 6);
   .hero__info, .hero__bar { transition: opacity 450ms var(--ease), visibility 0s linear 0s; }
   .hero.is-h1-hidden .hero__title { opacity: 0; animation: hero-safe 0.4s 8s forwards; }
   .hero.is-info-hidden .hero__info, .hero.is-info-hidden .hero__bar { opacity: 0; visibility: hidden; transition: opacity 300ms var(--ease), visibility 0s linear 300ms; animation: hero-safe 0.4s 8s forwards; }
+  /* интро ведёт сцена с дедлайном по реальному времени — CSS-страховка отключается */
+  .hero.is-js-intro .hero__title, .hero.is-js-intro .hero__info, .hero.is-js-intro .hero__bar { animation: none; }
   .hero.is-fast .hero__title, .hero.is-fast .hero__info, .hero.is-fast .hero__bar { transition-duration: 150ms; }
   @keyframes hero-safe { to { opacity: 1; visibility: visible; } }
   @media (prefers-reduced-motion: reduce) {
