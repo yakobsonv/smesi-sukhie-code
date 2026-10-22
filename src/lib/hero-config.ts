@@ -22,6 +22,8 @@ export interface ShowcaseMode {
   turn: number;
   /** сколько соседей с каждой стороны видно (дальше — растворяются) */
   visible: number;
+  /** подъём мешка над центром сцены — доля высоты мешка (на телефоне ниже: над ним кнопка «Пропустить») */
+  lift: number;
 }
 
 export const HERO = {
@@ -40,12 +42,12 @@ export const HERO = {
     /** частицы начинают лететь к буквам */
     titleStart: 1.45,
     /** индивидуальная задержка частицы (левые буквы раньше) и длительность перелёта: от и до */
-    titleDelay: [0, 0.75] as const,
-    titleFlight: [0.85, 1.2] as const,
+    titleDelay: [0, 0.55] as const,
+    titleFlight: [0.8, 1.0] as const,
     /** настоящий HTML-заголовок начинает проявляться (длительность — CSS, 0,5 с) */
-    h1Reveal: 3.1,
+    h1Reveal: 3.0,
     /** частицы растворяются: от и до (+ случайный сдвиг до 0,2 с) */
-    particlesOut: [3.3, 3.85] as const,
+    particlesOut: [3.05, 3.45] as const,
     /** мешки начинают выходить из глубины (ещё до конца сборки заголовка) */
     showStart: 2.8,
     /** за сколько выходит один мешок и задержка между соседями */
@@ -65,17 +67,22 @@ export const HERO = {
     mobile: { count: 4500, sampleStep: 1.3 } satisfies ParticleMode,
     /** доля «пыли»: крупные, почти прозрачные пятна, к буквам не летят */
     dustShare: 0.04,
+    /** доля частиц плотного ядра облака (гаусс вокруг центра, σ = coreSigma радиуса) */
+    coreShare: 0.28,
+    coreSigma: 0.28,
+    /** снос частиц при растворении, px */
+    outDrift: 6,
     /** доля мелких частиц, которые отстают и осыпаются вниз вместо того, чтобы лечь в букву */
     fallShare: 0.12,
     /** размер частицы в облаке, px (до перспективы): от и до; пыли — от и до */
-    size: [1.1, 2.6] as const,
-    dustSize: [7, 16] as const,
+    size: [1.3, 3.2] as const,
+    dustSize: [3, 7] as const,
     /** размер частицы в букве, доля шага семплирования (≥ 1 — буквы сплошные) */
-    textSize: 1.25,
+    textSize: 1.05,
     /** радиус облака: доля ширины заголовка, но не больше max px и не больше доли ширины экрана; на телефоне не меньше mobile × ширина */
-    cloudRadius: { ofTitle: 0.36, max: 340, ofScreen: 0.42, mobile: 0.4 },
+    cloudRadius: { ofTitle: 0.28, max: 260, ofScreen: 0.42, mobile: 0.4 },
     /** центр облака — ниже заголовка на столько радиусов (на телефоне — над местом витрины) */
-    cloudBelow: { desktop: 0.55, mobile: 2.1 },
+    cloudBelow: { desktop: 1.1, mobile: 2.1 },
     /** закрутка облака: скорость (рад/с у края) и наклон оси вращения, рад */
     spin: 0.9,
     tilt: 0.45,
@@ -83,10 +90,10 @@ export const HERO = {
     wobble: 0.045,
     /** боковой свет: направление (x вправо, y вверх, z к зрителю) и яркость теневой стороны */
     light: [-0.7, 0.45, 0.55] as const,
-    shadeMin: 0.5,
+    shadeMin: 0.3,
     /** непрозрачность частиц: от и до; пыли */
     alpha: [0.65, 1] as const,
-    dustAlpha: 0.05,
+    dustAlpha: 0.04,
     /** ускорение осыпающихся частиц, px/с² */
     gravity: 520,
     /** цвета частиц — палитра сухой смеси (без фирменного жёлтого) */
@@ -95,8 +102,8 @@ export const HERO = {
 
   // ── Витрина
   showcase: {
-    desktop: { activeHeight: 0.6, spacing: 0.235, depth: 1.25, turn: 0.42, visible: 2.2 } satisfies ShowcaseMode,
-    mobile: { activeHeight: 0.66, spacing: 0.56, depth: 1.1, turn: 0.38, visible: 1.25 } satisfies ShowcaseMode,
+    desktop: { activeHeight: 0.6, spacing: 0.235, depth: 1.25, turn: 0.42, visible: 2.2, lift: 0.07 } satisfies ShowcaseMode,
+    mobile: { activeHeight: 0.6, spacing: 0.56, depth: 1.1, turn: 0.38, visible: 1.25, lift: -0.04 } satisfies ShowcaseMode,
     /** активный мешок ближе к зрителю, ед. сцены, и чуть развёрнут, рад */
     activeForward: 0.45,
     activeTurn: -0.2,
@@ -111,14 +118,20 @@ export const HERO = {
     /** парение: амплитуда (ед. сцены) и скорость; реакция на курсор, рад */
     float: { amp: 0.035, speed: 1.05 },
     cursor: 0.07,
-    /** поворот упаковки по кнопке: 360° за столько секунд */
-    spinSeconds: 1.6,
+    /** «Повернуть упаковку»: качание на ±swingDeg градусов с возвратом за spinSeconds секунд */
+    swingDeg: 35,
+    spinSeconds: 1.8,
+    /** бумага мешка: доля обесцвечивания среднего цвета фото и затемнение */
+    paperGrey: 0.6,
+    paperDark: 0.8,
+    /** собственное свечение лица (фото читается в тени), 0 — только свет сцены */
+    frontGlow: 0.18,
     /** ореол позади активного: сила (0…1) и как быстро меняет цвет (доля за кадр 60 Гц) */
-    halo: { strength: 0.55, follow: 0.06 },
+    halo: { strength: 0.42, follow: 0.06 },
     /** прожектор сверху: сила луча (0 — нет) */
     beam: 0.05,
     /** свет сцены */
-    light: { key: 70, fill: 0.55, rim: 1.4, ambient: 0.55 },
+    light: { key: 85, fill: 0.55, rim: 1.4, ambient: 0.55 },
   },
 
   render: {

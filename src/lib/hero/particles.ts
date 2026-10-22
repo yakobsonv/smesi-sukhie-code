@@ -17,7 +17,7 @@ const P = HERO.particles;
 const T = HERO.time;
 
 const vertex = /* glsl */ `
-uniform float uTime, uRadius, uFocal, uDpr, uTitleStart, uSpin, uTilt, uWobble, uShadeMin, uTextSize, uGravity, uCloudForm, uDustAlpha;
+uniform float uOutDrift, uTime, uRadius, uFocal, uDpr, uTitleStart, uSpin, uTilt, uWobble, uShadeMin, uTextSize, uGravity, uCloudForm, uDustAlpha;
 uniform vec2 uView, uCenter, uOut, uAlpha;
 uniform vec3 uLight;
 attribute vec3 aCloud;
@@ -71,7 +71,7 @@ void main() {
 
   // Растворение, когда проявился настоящий заголовок
   float d = smoothstep(uOut.x + rnd * 0.2, uOut.y + rnd * 0.2, t);
-  pos += vec3(fract(rnd * 23.1) - 0.5, -0.6 - fract(rnd * 5.3), fract(rnd * 9.7) - 0.5) * d * 16.0;
+  pos += vec3(fract(rnd * 23.1) - 0.5, -0.6 - fract(rnd * 5.3), fract(rnd * 9.7) - 0.5) * d * uOutDrift;
   alpha *= 1.0 - d;
 
   float s = uFocal / max(uFocal - pos.z, uFocal * 0.3);
@@ -158,6 +158,11 @@ export class TitleParticles {
         x = Math.sqrt(1 - u * u) * Math.cos(a) * rr;
         y = u * rr * 0.6;
         z = Math.sqrt(1 - u * u) * Math.sin(a) * rr;
+      } else if (Math.random() < P.coreShare) {
+        // плотное ядро: облако читается массой, а не пустым кольцом
+        x = gauss() * P.coreSigma;
+        y = gauss() * P.coreSigma * 0.7;
+        z = gauss() * P.coreSigma;
       } else {
         // закрученная лента: 1,25 витка вокруг вертикали, высота волной, ширина ленты — по вертикали,
         // к концам лента сужается и редеет
@@ -198,6 +203,7 @@ export class TitleParticles {
       blending: NormalBlending,
       uniforms: {
         uTime: { value: 0 },
+        uOutDrift: { value: P.outDrift },
         uRadius: { value: 200 },
         uFocal: { value: 600 },
         uDpr: { value: 1 },
