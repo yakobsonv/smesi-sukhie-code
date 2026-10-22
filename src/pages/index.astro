@@ -22,14 +22,15 @@ const showcase = pickShowcase(POSITIONS);
 
 // «Что делаете?» — вход по работе. Только навигация: какие разделы относятся к работе,
 // без советов, что лучше (выбор состава — факт производителя, его даёт карточка товара).
-const WORKS: { title: string; links: string[] }[] = [
-  { title: 'Кладу стены из кирпича или блоков', links: ['kladochnye-smesi', 'klej-dlya-blokov', 'peskobeton'] },
-  { title: 'Выравниваю стены и потолки', links: ['shtukaturka-gipsovaya', 'shtukaturka-cementnaya', 'shpaklevka'] },
-  { title: 'Кладу плитку', links: ['plitochnyj-klej', 'gidroizolyaciya'] },
-  { title: 'Делаю пол', links: ['nalivnoj-pol', 'peskobeton'] },
-  { title: 'Утепляю и отделываю фасад', links: ['uteplenie-fasada', 'shtukaturka-cementnaya', 'shpaklevka'] },
-  { title: 'Мощу двор брусчаткой', links: ['smesi-dlya-bruschatki'] },
-  { title: 'Кладу печь или камин', links: ['pechnye-smesi'] },
+// art — фоновая иллюстрация карточки: public/assets/works/<art>.svg (подключается в стилях ниже).
+const WORKS: { title: string; links: string[]; art: string }[] = [
+  { title: 'Кладу стены из кирпича или блоков', links: ['kladochnye-smesi', 'klej-dlya-blokov', 'peskobeton'], art: 'kladka' },
+  { title: 'Выравниваю стены и потолки', links: ['shtukaturka-gipsovaya', 'shtukaturka-cementnaya', 'shpaklevka'], art: 'vyravnivanie' },
+  { title: 'Кладу плитку', links: ['plitochnyj-klej', 'gidroizolyaciya'], art: 'plitka' },
+  { title: 'Делаю пол', links: ['nalivnoj-pol', 'peskobeton'], art: 'pol' },
+  { title: 'Утепляю и отделываю фасад', links: ['uteplenie-fasada', 'shtukaturka-cementnaya', 'shpaklevka'], art: 'fasad' },
+  { title: 'Мощу двор брусчаткой', links: ['smesi-dlya-bruschatki'], art: 'bruschatka' },
+  { title: 'Кладу печь или камин', links: ['pechnye-smesi'], art: 'pech' },
 ];
 const bySlug = Object.fromEntries(SECTIONS.map((s) => [s.slug, s]));
 const groups = GROUP_ORDER.map((g: SectionGroup) => ({ g, title: GROUPS[g], sections: SECTIONS.filter((s) => s.group === g) }));
@@ -52,7 +53,7 @@ const groups = GROUP_ORDER.map((g: SectionGroup) => ({ g, title: GROUPS[g], sect
       <h2 class="h2">Что делаете?</h2>
       <ul class="works__grid" role="list">
         {WORKS.map((w) => (
-          <li class="works__card">
+          <li class="works__card" data-art={w.art}>
             <p class="works__title">{w.title}</p>
             <ul role="list">
               {w.links.filter((slug) => sectionCount(slug) > 0).map((slug) => (
@@ -120,7 +121,19 @@ const groups = GROUP_ORDER.map((g: SectionGroup) => ({ g, title: GROUPS[g], sect
 
   .works { padding: var(--section-pad-lg) 0 var(--section-pad-md); }
   .works__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
-  .works__card { padding: var(--space-5); background: var(--color-bg-alt); border-radius: var(--radius); }
+  /* Карточка: снизу оставлено место под иллюстрацию (30 % ширины, 72–112 px), иначе её закрывают белые плашки ссылок. */
+  .works__card { position: relative; isolation: isolate; overflow: hidden; padding: var(--space-5) var(--space-5) calc(var(--space-5) + clamp(72px, 30%, 112px)); background: var(--color-bg-alt); border-radius: var(--radius); }
+  /* Иллюстрация: слой под текстом, начинается ниже зоны заголовка (4.5rem ≈ отступ + 2 строки),
+     привязана к низу по центру, cover — не растягивается; сверху растворяется в фоне карточки маской,
+     поэтому заголовок всегда стоит на чистом --color-bg-alt. */
+  .works__card::before { content: ""; position: absolute; inset: 4.5rem 0 0; z-index: -1; pointer-events: none; background: var(--art, none) center bottom / cover no-repeat; -webkit-mask-image: linear-gradient(to bottom, transparent, rgb(0 0 0 / 0.55) 30%, #000 60%); mask-image: linear-gradient(to bottom, transparent, rgb(0 0 0 / 0.55) 30%, #000 60%); }
+  .works__card[data-art="kladka"] { --art: url(/assets/works/kladka.svg); }
+  .works__card[data-art="vyravnivanie"] { --art: url(/assets/works/vyravnivanie.svg); }
+  .works__card[data-art="plitka"] { --art: url(/assets/works/plitka.svg); }
+  .works__card[data-art="pol"] { --art: url(/assets/works/pol.svg); }
+  .works__card[data-art="fasad"] { --art: url(/assets/works/fasad.svg); }
+  .works__card[data-art="bruschatka"] { --art: url(/assets/works/bruschatka.svg); }
+  .works__card[data-art="pech"] { --art: url(/assets/works/pech.svg); }
   .works__title { margin: 0 0 var(--space-3); font-family: var(--font-head); font-size: var(--fs-h4); font-weight: 800; }
   .works__card ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
   .works__card a { text-decoration: none; display: flex; justify-content: space-between; gap: var(--space-3); padding: 8px 12px; font-weight: 600; color: var(--color-text); background: var(--color-surface); border-radius: var(--radius-sm); }

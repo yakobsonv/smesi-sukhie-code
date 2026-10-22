@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
+<defs>
+<linearGradient id="w" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#e2dfd8"/>
+<stop offset="1" stop-color="#d6d2ca"/>
+</linearGradient>
+<linearGradient id="b" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#9f9c95"/>
+<stop offset="1" stop-color="#8f8c85"/>
+</linearGradient>
+<linearGradient id="f" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#cfd3d5"/>
+<stop offset=".55" stop-color="#c2c7ca"/>
+<stop offset="1" stop-color="#b6bcc0"/>
+</linearGradient>
+<linearGradient id="d" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#5b6871"/>
+<stop offset=".4" stop-color="#36424a"/>
+<stop offset="1" stop-color="#46535c"/>
+</linearGradient>
+<linearGradient id="h" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#c9d0d4"/>
+<stop offset="1" stop-color="#8d979d"/>
+</linearGradient>
+<pattern id="sp" width="8" height="34" x="-64" y="-17" patternUnits="userSpaceOnUse">
+<path d="M2 6 4 0 6 6zM2 28l2 6 2-6z" fill="#2a3237"/>
+<circle cx="4" cy="12" r="1.2" fill="#7c8890"/>
+<circle cx="0" cy="22" r="1.2" fill="#7c8890"/>
+<circle cx="8" cy="22" r="1.2" fill="#7c8890"/>
+</pattern>
+<filter id="bl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="7"/></filter>
+<filter id="sb" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
+<filter id="n" x="0" y="0" width="100%" height="100%">
+<feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="5" stitchTiles="stitch"/>
+<feColorMatrix values="0 0 0 0 .18 0 0 0 0 .17 0 0 0 0 .16 0 0 0 1.1 -.5"/>
+</filter>
+<filter id="n2" x="0" y="0" width="100%" height="100%">
+<feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="2" seed="2" stitchTiles="stitch"/>
+<feColorMatrix values="0 0 0 0 .2 0 0 0 0 .2 0 0 0 0 .2 0 0 0 .6 -.27"/>
+</filter>
+</defs>
+<rect width="600" height="152" fill="url(#w)"/>
+<rect y="150" width="600" height="250" fill="url(#b)"/>
+<rect y="150" width="600" height="250" filter="url(#n)"/>
+<rect y="140" width="600" height="12" fill="#cfdae3"/>
+<rect y="140" width="600" height="1.5" fill="#fff" opacity=".6"/>
+<path d="M0 154H524c-12 30 18 52-14 84-26 26 6 52-50 80-40 20-34 52-90 66-24 6-48 12-74 16H0z" fill="#7d8488" transform="translate(4 4)" opacity=".55"/>
+<path d="M0 152H524c-12 30 18 52-14 84-26 26 6 52-50 80-40 20-34 52-90 66-24 6-48 12-74 16H0z" fill="url(#f)"/>
+<path d="M524 152c-12 30 18 52-14 84-26 26 6 52-50 80-40 20-34 52-90 66-24 6-48 12-74 16" stroke="#fff" stroke-opacity=".45" stroke-width="1.5" fill="none"/>
+<path d="M500 152c-12 30 18 52-14 84-26 26 6 52-50 80-40 20-34 52-90 66" stroke="#fff" stroke-opacity=".16" stroke-width="2" fill="none"/>
+<path d="M150 214H262L238 258H112z" fill="#fff" opacity=".55" filter="url(#bl)"/>
+<path d="M288 214H364L346 258H264z" fill="#fff" opacity=".4" filter="url(#bl)"/>
+<path d="M30 300C140 286 250 290 340 300" stroke="#fff" stroke-opacity=".18" stroke-width="10" fill="none" filter="url(#sb)"/>
+<g transform="translate(250 312) rotate(-8)">
+<ellipse cy="22" rx="70" ry="9" fill="#1f2a33" opacity=".3" filter="url(#sb)"/>
+<path d="M28 6 150 120" stroke="#6f797f" stroke-width="7" stroke-linecap="round"/>
+<path d="M28 6 150 120" stroke="url(#h)" stroke-width="5" stroke-linecap="round"/>
+<path d="M-68-4V8L28 6 68 8V-4" stroke="#8b949a" stroke-width="3" fill="none" stroke-linejoin="round"/>
+<rect x="-64" y="-11" width="128" height="22" rx="5" fill="url(#d)"/>
+<rect x="-64" y="-17" width="128" height="34" fill="url(#sp)"/>
+<rect x="-64" y="-9" width="128" height="3" rx="1.5" fill="#fff" opacity=".18"/>
+</g>
+<rect width="600" height="400" filter="url(#n2)"/>
+</svg>

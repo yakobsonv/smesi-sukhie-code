@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
+<defs>
+<pattern id="bk" width="200" height="80" y="26" patternUnits="userSpaceOnUse">
+<rect width="200" height="80" fill="#a9aba5"/>
+<rect x="1" y="1" width="98" height="38" fill="#cbccc7"/>
+<rect x="101" y="1" width="98" height="38" fill="#c4c6c0"/>
+<rect x="-49" y="41" width="98" height="38" fill="#c7c9c3"/>
+<rect x="51" y="41" width="98" height="38" fill="#cfd0cb"/>
+<rect x="151" y="41" width="98" height="38" fill="#c7c9c3"/>
+</pattern>
+<pattern id="in" width="120" height="120" x="80" y="46" patternUnits="userSpaceOnUse">
+<rect width="120" height="120" fill="#c9cbc4"/>
+<rect x=".8" y=".8" width="118.4" height="58.4" fill="#eceee8"/>
+<rect x="-59.2" y="60.8" width="118.4" height="58.4" fill="#e6e8e1"/>
+<rect x="60.8" y="60.8" width="118.4" height="58.4" fill="#e6e8e1"/>
+<g fill="#f7f7f3" stroke="#c4c6bf">
+<circle cx="60" cy="30" r="4.5"/>
+<circle cx="0" cy="90" r="4.5"/>
+<circle cx="120" cy="90" r="4.5"/>
+<circle cx="0" cy="0" r="4.5"/>
+<circle cx="120" cy="0" r="4.5"/>
+<circle cx="0" cy="120" r="4.5"/>
+<circle cx="120" cy="120" r="4.5"/>
+<circle cx="60" cy="60" r="4.5"/>
+</g>
+</pattern>
+<pattern id="m" width="9" height="9" patternUnits="userSpaceOnUse">
+<path d="M0 .5H9M.5 0V9" stroke="#bdb489" stroke-width="1"/>
+</pattern>
+<linearGradient id="gl" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#c9d7e1"/>
+<stop offset=".5" stop-color="#9fb4c4"/>
+<stop offset="1" stop-color="#7f97a9"/>
+</linearGradient>
+<linearGradient id="li" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#fff" stop-opacity=".14"/>
+<stop offset=".6" stop-color="#fff" stop-opacity="0"/>
+<stop offset="1" stop-color="#1f3b52" stop-opacity=".08"/>
+</linearGradient>
+<linearGradient id="pl" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#868a8c"/>
+<stop offset="1" stop-color="#777b7d"/>
+</linearGradient>
+<filter id="s" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="3"/></filter>
+<filter id="k" x="0" y="0" width="100%" height="100%">
+<feTurbulence type="fractalNoise" baseFrequency=".55" numOctaves="2" seed="3" stitchTiles="stitch"/>
+<feColorMatrix values="0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .28 0 0 0 1.6 -.86"/>
+</filter>
+<filter id="n" x="0" y="0" width="100%" height="100%">
+<feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="8" stitchTiles="stitch"/>
+<feColorMatrix values="0 0 0 0 .2 0 0 0 0 .2 0 0 0 0 .2 0 0 0 .6 -.26"/>
+</filter>
+</defs>
+<rect width="600" height="346" fill="url(#bk)"/>
+<path d="M146 -14V46H86V106H146V166H86V226H146V286H86V346H600V-14z" fill="#1f2a33" opacity=".22" filter="url(#s)" transform="translate(-5 3)"/>
+<path d="M140 -14V46H80V106H140V166H80V226H140V286H80V346H600V-14z" fill="url(#in)"/>
+<rect x="288" y="-14" width="44" height="360" fill="url(#m)" opacity=".9"/>
+<path d="M318-14c-8 60 12 120-4 180-12 60 12 116 2 180h294V-14z" fill="#d3d4ce"/>
+<path d="M318-14c-8 60 12 120-4 180-12 60 12 116 2 180h294V-14z" fill="url(#m)" opacity=".28"/>
+<path d="M318-14c-8 60 12 120-4 180-12 60 12 116 2 180" stroke="#9fa19a" stroke-opacity=".5" stroke-width="2" fill="none"/>
+<path id="z3" d="M408-14c-8 64 12 124-4 184-12 60 12 116-2 176h198V-14z" fill="#d6c6a9"/>
+<clipPath id="c3"><use href="#z3"/></clipPath>
+<rect x="380" width="220" height="346" filter="url(#k)" clip-path="url(#c3)"/>
+<path d="M408-14c-8 64 12 124-4 184-12 60 12 116-2 176" stroke="#8f7f63" stroke-opacity=".45" stroke-width="2.5" fill="none"/>
+<rect x="452" y="126" width="112" height="150" fill="#b8a888"/>
+<rect x="460" y="132" width="96" height="140" fill="#f1f1ee"/>
+<rect x="468" y="140" width="80" height="124" fill="url(#gl)"/>
+<path d="M508 140V264M468 196H548" stroke="#f1f1ee" stroke-width="6"/>
+<path d="M474 186 498 146M512 254 540 206" stroke="#fff" stroke-opacity=".35" stroke-width="5"/>
+<rect x="452" y="126" width="112" height="6" fill="#000" opacity=".1"/>
+<path d="M446 276H570L574 286H442z" fill="#9aa1a5"/>
+<rect x="442" y="286" width="132" height="5" fill="#1f2a33" opacity=".18" filter="url(#s)"/>
+<rect y="344" width="600" height="6" fill="#b9bfc2"/>
+<rect y="349" width="600" height="1.5" fill="#5f6568"/>
+<rect y="350" width="600" height="50" fill="url(#pl)"/>
+<rect y="350" width="600" height="7" fill="#1f2a33" opacity=".2" filter="url(#s)"/>
+<path d="M0 390H600" stroke="#5a5e60" stroke-width="1" opacity=".5"/>
+<rect width="600" height="400" fill="url(#li)"/>
+<rect width="600" height="400" filter="url(#n)"/>
+</svg>
