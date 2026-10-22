@@ -46,6 +46,9 @@ const packs = items.slice(0, 6);
         h.dataset.gl = '1';
         var played = false;
         try { played = sessionStorage.getItem(key) === '1'; } catch (e) {}
+        // Перезагрузка страницы — как первый заход: интро играет снова (Паша 22.10: «при перезагрузке
+        // анимация не всегда срабатывает»). Возврат по ссылке / «назад» — по-прежнему без интро.
+        try { var nav = performance.getEntriesByType('navigation')[0]; if (nav && nav.type === 'reload') played = false; } catch (e) {}
         if (matchMedia('(prefers-reduced-motion: reduce)').matches) h.dataset.intro = 'still';
         else if (played) h.dataset.intro = 'done';
         else { h.dataset.intro = 'play'; h.classList.add('is-h1-hidden', 'is-info-hidden'); }
