@@ -33,6 +33,8 @@ export function bindControls({ region, stage, prev, next, rotate, reduced, scene
     gesture = { id: e.pointerId, x: e.clientX, y: e.clientY, drag: false, lx: e.clientX, lt: e.timeStamp, vx: 0 };
   });
   stage.addEventListener('pointermove', (e) => {
+    // мышь без нажатой кнопки — жест закончился где-то вне сцены (отпустили за её пределами): сбросить
+    if (gesture && e.pointerId === gesture.id && e.pointerType === 'mouse' && e.buttons === 0) endGesture(e, true);
     if (gesture && e.pointerId === gesture.id) {
       const dx = e.clientX - gesture.x;
       const dy = e.clientY - gesture.y;
@@ -53,22 +55,25 @@ export function bindControls({ region, stage, prev, next, rotate, reduced, scene
     }
     if (e.pointerType === 'mouse') hover(e.clientX, e.clientY);
   });
-  const endGesture = (e: PointerEvent, cancel: boolean) => {
+  function endGesture(e: PointerEvent, cancel: boolean) {
     if (!gesture || e.pointerId !== gesture.id) return;
     const g = gesture;
     gesture = null;
     stage.classList.remove('is-dragging');
+    if (stage.hasPointerCapture?.(e.pointerId)) stage.releasePointerCapture(e.pointerId);
     if (g.drag) {
       scene()?.dragEnd(cancel ? 0 : e.clientX - g.x, cancel ? 0 : g.vx);
       return;
     }
+    // короткое касание/клик — выбор мешка, только если отпустили на сцене
     const sc = scene();
-    if (cancel || !sc) return;
+    if (cancel || !sc || !stage.contains(e.target as Node)) return;
     const i = sc.pickAt(e.clientX, e.clientY);
     if (i >= 0) sc.goTo(i);
-  };
-  stage.addEventListener('pointerup', (e) => endGesture(e, false));
-  stage.addEventListener('pointercancel', (e) => endGesture(e, true));
+  }
+  // отпускание и отмену слушаем на window: кнопку мыши могут отпустить за пределами сцены
+  window.addEventListener('pointerup', (e) => endGesture(e, false));
+  window.addEventListener('pointercancel', (e) => endGesture(e, true));
 
   // Курсор: лёгкий поворот витрины и «рука» над соседним мешком (только мышь)
   let hoverRaf = 0;
