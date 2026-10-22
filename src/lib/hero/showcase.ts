@@ -43,6 +43,8 @@ export interface ShowItem {
   href: string;
   image: string;
   desc: string;
+  /** не заливать белый фон фото (SHOWCASE.noFill) */
+  noFill?: boolean;
 }
 
 interface Bag {
@@ -203,7 +205,7 @@ export class Showcase {
     let mean: RGB = [178, 174, 166];
     let glow: RGB = [128, 132, 138];
     try {
-      const p = await analysePack(item.image);
+      const p = await analysePack(item.image, { fill: !item.noFill });
       canvas = p.canvas;
       aspect = Math.min(0.9, Math.max(0.45, p.aspect));
       mean = p.mean;
@@ -222,14 +224,15 @@ export class Showcase {
       photo.anisotropy = this.maxAniso;
       photo.minFilter = LinearMipmapLinearFilter;
     }
-    const tone = (k: number) => (mean.map((v) => Math.min(255, v * k) / 255) as unknown) as [number, number, number];
-    const paperRGB = tone(0.88);
+    // бумага (боковины, верх, зад) — средний цвет фото, обесцвеченный на 60 % и затемнённый: бумага, не пластик
+    const luma = 0.2126 * mean[0] + 0.7152 * mean[1] + 0.0722 * mean[2];
+    const paperRGB = mean.map((v) => Math.min(255, (v + (luma - v) * S.paperGrey) * S.paperDark) / 255) as [number, number, number];
     const paper = new MeshStandardMaterial({ map: this.noise, roughness: 0.92, metalness: 0, transparent: true });
     paper.color.setRGB(...paperRGB, SRGBColorSpace);
-    const front = new MeshStandardMaterial({ map: photo, roughness: 0.6, metalness: 0, transparent: true, emissive: 0xffffff, emissiveMap: photo, emissiveIntensity: photo ? 0.32 : 0 });
+    const front = new MeshStandardMaterial({ map: photo, roughness: 0.6, metalness: 0, transparent: true, emissive: 0xffffff, emissiveMap: photo, emissiveIntensity: photo ? S.frontGlow : 0 });
     if (!photo) front.color.setRGB(...paperRGB, SRGBColorSpace);
     const seam = new MeshStandardMaterial({ map: this.noise, roughness: 0.9, transparent: true });
-    seam.color.setRGB(...tone(0.7), SRGBColorSpace);
+    seam.color.setRGB(...(paperRGB.map((v) => v * 0.8) as [number, number, number]), SRGBColorSpace);
     const mesh = new Mesh(body, [paper, front]);
     mesh.userData.index = i;
     const seamMesh = new Mesh(seamG, seam);
@@ -273,13 +276,13 @@ export class Showcase {
     this.shadow.position.set(0, bottom + 0.002, S.activeForward);
     this.halo.scale.set(this.bagH * 3, this.bagH * 2.6, 1);
     this.halo.position.set(0, this.baseY(), S.activeForward - 1.7);
-    const beamH = this.visH * 1.2;
+    const beamH = this.visH * 0.85;
     this.beam.scale.set(this.bagH * 1.5, beamH, 1);
     this.beam.position.set(0, bottom + beamH / 2, S.activeForward - 0.9);
   }
 
   private baseY() {
-    return this.bagH * 0.07;
+    return this.bagH * this.mode.lift;
   }
 
   get active() {
@@ -391,14 +394,15 @@ export class Showcase {
       const floatY = this.reduced ? 0 : S.float.amp * this.bagH * Math.sin(clock * S.float.speed + i * 1.9) * (1 - 0.4 * near);
       const y = base + floatY - (1 - e) * 0.35 * this.bagH;
       let rotY = S.activeTurn * (1 - near) - sg * m.turn * Math.min(ak, 1.2) + (1 - e) * -1.1;
-      // поворот упаковки по кнопке: 360° с плавным разгоном и остановкой
+      // «Повернуть упаковку»: качание +turn → −turn → 0 с плавным разгоном и остановкой — видны толщина и объём
+      const swing = (S.swingDeg * Math.PI) / 180;
       if (b.spinStart === -2) b.spinStart = clock;
       if (b.spinStart >= 0) {
         const p = (clock - b.spinStart) / S.spinSeconds;
         if (p >= 1) b.spinStart = -1;
-        else rotY += Math.PI * 2 * easeInOut(p);
+        else rotY += swing * Math.sin(Math.PI * 2 * easeInOut(p));
       }
-      if (b.flipped) rotY += Math.PI;
+      if (b.flipped) rotY += swing; // reduced-motion: повёрнут на угол без анимации
       const sc = this.bagH * (1 - 0.08 * Math.min(ak, 2));
       b.group.position.set(x, y, z);
       b.group.rotation.set(0, rotY, this.reduced ? 0 : 0.012 * Math.sin(clock * 0.8 + i) * (1 - near * 0.5));
@@ -406,7 +410,7 @@ export class Showcase {
 
       const dim = 1 - S.dimPerSlot * Math.min(ak, 2.2);
       b.front.color.setScalar(dim);
-      b.front.emissiveIntensity = b.photo ? 0.32 * dim : 0;
+      b.front.emissiveIntensity = b.photo ? S.frontGlow * dim : 0;
       // материалы всегда transparent + depthWrite: мешки — отдельные объекты, three рисует их от дальнего
       // к ближнему, а при opacity 1 мешок выглядит и перекрывается как непрозрачный
       b.front.opacity = b.paper.opacity = b.seam.opacity = opacity;

@@ -22,6 +22,7 @@ export function initHero(hero: HTMLElement) {
   const desc = $<HTMLElement>('[data-hero-desc]');
   const more = $<HTMLAnchorElement>('[data-hero-more]');
   const info = $<HTMLElement>('[data-hero-info]');
+  const counter = $<HTMLElement>('[data-hero-index]');
   const introBtn = $<HTMLButtonElement>('[data-hero-intro]');
   const introLabel = introBtn?.querySelector<HTMLElement>('[data-label]') ?? introBtn;
   let items: ShowItem[] = [];
@@ -85,6 +86,7 @@ export function initHero(hero: HTMLElement) {
     shown = i;
     const apply = () => {
       if (name) name.textContent = it.title;
+      if (counter) counter.textContent = String(i + 1);
       if (desc) desc.textContent = it.desc;
       if (more) {
         more.href = it.href;
