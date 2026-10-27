@@ -9,6 +9,7 @@ const p = (slug = '') => localPath('sukhie', slug);
 
 export const PAGES = {
   home: { href: p(), label: 'Главная' },
+  stati: { href: p('stati'), label: 'Статьи' },
   dostavka: { href: p('dostavka'), label: 'Доставка' },
   kontakty: { href: p('kontakty'), label: 'Контакты' },
   regulation: { href: p('regulation'), label: 'Положение об обработке персональных данных' },
@@ -32,6 +33,7 @@ export function mainNav(current?: string): NavItem[] {
         })),
       ),
     },
+    { href: PAGES.stati.href, label: 'Статьи', current: current === 'stati' },
     { href: PAGES.dostavka.href, label: 'Доставка', current: current === 'dostavka' },
     { href: PAGES.kontakty.href, label: 'Контакты', current: current === 'kontakty' },
   ];
@@ -43,7 +45,7 @@ export function footerColumns() {
       title: GROUPS[g],
       links: SECTIONS.filter((s) => s.group === g).map((s) => ({ href: p(s.slug), label: s.label })),
     })),
-    { title: 'Покупателю', links: [PAGES.dostavka, PAGES.kontakty] },
+    { title: 'Покупателю', links: [PAGES.stati, PAGES.dostavka, PAGES.kontakty] },
   ];
 }
 

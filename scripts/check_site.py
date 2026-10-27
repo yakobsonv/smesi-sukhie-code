@@ -3,7 +3,7 @@ python3 scripts/check_site.py https://smesi-sukhie-code.vercel.app"""
 import sys, json, asyncio, random
 from playwright.async_api import async_playwright
 BASE = sys.argv[1].rstrip('/')
-PAGES = ['/', '/dostavka/', '/kontakty/', '/regulation/', '/404-net-takoy/'] + [f'/{s}/' for s in json.load(open('scripts/_sections.json'))]
+PAGES = ['/', '/dostavka/', '/kontakty/', '/stati/', '/regulation/', '/404-net-takoy/'] + [f'/{s}/' for s in json.load(open('scripts/_sections.json'))]
 async def check(ctx, path, w):
     page = await ctx.new_page(); errors = []
     page.on('pageerror', lambda e: errors.append(str(e)))
